@@ -155,7 +155,7 @@ const auditGlobale = [
         </div>
       </div>
 
-      <div class="mt-8 grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+      <div class="mt-6 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
         <KpiTile
           v-for="indicatore in indicatoriSuperAdmin"
           :key="indicatore.label"
@@ -166,7 +166,7 @@ const auditGlobale = [
       </div>
     </BaseCard>
 
-    <div class="grid gap-6 2xl:grid-cols-[1.3fr_0.7fr]">
+    <div class="grid gap-4 sm:gap-6 xl:grid-cols-[1.3fr_0.7fr]">
       <BaseCard>
         <div class="flex items-center justify-between gap-4">
           <div>
@@ -184,11 +184,11 @@ const auditGlobale = [
               <thead class="bg-steel-100">
                 <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
                   <th class="px-4 py-3">Azienda</th>
-                  <th class="px-4 py-3">Settore</th>
-                  <th class="px-4 py-3">Piano</th>
-                  <th class="px-4 py-3">Utenti</th>
-                  <th class="px-4 py-3">DB</th>
-                  <th class="px-4 py-3">Scadenza</th>
+                  <th class="hidden px-4 py-3 sm:table-cell">Settore</th>
+                  <th class="hidden px-4 py-3 sm:table-cell">Piano</th>
+                  <th class="hidden px-4 py-3 md:table-cell">Utenti</th>
+                  <th class="hidden px-4 py-3 md:table-cell">DB</th>
+                  <th class="hidden px-4 py-3 lg:table-cell">Scadenza</th>
                   <th class="px-4 py-3">Stato</th>
                 </tr>
               </thead>
@@ -198,12 +198,12 @@ const auditGlobale = [
                   :key="tenant.azienda"
                   class="transition hover:bg-brand-50/45"
                 >
-                  <td class="px-4 py-3 font-medium text-steel-900">{{ tenant.azienda }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ tenant.settore }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ tenant.piano }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ tenant.utenti }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ tenant.db }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ tenant.scadenza }}</td>
+                  <td class="max-w-[160px] truncate px-4 py-3 font-medium text-steel-900">{{ tenant.azienda }}</td>
+                  <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ tenant.settore }}</td>
+                  <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ tenant.piano }}</td>
+                  <td class="hidden px-4 py-3 text-steel-700 md:table-cell">{{ tenant.utenti }}</td>
+                  <td class="hidden px-4 py-3 text-steel-700 md:table-cell">{{ tenant.db }}</td>
+                  <td class="hidden px-4 py-3 text-steel-700 lg:table-cell">{{ tenant.scadenza }}</td>
                   <td class="px-4 py-3">
                     <span
                       class="inline-flex min-w-[104px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700"
@@ -287,11 +287,11 @@ const auditGlobale = [
           <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
             <thead class="bg-steel-100">
               <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
-                <th class="px-4 py-3">Timestamp</th>
+                <th class="hidden px-4 py-3 sm:table-cell">Timestamp</th>
                 <th class="px-4 py-3">Operatore</th>
-                <th class="px-4 py-3">Tenant</th>
+                <th class="hidden px-4 py-3 md:table-cell">Tenant</th>
                 <th class="px-4 py-3">Evento</th>
-                <th class="px-4 py-3">Dettaglio</th>
+                <th class="hidden px-4 py-3 lg:table-cell">Dettaglio</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-steel-100">
@@ -300,11 +300,11 @@ const auditGlobale = [
                 :key="`${entry.timestamp}-${entry.operatore}`"
                 class="transition hover:bg-brand-50/45"
               >
-                <td class="px-4 py-3 text-steel-700">{{ entry.timestamp }}</td>
+                <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ entry.timestamp }}</td>
                 <td class="px-4 py-3 font-medium text-steel-900">{{ entry.operatore }}</td>
-                <td class="px-4 py-3 text-steel-700">{{ entry.tenant }}</td>
+                <td class="hidden max-w-[140px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ entry.tenant }}</td>
                 <td class="px-4 py-3 text-steel-700">{{ entry.evento }}</td>
-                <td class="px-4 py-3 text-steel-700">{{ entry.dettaglio }}</td>
+                <td class="hidden max-w-[180px] truncate px-4 py-3 text-steel-700 lg:table-cell">{{ entry.dettaglio }}</td>
               </tr>
             </tbody>
           </table>

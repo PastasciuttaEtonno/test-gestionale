@@ -39,14 +39,24 @@
 }
 
 .card-pannello {
-  @apply rounded-[1.5rem] border border-steel-200 bg-white p-6 shadow-panel;
+  @apply rounded-[1.5rem] border border-steel-200 bg-white p-4 shadow-panel sm:p-6;
 }
 
 .card-pannello-evidenza {
-  @apply rounded-[1.5rem] border border-steel-200 bg-white p-6 shadow-panel;
+  @apply rounded-[1.5rem] border border-steel-200 bg-white p-4 shadow-panel sm:p-6;
   box-shadow:
     inset 0 4px 0 0 var(--color-brand-500),
     var(--shadow-panel);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  @apply transition-opacity duration-200;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  @apply opacity-0;
 }
 
 .etichetta-sezione {

@@ -3,6 +3,7 @@ import { RouterLink } from "vue-router";
 
 import BaseButton from "../ui/BaseButton.vue";
 import RoleBadge from "../ui/RoleBadge.vue";
+import { useSidebar } from "../../composables/useSidebar";
 
 defineProps({
   mostraShell: {
@@ -32,6 +33,8 @@ defineProps({
 });
 
 defineEmits(["logout"]);
+
+const { toggleDrawer } = useSidebar();
 </script>
 
 <template>
@@ -40,8 +43,23 @@ defineEmits(["logout"]);
       v-if="mostraShell"
       class="border-b border-steel-200 bg-white/92 backdrop-blur"
     >
-      <div class="flex w-full items-center gap-8 px-6 py-4 2xl:px-8">
-        <div class="flex min-w-0 items-center gap-4">
+      <div class="flex w-full items-center gap-4 px-4 py-4 sm:px-6 xl:gap-8 2xl:px-8">
+
+        <!-- Burger menu (mobile only) -->
+        <button
+          type="button"
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-steel-200 bg-steel-50 text-steel-700 transition hover:bg-steel-100 xl:hidden"
+          @click="toggleDrawer"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
+        <!-- Brand -->
+        <div class="flex flex-1 items-center gap-3 xl:flex-none">
           <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-500 text-sm font-semibold uppercase tracking-[0.2em] text-white">
             ES
           </div>
@@ -50,12 +68,13 @@ defineEmits(["logout"]);
               Esseduesoft
             </p>
             <h1 class="truncate text-base font-semibold text-steel-900">
-              Frontend di test Auth
+              Gestionale aziendale
             </h1>
           </div>
         </div>
 
-        <nav class="flex flex-1 items-center justify-center gap-3">
+        <!-- Nav (desktop only) -->
+        <nav class="hidden flex-1 items-center justify-center gap-3 xl:flex">
           <RouterLink
             class="inline-flex h-11 items-center rounded-xl px-4 text-sm font-medium text-steel-700 transition hover:bg-steel-100"
             :class="{ 'bg-brand-50 text-brand-700': routeName === 'dashboard' }"
@@ -81,19 +100,22 @@ defineEmits(["logout"]);
           </RouterLink>
         </nav>
 
+        <!-- User area -->
         <div class="flex items-center justify-end gap-3">
-          <div class="flex h-11 items-center gap-3 rounded-xl border border-steel-200 bg-steel-50 px-4">
+          <div class="hidden h-11 items-center gap-3 rounded-xl border border-steel-200 bg-steel-50 px-4 xl:flex">
             <p class="truncate text-sm font-medium text-steel-900">{{ username }}</p>
             <RoleBadge :role-code="roleCode" />
           </div>
           <BaseButton type="button" variant="secondary" @click="$emit('logout')">
-            Logout
+            <span class="xl:hidden">Esci</span>
+            <span class="hidden xl:inline">Logout</span>
           </BaseButton>
         </div>
+
       </div>
     </header>
 
-    <main class="w-full px-6 py-8 2xl:px-8">
+    <main class="w-full px-4 py-6 sm:px-6 sm:py-8 2xl:px-8">
       <slot />
     </main>
   </div>

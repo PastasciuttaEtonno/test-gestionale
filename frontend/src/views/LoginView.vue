@@ -5,7 +5,6 @@ import { useRoute, useRouter } from "vue-router";
 
 import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
-import SectionLabel from "../components/ui/SectionLabel.vue";
 import { useAuthStore } from "../stores/auth";
 
 const authStore = useAuthStore();
@@ -19,6 +18,7 @@ const form = reactive({
 
 const errore = ref("");
 const loading = ref(false);
+const mostraPassword = ref(false);
 
 async function onSubmit() {
   errore.value = "";
@@ -49,29 +49,64 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="flex min-h-[calc(100vh-5rem)] items-center justify-center">
+  <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
     <div class="grid w-full max-w-5xl gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-      <section class="hidden rounded-[2rem] border border-brand-900/10 bg-[linear-gradient(180deg,_#2b3138_0%,_#1e252c_58%,_#5e1313_100%)] p-10 text-white shadow-panel lg:block">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-brand-100">
-          Accesso operativo
-        </p>
-        <h1 class="mt-4 text-4xl font-semibold leading-tight">
-          Verifica sicura del flusso JWT del gestionale.
-        </h1>
-        <p class="mt-6 max-w-xl text-base text-white/84">
-          La vista usa una palette grigio tecnico e rosso operativo per distinguere
-          contesto, azione e stato. Il focus resta sulla leggibilita d'uso quotidiana.
+
+      <section class="hidden flex-col justify-between rounded-[2rem] border border-brand-900/10 bg-[linear-gradient(180deg,_#2b3138_0%,_#1e252c_58%,_#5e1313_100%)] p-10 text-white shadow-panel lg:flex">
+        <div>
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-sm font-semibold uppercase tracking-[0.2em] text-white">
+              ES
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-300">
+              Esseduesoft
+            </span>
+          </div>
+
+          <h1 class="mt-10 text-4xl font-semibold leading-tight">
+            Il gestionale per la tua operatività quotidiana.
+          </h1>
+          <p class="mt-4 text-base leading-relaxed text-white/70">
+            Piattaforma integrata per la gestione documentale, anagrafica e logistica aziendale.
+          </p>
+
+          <ul class="mt-8 space-y-3">
+            <li class="flex items-center gap-3 text-sm text-white/80">
+              <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-300"></span>
+              Gestione ordini, bolle e fatture
+            </li>
+            <li class="flex items-center gap-3 text-sm text-white/80">
+              <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-300"></span>
+              Anagrafica clienti e fornitori
+            </li>
+            <li class="flex items-center gap-3 text-sm text-white/80">
+              <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-300"></span>
+              Controllo magazzino e spedizioni
+            </li>
+          </ul>
+        </div>
+
+        <p class="text-xs text-white/40">
+          © 2026 Esseduesoft S.r.l. — Tutti i diritti riservati
         </p>
       </section>
 
       <BaseCard class="mx-auto w-full max-w-xl" :highlight="true">
-        <SectionLabel>Accesso</SectionLabel>
-        <h2 class="mt-3 text-3xl font-semibold text-steel-900">
-          Login al backend Esseduesoft
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-sm font-semibold uppercase tracking-[0.2em] text-white">
+            ES
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-brand-700">Esseduesoft</p>
+            <p class="text-xs text-steel-400">Gestionale aziendale</p>
+          </div>
+        </div>
+
+        <h2 class="mt-8 text-2xl font-semibold text-steel-900">
+          Accedi al tuo account
         </h2>
-        <p class="mt-3 text-sm leading-6 text-steel-700">
-          Il client mantiene l'access token solo in memoria e usa un cookie
-          `HttpOnly` per il refresh della sessione autenticata.
+        <p class="mt-1.5 text-sm text-steel-400">
+          Inserire le credenziali aziendali per continuare.
         </p>
 
         <form class="mt-8 space-y-5" @submit.prevent="onSubmit">
@@ -86,20 +121,45 @@ async function onSubmit() {
             />
           </label>
 
-          <label class="block">
-            <span class="mb-2 block text-sm font-medium text-steel-700">Password</span>
-            <input
-              v-model="form.password"
-              class="campo-input"
-              type="password"
-              autocomplete="current-password"
-              placeholder="Inserire la password"
-            />
-          </label>
+          <div class="block">
+            <label
+              for="password"
+              class="mb-1.5 flex items-center justify-between text-sm font-medium text-steel-700"
+            >
+              Password
+              <span class="cursor-not-allowed select-none font-normal text-steel-400 transition hover:text-steel-600">
+                Password dimenticata?
+              </span>
+            </label>
+            <div class="relative">
+              <input
+                id="password"
+                v-model="form.password"
+                :type="mostraPassword ? 'text' : 'password'"
+                class="campo-input pr-12"
+                autocomplete="current-password"
+                placeholder="Inserire la password"
+              />
+              <button
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center text-steel-400 transition hover:text-steel-700 focus:outline-none"
+                @click="mostraPassword = !mostraPassword"
+              >
+                <svg v-if="!mostraPassword" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
 
           <p
             v-if="errore"
-            class="rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-700"
+            class="rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-700"
           >
             {{ errore }}
           </p>
@@ -108,7 +168,12 @@ async function onSubmit() {
             {{ loading ? "Accesso in corso..." : "Accedi" }}
           </BaseButton>
         </form>
+
+        <p class="mt-6 text-center text-xs text-steel-400">
+          Per assistenza contattare il proprio amministratore di sistema.
+        </p>
       </BaseCard>
+
     </div>
   </div>
 </template>
