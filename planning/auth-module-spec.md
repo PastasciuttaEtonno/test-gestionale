@@ -44,10 +44,11 @@ Il modulo non e responsabile di:
 ### 2.3 Vincoli
 
 - autenticazione multiutente obbligatoria fin dalla prima release
-- ruoli iniziali minimi: `admin`, `user`
+- ruoli iniziali reali attualmente implementati: `admin`, `tenant_admin`, `user`
 - audit obbligatorio per accessi ed eventi sensibili
 - compatibilita con futura evoluzione da ruoli semplici a permessi granulari
 - integrazione con futuro dominio anagrafico senza accoppiamento prematuro
+- tenant scoping lato backend obbligatorio per i moduli di livello 2
 
 ---
 
@@ -177,9 +178,10 @@ Campi minimi:
 - `name`
 - `description`
 
-Valori iniziali:
+Valori iniziali / attuali:
 
 - `admin`
+- `tenant_admin`
 - `user`
 
 ### 6.3 Tabella `security.permissions`
@@ -288,6 +290,13 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 - `PATCH /api/v1/users/{id}/status`
 - `PATCH /api/v1/users/{id}/role`
 - `GET /api/v1/admin/audit-log`
+- `GET /api/v1/tenant-admin/audit-log`
+- `GET /api/v1/tenant-admin/company-settings`
+- `PUT /api/v1/tenant-admin/company-settings`
+- `GET /api/v1/tenant-admin/smtp-settings`
+- `PUT /api/v1/tenant-admin/smtp-settings`
+- `GET /api/v1/tenant-admin/document-sequences`
+- `PUT /api/v1/tenant-admin/document-sequences/{sequence_code}`
 
 ### 8.4 Contratti minimi attesi
 
@@ -314,7 +323,7 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 
 ## 9. Regole di Autorizzazione
 
-### 9.1 Ruoli iniziali
+### 9.1 Ruoli iniziali / attuali
 
 `admin`
 
@@ -322,6 +331,16 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 - assegnazione ruoli
 - consultazione audit
 - accesso completo ai moduli abilitati
+- visione globale Esseduesoft
+
+`tenant_admin`
+
+- gestione utenti del proprio tenant
+- consultazione audit locale del proprio tenant
+- configurazione aziendale del proprio tenant
+- configurazione SMTP del proprio tenant
+- configurazione numerazioni documentali del proprio tenant
+- nessun accesso al perimetro globale Esseduesoft
 
 `user`
 
@@ -330,7 +349,7 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 
 ### 9.2 Linea guida
 
-Anche se i ruoli iniziali sono solo due, le verifiche lato backend devono essere implementate su permessi o policy, non su semplici `if role == admin` diffusi nel codice.
+Anche se oggi i ruoli sono pochi, le verifiche lato backend devono essere implementate su permessi o policy, non su semplici `if role == admin` diffusi nel codice.
 
 Questo evita di dover rifattorizzare il modulo quando emergeranno ruoli come:
 
@@ -338,12 +357,14 @@ Questo evita di dover rifattorizzare il modulo quando emergeranno ruoli come:
 - logistica
 - commerciale
 - responsabile magazzino
+- responsabile IT tenant
 
 ### 9.3 Dependency applicative da predisporre
 
 - utente autenticato corrente
 - utente attivo
 - controllo ruolo `admin`
+- controllo ruolo `tenant_admin`
 - controllo permesso specifico
 
 ---
@@ -433,17 +454,20 @@ Il frontend non deve contenere la logica di autorizzazione come unica fonte di v
 5. dependency di autorizzazione
 6. CRUD amministrativo utenti
 7. consultazione audit
-8. predisposizione collegamento `person_id`
+8. introduzione `tenants` e `user.tenant_id`
+9. API tenant-aware per utenti, audit locale e configurazione aziendale
+10. predisposizione collegamento `person_id`
 
 ---
 
 ## 15. Decisioni Gia Fissate
 
 - il modulo `Auth` nasce interno al modular monolith
-- `admin` e `user` sono i ruoli iniziali minimi
+- `admin`, `tenant_admin` e `user` sono i ruoli iniziali reali
 - il sistema deve supportare audit fin dalla prima release
 - il collegamento all'anagrafica futura deve essere previsto ma non accoppiato rigidamente
 - il modello autorizzativo deve essere predisposto per crescita futura
+- i primi endpoint tenant-aware sono gia stati introdotti per il livello 2
 
 ---
 

@@ -70,3 +70,9 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - frontend minimale come client di test prima dei moduli business
 - pin delle immagini e lockfile come regola di stabilita del runtime
 - quality gate leggeri preferiti a policy troppo rigide in questa fase
+
+## Documento di handoff
+
+Per ripartire con un altro LLM o con un altro sviluppatore, il punto di ingresso rapido e:
+
+- [00-llm-handoff.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/00-llm-handoff.md)

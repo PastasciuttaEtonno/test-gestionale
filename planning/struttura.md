@@ -1,113 +1,198 @@
-Ecco una proposta di stesura professionale per il tuo documento di architettura. Questo file `.md` funge da **Master Plan** per la migrazione: è scritto con un approccio da Software Architect, bilanciando la scalabilità dei microservizi con la realtà operativa di un team snello.
-
----
-
 # Progetto di Migrazione: Da Legacy Monolith a Modular Web Architecture
 
-**Target Stack:** Python (FastAPI + Pydantic + SQLAlchemy) | Vue.js | Docker | PostgreSQL
+**Target Stack:** Python (`FastAPI + Pydantic + SQLAlchemy`) | Vue.js 3 | Docker | PostgreSQL
 
 ## 1. Visione dell'Architettura
 
-L'obiettivo è trasformare il gestionale desktop (VB6/VB.NET) in una Web App moderna. Sebbene il termine "microservizi" sia il target finale, per un team di dimensioni ridotte adotteremo un approccio **Modular Monolith containerizzato**. Questo permette di separare logicamente i domini (Fatture, Spedizioni, Anagrafiche) senza l'eccessiva complessità di gestione di decine di database separati.
+L'obiettivo e trasformare il gestionale desktop legacy (VB6/VB.NET) in una Web App moderna.  
+Il target finale puo evolvere verso microservizi, ma la scelta architetturale corrente e un **Modular Monolith containerizzato**.
 
----
+Questa decisione e coerente con:
 
-## 2. Lo Stack Tecnologico (The Tech Stack)
+- team ridotto
+- esigenza di mantenere complessita operativa bassa
+- necessita di introdurre domini separati senza frammentare subito il runtime
+
+Domini attesi:
+
+- `Auth & Identity`
+- `Anagrafiche`
+- `Documentale`
+- `Fiscale`
+- `Amministrazione tenant`
+
+## 2. Stack Tecnologico
 
 | Layer | Tecnologia | Motivazione |
 | --- | --- | --- |
-| **Frontend** | **Vue.js 3 (Vite)** | Più intuitivo di React, curva di apprendimento rapida, eccellente per interfacce gestionali pesanti. |
-| **Backend** | **Python (FastAPI + Pydantic + SQLAlchemy)** | FastAPI per API e OpenAPI, Pydantic per validazione/serializzazione dei contratti, SQLAlchemy come layer ORM e mapping verso PostgreSQL. |
-| **Database** | **PostgreSQL** | Supporto avanzato per **Materialized Views**, JSONB per dati semistrutturati e robustezza ACID. |
-| **Container** | **Docker & Compose** | Isolamento totale dell'ambiente di sviluppo e produzione. |
-| **Cache/Broker** | **Redis** | Per la gestione delle sessioni e code di messaggi (es. invio massivo fatture). |
+| **Frontend** | **Vue.js 3 (Vite)** | Buona ergonomia per UI gestionali dense, form complessi e navigazione enterprise. |
+| **Backend** | **Python (FastAPI + Pydantic + SQLAlchemy)** | FastAPI per routing/OpenAPI, Pydantic per contratti API, SQLAlchemy per ORM e persistenza strutturata. |
+| **Database** | **PostgreSQL** | ACID, JSONB, viste/materialized views, solidita per dominio gestionale. |
+| **Container** | **Docker & Compose** | Ambiente ripetibile tra sviluppo, test e bootstrap locale. |
+| **Cache/Broker** | **Redis** | Previsto per code e processi asincroni futuri; non ancora implementato. |
 
----
+## 3. Infrastruttura Corrente
 
-## 3. Schema dell'Infrastruttura (Dockerization)
+Servizi attualmente previsti nello stack:
 
-Ogni componente dell'app vivrà in un container dedicato per garantire portabilità e conformità **NIS2**.
+1. `client`: frontend Vue.js
+2. `core_service`: backend FastAPI
+3. `db_service`: PostgreSQL
 
-### Servizi Definiti (docker-compose):
+Servizi previsti ma non ancora implementati realmente:
 
-1. **`client`**: Il frontend Vue.js servito tramite Nginx.
-2. **`api_gateway`**: Punto di ingresso unico (Nginx o Traefik) che gestisce SSL e routing.
-3. **`core_service`**: Il backend Python FastAPI che gestisce la logica di business.
-4. **`worker_service`**: Un'istanza Python dedicata a task pesanti (generazione PDF, invio XML SdI).
-5. **`db_service`**: PostgreSQL per la persistenza dei dati.
+1. `api_gateway`
+2. `worker_service`
+3. `redis`
 
----
+## 4. Backend
 
-## 4. Specifiche del Backend (Python/FastAPI)
+Il backend segue una struttura a layer:
 
-Il backend deve essere progettato seguendo i principi della **Clean Architecture**.
+- `app/api/`
+- `app/core/`
+- `app/domain/`
+- `app/models/`
+- `app/repositories/`
+- `app/schemas/`
+- `app/services/`
 
-* **Struttura delle Cartelle:**
-* `app/api/`: Endpoint REST (v1, v2).
-* `app/core/`: Configurazioni globali e sicurezza (JWT, NIS2 compliance).
-* `app/models/`: Definizione degli schemi database tramite SQLAlchemy ORM.
-* `app/services/`: Logica di business (qui viene "tradotta" la logica del vecchio VB).
-* `app/schemas/`: Modelli Pydantic per validazione, serializzazione e contratti API.
+Principi attivi:
 
-### Modulo Trasversale di Sicurezza
+- logica HTTP nei router
+- logica applicativa nei service
+- accesso dati nei repository
+- modelli ORM separati dagli schemi Pydantic
+- documentazione OpenAPI trattata come contratto
 
-Come primo asse di implementazione si introduce un modulo trasversale `Auth & Identity`, interno al `core_service`, responsabile di autenticazione multiutente, ruoli, audit e collegamento futuro tra utente applicativo e profilo anagrafico. La specifica tecnica di dettaglio e contenuta in [auth-module-spec.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/auth-module-spec.md).
+## 5. Primo Asse Trasversale: Auth & Identity
 
+Il primo modulo implementato e `Auth & Identity`, interno al `core_service`.
 
+Responsabilita attuali:
 
----
+- login
+- refresh token
+- logout
+- profilo utente corrente
+- ruoli applicativi
+- audit sicurezza
+- utenti applicativi
+- tenant scoping di livello base
 
-## 5. Specifiche del Frontend (Vue.js)
+Ruoli attualmente reali:
 
-Abbiamo scelto Vue.js per la sua semplicità nella gestione dei form complessi (tipici di bolle e fatture).
+- `admin`: super admin Esseduesoft
+- `tenant_admin`: amministratore dell'azienda cliente
+- `user`: utente operativo standard
 
-* **State Management:** **Pinia** (standard moderno per Vue 3).
-* **UI Component Library:** **Tailwind CSS + PrimeVue** (componenti pronti per tabelle dati, filtri e calendari).
-* **Comunicazione:** Axios con interceptor per la gestione automatica dei token JWT.
+Note attuali:
 
----
+- `admin` ha visione globale
+- `tenant_admin` opera solo sul proprio tenant
+- `user` ha accesso operativo non amministrativo
 
-## 6. Regole di Buona Stesura (Coding Standards)
+Documenti di riferimento:
 
-Per garantire che il codice sia manutenibile per i prossimi 10 anni:
+- [auth-module-spec.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/auth-module-spec.md)
+- [11-tenant-admin-configuration.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
 
-### Backend
+## 6. Tenant e Multi-Tenancy
 
-* **PEP 8 Compliance:** Obbligatorio l'uso di `black` o `ruff` per la formattazione.
-* **Type Hinting:** Ogni funzione Python deve avere i tipi definiti (es. `def calcola_iva(prezzo: float) -> float:`).
-* **Docstrings:** Formato Google Style per ogni classe e metodo complesso.
+Il progetto non e ancora multi-tenant completo, ma il backend ha gia introdotto una base reale:
 
-### Database
+- schema `security.tenants`
+- collegamento `security.users.tenant_id`
+- utenti tenant-scoped
+- audit locale tenant
+- configurazione aziendale tenant-aware
 
-* **Naming Convention:** Snake_case per tabelle e colonne.
-* **Migrations:** Uso tassativo di **Alembic**. Nessuna modifica manuale allo schema del DB.
+Attualmente lo scoping tenant e applicato a:
 
----
+- gestione utenti del tenant
+- audit locale del tenant
+- configurazione aziendale del tenant
+- configurazione SMTP del tenant
+- numerazioni documentali del tenant
 
-## 7. Documentazione e Compliance
+Non e ancora applicato a:
 
-### Documentazione Tecnica
+- anagrafiche
+- bolle
+- fatture
+- domini business principali
 
-* **API:** Accessibile via `/docs` (Swagger UI) generata automaticamente da FastAPI.
-* **Architettura:** Wiki interna (es. Obsidian o Notion) che spieghi il mapping tra i vecchi file VB e i nuovi moduli Python.
+## 7. Frontend
 
-### Sicurezza (NIS2 Ready)
+Il frontend e oggi un client Vue 3 minimale ma funzionante per:
 
-* **Logging:** Ogni operazione di scrittura deve essere loggata (Audit Log).
-* **Secrets:** Nessuna password nel codice. Uso esclusivo di variabili d'ambiente (`.env`) gestite tramite Docker Secrets.
+- test del flusso JWT
+- shell gestionale di base
+- mockup `Super Admin`
+- mockup `Tenant Admin`
 
----
+Stato attuale:
 
-## 8. Piano di Migrazione (The "Strangler" Strategy)
+- login reale collegato al backend
+- persistenza locale sessione
+- guardie router per `admin` e `tenant_admin`
+- dashboard ERP standard-user statica
+- console `Super Admin` statica
+- console `Tenant Admin` statica
 
-1. **Analisi DB:** Mappare le tabelle del vecchio SQL Server/Access al nuovo PostgreSQL.
-2. **Modulo Anagrafiche:** Primo container ad andare in produzione (il più semplice).
-3. **Modulo Documentale:** Sviluppo di Bolle e Spedizioni (integrazione API corrieri).
-4. **Modulo Fiscale:** Fatturazione elettronica e chiusura del cerchio.
+Le console amministrative frontend non sono ancora tutte collegate ai dati reali backend.
 
----
+## 8. Sicurezza e Compliance
 
-> **Nota dell'Architetto:** "L'eleganza di un software non sta in quanto è complesso, ma in quanto è facile da cambiare quando le leggi fiscali cambiano."
+Regole attive:
 
----
+- password hashate
+- JWT reali
+- refresh token persistiti e revocabili
+- audit log persistito
+- segreti SMTP tenant cifrati lato backend
+- documentazione OpenAPI obbligatoria e curata
+- convenzione descrittiva del codice in italiano
 
+Vincoli ancora aperti:
+
+- acquisizione reale di `ip_address` e `user_agent`
+- MFA eventuale
+- rate limiting sugli endpoint auth
+- gestione completa impersonation per assistenza Esseduesoft
+
+## 9. Stato della Migrazione
+
+La migrazione non e ancora nel dominio business.
+
+Stato reale raggiunto:
+
+- nucleo tecnico del backend costruito
+- autenticazione reale pronta
+- ruoli globali e tenant introdotti
+- prime API tenant-aware reali implementate
+- frontend di test e mockup enterprise disponibili
+
+Modulo business ancora non implementato:
+
+- `Anagrafiche`
+- `Bolle`
+- `Fatture`
+- `Spedizioni`
+
+## 10. Regole di Evoluzione
+
+Ogni evoluzione deve rispettare queste regole:
+
+- niente SQL diretto nei router
+- ogni endpoint con OpenAPI curato
+- ogni modifica strutturale passa da Alembic
+- ogni feature nuova aggiorna `planning/docs`
+- i ruoli e il tenant scope si applicano lato backend, non solo nel frontend
+- i mockup frontend non devono essere confusi con funzionalita business gia operative
+
+## 11. Documento di Handoff
+
+Per riprendere rapidamente il progetto con un altro LLM o con un altro sviluppatore, il documento principale da leggere per primo e:
+
+- [00-llm-handoff.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/00-llm-handoff.md)

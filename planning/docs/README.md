@@ -16,6 +16,10 @@ Struttura:
 - `project-state/`: riepilogo dello stato corrente e delle decisioni attive
 - `../style/`: linee guida visuali del gestionale
 
+Documento di ingresso rapido per handoff tecnico:
+
+- [00-llm-handoff.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/00-llm-handoff.md)
+
 Documento guida principale per il backend:
 
 - [10-backend-usage-and-maintenance-guide.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
