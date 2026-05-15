@@ -1,0 +1,49 @@
+services:
+  client:
+    build:
+      context: ./frontend
+    container_name: esseduesoft_client
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./frontend/.env.example
+    depends_on:
+      core_service:
+        condition: service_healthy
+
+  core_service:
+    build:
+      context: ./backend
+    container_name: esseduesoft_core_service
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env.example
+    depends_on:
+      db_service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  db_service:
+    image: postgres:17.9-alpine3.23
+    container_name: esseduesoft_db_service
+    environment:
+      POSTGRES_DB: esseduesoft
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d esseduesoft"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

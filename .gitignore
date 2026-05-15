@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Ambienti virtuali
+.venv/
+venv/
+
+# Cache e tooling Python
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Frontend build e dipendenze
+node_modules/
+dist/
+.vite/
+
+# Variabili ambiente locali
+.env
+*.env
+!.env.example
+
+# Editor e sistema
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini

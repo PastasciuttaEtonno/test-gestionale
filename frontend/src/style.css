@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #fff1f1;
+  --color-brand-100: #ffd9d9;
+  --color-brand-300: #ff8e8e;
+  --color-brand-500: #c62828;
+  --color-brand-700: #8f1d1d;
+  --color-brand-900: #5e1313;
+  --color-steel-50: #f6f7f8;
+  --color-steel-100: #eceef1;
+  --color-steel-200: #d7dce2;
+  --color-steel-400: #8b95a1;
+  --color-steel-700: #39424d;
+  --color-steel-900: #1e252c;
+  --shadow-panel: 0 26px 56px -30px rgba(30, 37, 44, 0.25);
+}
+
+@layer base {
+  body {
+    @apply min-h-screen bg-steel-50 text-steel-900 antialiased;
+  }
+
+  #app {
+    @apply min-h-screen;
+  }
+}
+
+.campo-input {
+  @apply w-full rounded-xl border border-steel-200 bg-white px-4 py-3 text-sm text-steel-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100;
+}
+
+.pulsante-primario {
+  @apply inline-flex items-center justify-center rounded-xl bg-brand-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.pulsante-secondario {
+  @apply inline-flex items-center justify-center rounded-xl border border-steel-200 bg-white px-4 py-3 text-sm font-semibold text-steel-700 transition hover:bg-steel-100;
+}
+
+.card-pannello {
+  @apply rounded-[1.5rem] border border-steel-200 bg-white p-6 shadow-panel;
+}
+
+.card-pannello-evidenza {
+  @apply rounded-[1.5rem] border border-steel-200 bg-white p-6 shadow-panel;
+  box-shadow:
+    inset 0 4px 0 0 var(--color-brand-500),
+    var(--shadow-panel);
+}
+
+.etichetta-sezione {
+  @apply text-xs font-semibold uppercase tracking-[0.28em] text-brand-700;
+}
+
+.badge-ruolo {
+  @apply inline-flex items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-700;
+}

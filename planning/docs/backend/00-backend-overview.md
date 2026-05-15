@@ -1,0 +1,27 @@
+# Backend Overview
+
+## Stack
+
+- `FastAPI`: esposizione API e OpenAPI
+- `Pydantic`: validazione, serializzazione, contratti API
+- `SQLAlchemy`: ORM e mapping verso PostgreSQL
+- `PostgreSQL`: persistenza primaria
+- `uv`: gestione dipendenze e workflow Python
+- `Docker`: runtime coerente tra sviluppo e test
+
+## Obiettivo architetturale
+
+Il backend non viene impostato come insieme di microservizi distribuiti. Viene costruito come `core_service` modulare, con confini interni netti tra sicurezza, dominio, persistenza e API.
+
+## Stato corrente
+
+- backend avviabile via `uv` e Docker
+- router v1 attivi
+- modulo `Auth` persistito su PostgreSQL
+- modelli `security` definiti e migrati via Alembic
+- servizi `Auth`, `Users`, `Audit` e `Tenant Admin` collegati al DB reale
+- scoping tenant attivo su utenti, audit locale e configurazione aziendale
+
+## Vincolo guida
+
+Ogni nuovo modulo deve integrarsi nella stessa struttura a layer senza introdurre logica SQL negli endpoint o dipendenze trasversali non controllate.
