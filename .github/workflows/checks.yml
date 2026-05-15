@@ -2,10 +2,8 @@ name: Checks
 
 on:
   push:
-    branches:
-      - main
-      - master
   pull_request:
+  workflow_dispatch:
 
 jobs:
   backend-checks:
@@ -17,8 +15,6 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.11.11"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -51,7 +47,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "24.14.1"
+          node-version: "24"
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
