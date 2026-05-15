@@ -17,6 +17,16 @@ class Settings(BaseSettings):
     jwt_issuer: str = "esseduesoft-core-service"
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
+    login_rate_limit_max_attempts: int = 5
+    login_rate_limit_window_minutes: int = 15
+    login_rate_limit_lockout_minutes: int = 15
+    cors_allowed_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173"]
+    )
+    refresh_cookie_name: str = "esseduesoft_refresh_token"
+    refresh_cookie_secure: bool = False
+    refresh_cookie_samesite: str = "lax"
+    refresh_cookie_path: str = "/api/v1/auth"
 
     model_config = SettingsConfigDict(
         env_file=".env",

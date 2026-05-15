@@ -4,6 +4,7 @@ import { useAuthStore } from "../stores/auth";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "/api/v1",
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,7 +31,6 @@ apiClient.interceptors.response.use(
 
     if (
       statusCode === 401 &&
-      authStore.refreshToken &&
       !richiestaOriginale?._retry &&
       !richiestaOriginale?.url?.includes("/auth/login") &&
       !richiestaOriginale?.url?.includes("/auth/refresh")

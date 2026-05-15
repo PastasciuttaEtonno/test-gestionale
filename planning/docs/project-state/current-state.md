@@ -41,6 +41,9 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - audit locale tenant esposto tramite endpoint dedicato
 - configurazione aziendale tenant-aware esposta tramite API dedicate
 - cifratura lato backend introdotta per i segreti SMTP del tenant
+- protezione login persistita introdotta su `/auth/login`
+- cooldown basilare e rate limiting attivi per coppia `identifier + ip_address`
+- audit auth con `ip_address` e `user_agent` reali
 - dipendenze frontend aggiornate a versioni recenti e prive di vulnerabilita note da `npm audit`
 - immagini Docker principali aggiornate e pin esplicite
 
@@ -51,7 +54,7 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - `Tailwind CSS` attivo per styling rapido
 - `Axios` attivo con interceptor centralizzato
 - `Vue Router` attivo con guardie `auth`, `admin` e `tenant_admin`
-- login con persistenza locale di token e profilo utente
+- login con access token in memoria e refresh token in cookie `HttpOnly`
 - dashboard protetta collegata a `GET /api/v1/auth/me`
 - vista `admin-only` collegata a `GET /api/v1/admin/audit-log`
 - home gestionale di base resa comune per tutti gli utenti autenticati

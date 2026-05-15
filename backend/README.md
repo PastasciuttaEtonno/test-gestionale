@@ -14,6 +14,7 @@ Stato attuale:
 - containerizzazione con Docker
 - dipendenze gestite con `uv`
 - immagini base Docker pin esplicite
+- protezione login persistita con rate limiting e cooldown basilare
 
 Non include ancora:
 
@@ -80,7 +81,11 @@ Credenziali iniziali seedate:
 Comportamento attuale:
 
 - il login genera JWT reali
+- il login applica rate limiting per coppia `identifier + ip_address`
+- dopo `5` tentativi falliti nella finestra configurata il backend risponde con `429`
+- il cooldown di default e `15` minuti ed e configurabile via environment
 - il refresh token viene persistito su PostgreSQL
+- il refresh token viene esposto al browser solo via cookie `HttpOnly`
 - la rotazione del refresh token revoca il token precedente
 - il logout revoca tutte le sessioni refresh attive dell'utente
 - il ruolo `tenant_admin` e disponibile e autenticabile
@@ -90,3 +95,15 @@ Comportamento attuale:
 - le impostazioni aziendali tenant-aware sono disponibili per profilo azienda, SMTP e numerazioni
 - la password SMTP viene cifrata lato backend e non viene mai restituita nelle API
 - il super admin mantiene la vista globale su utenti e audit
+- gli eventi auth registrano `ip_address` e `user_agent` reali
+
+Variabili runtime aggiuntive per la protezione auth:
+
+- `LOGIN_RATE_LIMIT_MAX_ATTEMPTS`
+- `LOGIN_RATE_LIMIT_WINDOW_MINUTES`
+- `LOGIN_RATE_LIMIT_LOCKOUT_MINUTES`
+- `CORS_ALLOWED_ORIGINS`
+- `REFRESH_COOKIE_NAME`
+- `REFRESH_COOKIE_SECURE`
+- `REFRESH_COOKIE_SAMESITE`
+- `REFRESH_COOKIE_PATH`

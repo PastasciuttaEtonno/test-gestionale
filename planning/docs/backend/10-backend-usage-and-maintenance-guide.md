@@ -42,7 +42,9 @@ Caratteristiche:
 - password hashate
 - JWT reali
 - refresh token persistiti e revocabili
-- audit su login, refresh e logout
+- audit su login, refresh e logout con `ip_address` e `user_agent` reali
+- rate limiting persistito su PostgreSQL per il login
+- cooldown basilare con risposta `429` quando la soglia viene superata
 
 ### Users
 
@@ -147,16 +149,19 @@ Questi utenti esistono nello schema `security.users`.
 - [backend/alembic](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/alembic)
 - [backend/alembic/versions/20260515_0001_create_security_schema.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/alembic/versions/20260515_0001_create_security_schema.py)
 - [backend/alembic/versions/20260515_0003_add_tenants_and_user_scoping.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/alembic/versions/20260515_0003_add_tenants_and_user_scoping.py)
+- [backend/alembic/versions/20260515_0005_add_login_protection.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/alembic/versions/20260515_0005_add_login_protection.py)
 
 ### Sicurezza tecnica
 
 - [backend/app/core/security/hashing.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/security/hashing.py)
 - [backend/app/core/security/jwt.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/security/jwt.py)
 - [backend/app/core/security/field_encryption.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/security/field_encryption.py)
+- [backend/app/core/security/request_context.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/security/request_context.py)
 
 ### Servizi applicativi
 
 - [backend/app/services/auth/auth_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/auth/auth_service.py)
+- [backend/app/services/auth/login_protection_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/auth/login_protection_service.py)
 - [backend/app/services/users/user_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/users/user_service.py)
 - [backend/app/services/audit/audit_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/audit/audit_service.py)
 
@@ -208,6 +213,7 @@ Prestare attenzione a:
 - quali dati minimi servono nel `payload_json`
 - evitare di loggare segreti o password
 - distinguere sempre tra audit globale Esseduesoft e audit locale tenant
+- acquisire sempre `ip_address` e `user_agent` quando il contesto request e disponibile
 
 ### JWT e secret
 
@@ -219,6 +225,8 @@ Prestare attenzione a:
 - coerenza `issuer`
 - durata access token
 - durata refresh token
+- soglie di `LOGIN_RATE_LIMIT_*`
+- messaggi di errore neutri durante i fallimenti di login
 
 ### Repository vs Service
 
@@ -267,6 +275,27 @@ Quando fai una modifica:
 4. aggiorna `uv.lock` se cambiano dipendenze
 5. verifica `uv run ...`
 6. verifica `docker compose up --build`
+
+## Protezione login
+
+Il backend applica una protezione basilare del login:
+
+- chiave di controllo: `identifier + ip_address`
+- soglia di default: `5` tentativi falliti
+- finestra di default: `15` minuti
+- lockout di default: `15` minuti
+
+Variabili runtime:
+
+- `LOGIN_RATE_LIMIT_MAX_ATTEMPTS`
+- `LOGIN_RATE_LIMIT_WINDOW_MINUTES`
+- `LOGIN_RATE_LIMIT_LOCKOUT_MINUTES`
+
+Regole operative:
+
+- usare `429` per i tentativi bloccati
+- non esporre dettagli che aiutino enumeration o brute force
+- mantenere il reset dello stato su login riuscito
 
 ## Checklist minima prima di chiudere una modifica
 

@@ -287,13 +287,12 @@ Campi attesi:
 Contenuti attesi:
 
 - `LoginRequest`
-- `RefreshTokenRequest`
 
 ### 7.2 `schemas/auth/responses.py`
 
 Contenuti attesi:
 
-- `TokenPairResponse`
+- `AuthSessionResponse`
 - `CurrentUserResponse`
 - `LogoutResponse`
 
@@ -380,6 +379,12 @@ Endpoint attesi:
 - `POST /api/v1/auth/logout`
 - `GET /api/v1/auth/me`
 
+Note operative:
+
+- `login` imposta il refresh token come cookie `HttpOnly`
+- `refresh` legge il refresh token dal cookie e non dal body
+- `logout` revoca la sessione e rimuove il cookie
+
 ### 9.2 `users/routes.py`
 
 Endpoint attesi:
@@ -420,6 +425,8 @@ Da gestire in `core/config.py`:
 - algoritmo JWT
 - durata access token
 - durata refresh token
+- nome e policy del cookie refresh
+- origini CORS consentite con `allow_credentials`
 - issuer e audience se adottati
 - policy password minima
 - rate limiting login se previsto via middleware o gateway

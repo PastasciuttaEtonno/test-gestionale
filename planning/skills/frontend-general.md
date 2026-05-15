@@ -15,7 +15,7 @@ Preparare un frontend gestionale coerente con API sicure e contratti stabili.
 
 - bearer token tramite client HTTP centralizzato
 - refresh token gestito in un solo punto
-- stato utente inizializzato via endpoint `me`
+- stato utente inizializzato via refresh di sessione e profilo restituito dal backend
 - per il client auth corrente usare `axios` con interceptor request/response
 - usare guardie `Vue Router` per UX, senza trattarle come autorizzazione definitiva
-- se la fase richiede solo test auth, e accettabile `localStorage`; per fasi piu sensibili rivalutare storage e strategia token
+- quando il frontend smette di essere solo demo, preferire `access token` in memoria e `refresh token` in cookie `HttpOnly`

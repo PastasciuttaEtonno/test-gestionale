@@ -5,15 +5,8 @@ export async function eseguiLogin(payload) {
   return response.data;
 }
 
-export async function aggiornaToken(refreshToken) {
-  const response = await apiClient.post("/auth/refresh", {
-    refresh_token: refreshToken,
-  });
-  return response.data;
-}
-
-export async function recuperaUtenteCorrente() {
-  const response = await apiClient.get("/auth/me");
+export async function aggiornaToken() {
+  const response = await apiClient.post("/auth/refresh");
   return response.data;
 }
 

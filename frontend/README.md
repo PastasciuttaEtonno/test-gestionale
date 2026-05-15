@@ -40,8 +40,9 @@ docker compose up --build
 ## Funzioni attive
 
 - login con `identifier` e `password`
-- salvataggio di `access_token`, `refresh_token` e `user` in `localStorage`
-- recupero profilo corrente con `GET /api/v1/auth/me`
+- access token mantenuto solo in memoria
+- refresh token mantenuto in cookie `HttpOnly`
+- ripristino sessione tramite `POST /api/v1/auth/refresh`
 - refresh automatico del token tramite interceptor Axios
 - mockup ERP statico per utenti standard con sidebar, header e lista documenti
 - console `Tenant Admin` statica per l'amministratore della singola azienda cliente
@@ -56,7 +57,7 @@ docker compose up --build
 - `src/components/ui/`: componenti UI condivisi
 - `src/components/ui/SidebarSection.vue`: pattern condiviso per sidebar ERP
 - `src/router/index.js`: rotte e guardie
-- `src/stores/auth.js`: sessione e persistenza locale
+- `src/stores/auth.js`: sessione in memoria e inizializzazione auth
 - `src/lib/http.js`: client Axios e refresh centralizzato
 - `src/services/auth.js`: chiamate API
 - `src/views/`: viste di login, dashboard e aree amministrative
@@ -64,7 +65,8 @@ docker compose up --build
 ## Attenzioni
 
 - la protezione reale resta nel backend
-- `localStorage` e usato qui solo per il client di test richiesto
+- il refresh token non e leggibile dal frontend: viene inviato solo dal browser tramite cookie `HttpOnly`
+- `withCredentials` deve restare attivo nel client Axios per supportare il refresh cookie
 - se cambiano shape o URL degli endpoint backend, aggiornare prima `src/services/` e poi la documentazione in `planning/docs/frontend/`
 - Tailwind 4 usa il plugin Vite ufficiale `@tailwindcss/vite`, quindi non ci sono piu `postcss.config.js` e `tailwind.config.js` in questa fase
 - nuovi pattern visivi vanno aggiunti prima in `src/components/ui/` e poi riusati nelle viste

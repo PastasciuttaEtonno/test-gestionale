@@ -15,6 +15,7 @@ Rendere il modulo `Auth & Identity` realmente persistito e governato da migrazio
 - audit amministrativo utenti persistito
 - tenant applicativi persistiti
 - collegamento `security.users.tenant_id` attivo
+- protezione login persistita con tabella dedicata
 - configurazioni tenant-aware persistite nello schema `core`
 
 ## Oggetti creati nello schema `security`
@@ -26,6 +27,7 @@ Rendere il modulo `Auth & Identity` realmente persistito e governato da migrazio
 - `role_permissions`
 - `refresh_tokens`
 - `audit_log`
+- `login_protection`
 
 ## Oggetti creati nello schema `core`
 
@@ -51,6 +53,7 @@ Le migrazioni successive aggiungono:
 - configurazione aziendale demo
 - configurazione SMTP demo
 - numerazioni documentali demo
+- tabella `login_protection` per rate limiting e cooldown del login
 
 ## Regola operativa
 
@@ -59,3 +62,10 @@ Ogni modifica futura allo schema sicurezza deve passare da una nuova migration A
 ## Vincolo
 
 Le migration non devono contenere logica di business generale. Devono limitarsi a evoluzione schema, seed tecnici e dati strutturali strettamente necessari.
+
+## Note di sicurezza operative
+
+- la tabella `security.login_protection` governa il rate limiting del login
+- la chiave logica e la coppia `identifier + ip_address`
+- un login riuscito resetta lo stato di protezione per quella coppia
+- il backend registra `ip_address` e `user_agent` reali negli eventi auth

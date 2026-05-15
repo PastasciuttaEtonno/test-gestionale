@@ -21,6 +21,7 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - PostgreSQL reale
 - autenticazione JWT reale
 - refresh token persistiti
+- refresh token esposti al browser solo via cookie `HttpOnly`
 - audit persistito
 - ruoli `admin`, `tenant_admin`, `user`
 - primo scoping tenant reale
@@ -44,7 +45,8 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 ### Frontend
 
 - login reale
-- persistenza sessione in `localStorage`
+- access token in memoria
+- ripristino sessione via refresh da cookie `HttpOnly`
 - route guard per `admin` e `tenant_admin`
 - dashboard standard-user statica
 - console `Super Admin` statica
@@ -152,6 +154,7 @@ Questo e gia vero nei service tenant-aware implementati.
 - password utenti hashate
 - JWT reali
 - refresh token persistiti e revocabili
+- refresh token non leggibili da JavaScript nel frontend
 - audit log reale
 - password SMTP cifrata lato backend
 - OpenAPI curata endpoint per endpoint
@@ -194,7 +197,7 @@ Le direzioni piu sensate da qui sono:
 1. collegare il frontend `Tenant Admin` alle API reali appena introdotte
 2. introdurre `Anagrafiche` come primo dominio business tenant-aware
 3. aggiungere test automatici API per scoping `admin` vs `tenant_admin`
-4. introdurre `ip_address` e `user_agent` reali nell'audit
+4. aggiungere test automatici sul flusso `memory access token + HttpOnly refresh cookie`
 
 ## Rischi o limiti da tenere presenti
 

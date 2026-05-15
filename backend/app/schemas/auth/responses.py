@@ -39,20 +39,16 @@ class CurrentUserResponse(BaseModel):
     )
 
 
-class TokenPairResponse(BaseModel):
-    """Coppia di access token e refresh token."""
+class AuthSessionResponse(BaseModel):
+    """Risposta di sessione autenticata."""
 
     access_token: str = Field(
         description="Access token a breve durata per invocare endpoint API protetti.",
         examples=["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."],
     )
-    refresh_token: str = Field(
-        description="Refresh token usato per ottenere un nuovo access token.",
-        examples=["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."],
-    )
     token_type: str = Field(
         default="bearer",
-        description="Tipo di token restituito dal flusso di autenticazione.",
+        description="Tipo di token restituito dal flusso di autenticazione per l'access token.",
         examples=["bearer"],
     )
     user: CurrentUserResponse = Field(

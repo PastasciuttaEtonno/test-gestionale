@@ -1,0 +1,54 @@
+{
+  "post": {
+    "tags": [
+      "Auth"
+    ],
+    "summary": "Autentica un utente",
+    "description": "Autentica un utente e restituisce l'access token.\n\nLe credenziali vengono validate contro il database PostgreSQL e il sistema\nrestituisce un access token JWT reale associato all'utente autenticato.\nIl refresh token viene emesso come cookie `HttpOnly`. In caso di troppi\nerrori consecutivi dalla stessa coppia identificativo e IP, il login entra\nin cooldown temporaneo.",
+    "operationId": "login_api_v1_auth_login_post",
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/LoginRequest"
+          }
+        }
+      },
+      "required": true
+    },
+    "responses": {
+      "200": {
+        "description": "Utente autenticato con successo.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AuthSessionResponse"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Payload della richiesta non valido."
+      },
+      "401": {
+        "description": "Credenziali non valide."
+      },
+      "403": {
+        "description": "Utente non attivo."
+      },
+      "429": {
+        "description": "Troppi tentativi di accesso. Cooldown attivo."
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HTTPValidationError"
+            }
+          }
+        }
+      }
+    }
+  }
+}

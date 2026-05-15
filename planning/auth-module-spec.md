@@ -58,7 +58,7 @@ Il modulo puo essere suddiviso logicamente nei seguenti sottoblocchi:
 
 - `auth`
   - login
-  - refresh token
+  - refresh token via cookie `HttpOnly`
   - logout
   - session lifecycle
 - `users`
@@ -121,7 +121,7 @@ Note:
 Per il contesto attuale, la scelta piu pragmatica e:
 
 - `JWT access token` a vita breve
-- `refresh token` persistito e revocabile
+- `refresh token` persistito, revocabile e consegnato al browser tramite cookie `HttpOnly`
 
 ### 5.2 Motivazioni
 
@@ -129,11 +129,13 @@ Per il contesto attuale, la scelta piu pragmatica e:
 - evita sessioni server-side classiche come modello principale
 - semplifica la protezione delle API
 - consente controllo sulle sessioni tramite refresh token persistiti
+- riduce l'esposizione del refresh token a JavaScript lato client
 
 ### 5.3 Linee guida operative
 
 - access token breve durata
 - refresh token memorizzato in persistenza con revoca esplicita
+- refresh token non restituito nel body delle risposte browser-oriented
 - password hash con algoritmo robusto come `Argon2` o `bcrypt`
 - rotazione refresh token raccomandata
 - invalidazione token in caso di disattivazione utente o reset credenziali
@@ -303,17 +305,18 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 `login`
 
 - input: credenziale + password
-- output: access token + refresh token + profilo base utente
+- output: access token + profilo base utente
+- side effect: impostazione cookie `HttpOnly` contenente il refresh token
 
 `refresh`
 
-- input: refresh token valido
-- output: nuovo access token e refresh token aggiornato se prevista rotazione
+- input: cookie `HttpOnly` con refresh token valido
+- output: nuovo access token e refresh token ruotato tramite nuovo cookie se prevista rotazione
 
 `logout`
 
 - input: contesto utente autenticato
-- effetto: revoca refresh token o sessione corrente
+- effetto: revoca refresh token o sessione corrente e rimozione del cookie
 
 `me`
 
@@ -402,6 +405,7 @@ Linee guida:
 3. Il sistema verifica la password
 4. Il sistema genera access token
 5. Il sistema persiste refresh token
+6. Il browser riceve il refresh token come cookie `HttpOnly`
 6. Il sistema registra audit di login
 7. Il sistema restituisce il profilo utente base
 
@@ -409,6 +413,7 @@ Linee guida:
 
 1. L'utente richiede logout
 2. Il sistema revoca la sessione corrente o il refresh token associato
+3. Il backend richiede al browser la rimozione del cookie di refresh
 3. Il sistema registra audit di logout
 
 ### 11.3 Accesso a endpoint protetto

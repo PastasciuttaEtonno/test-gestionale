@@ -18,13 +18,3 @@ class LoginRequest(BaseModel):
         description="Password in chiaro inviata durante il login.",
         examples=["admin123"],
     )
-
-
-class RefreshTokenRequest(BaseModel):
-    """Payload del refresh token."""
-
-    refresh_token: str = Field(
-        min_length=1,
-        description="Refresh token associato alla sessione autenticata corrente.",
-        examples=["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."],
-    )

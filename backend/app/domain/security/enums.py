@@ -22,4 +22,6 @@ class AuditEventType(StrEnum):
     USER_UPDATED = "user_updated"
     USER_STATUS_CHANGED = "user_status_changed"
     USER_ROLE_CHANGED = "user_role_changed"
+    LOGIN_RATE_LIMITED = "login_rate_limited"
+    LOGIN_COOLDOWN_ACTIVE = "login_cooldown_active"
     ACCESS_DENIED = "access_denied"

@@ -70,15 +70,12 @@ La direzione visiva del gestionale e documentata in:
 
 Lo stato auth e centralizzato in `src/stores/auth.js`.
 
-La chiave `localStorage` usata e:
+Regole attive:
 
-- `esseduesoft.auth.sessione`
-
-Il payload memorizzato contiene:
-
-- `accessToken`
-- `refreshToken`
-- `user`
+- `accessToken` mantenuto solo in memoria
+- `user` mantenuto solo in memoria
+- `refresh_token` conservato dal browser in cookie `HttpOnly`
+- inizializzazione sessione via `POST /api/v1/auth/refresh`
 
 ### Interceptor
 
@@ -93,13 +90,15 @@ La response interceptor:
 - prova il refresh una sola volta
 - ritenta la richiesta originale
 - in caso di fallimento, svuota la sessione locale
+- invia il cookie di refresh tramite `withCredentials: true`
 
 ## Dove prestare attenzione
 
 ### Sicurezza
 
 - la presenza di controlli di route lato Vue non sostituisce i controlli backend
-- `localStorage` e accettato qui solo per il test client richiesto; per contesti piu sensibili andra rivalutato
+- il refresh token non deve essere esposto a JavaScript
+- il client dipende dal cookie `HttpOnly`, quindi `withCredentials` non va rimosso
 - evitare di duplicare logica autorizzativa complessa nel frontend
 - i riferimenti a funzioni amministrative devono essere nascosti ai non admin anche a livello di navigazione
 - `admin` e `tenant_admin` devono vedere console differenti: il super admin Esseduesoft non deve navigare la console tenant, e il tenant admin non deve vedere la console globale Esseduesoft
@@ -147,5 +146,5 @@ Quando il frontend crescera:
 - aggiornare i contratti API usati se il backend cambia
 - mantenere commenti e note descrittive in italiano
 - aggiornare `planning/docs/frontend/` quando cambia il comportamento
-- verificare login, `me`, refresh e pagina admin dopo ogni modifica auth
+- verificare login, refresh da cookie, `me` e pagina admin dopo ogni modifica auth
 - eseguire `npm audit` e `npm run build` dopo ogni aggiornamento dipendenze

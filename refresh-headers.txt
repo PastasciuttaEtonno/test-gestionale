@@ -1,0 +1,7 @@
+HTTP/1.1 401 Unauthorized
+date: Fri, 15 May 2026 15:52:42 GMT
+server: uvicorn
+content-length: 48
+content-type: application/json
+set-cookie: esseduesoft_refresh_token=""; expires=Fri, 15 May 2026 15:52:43 GMT; HttpOnly; Max-Age=0; Path=/api/v1/auth; SameSite=lax
+

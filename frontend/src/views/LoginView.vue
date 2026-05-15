@@ -13,8 +13,8 @@ const route = useRoute();
 const router = useRouter();
 
 const form = reactive({
-  identifier: "admin",
-  password: "admin123",
+  identifier: "",
+  password: "",
 });
 
 const errore = ref("");
@@ -62,13 +62,6 @@ async function onSubmit() {
           La vista usa una palette grigio tecnico e rosso operativo per distinguere
           contesto, azione e stato. Il focus resta sulla leggibilita d'uso quotidiana.
         </p>
-        <div class="mt-10 rounded-3xl border border-white/10 bg-white/8 p-6 backdrop-blur-sm">
-          <p class="text-sm font-semibold text-white">Credenziali seed</p>
-          <div class="mt-4 space-y-2 text-sm text-white/80">
-            <p><span class="font-semibold text-white">Admin:</span> admin / admin123</p>
-            <p><span class="font-semibold text-white">User:</span> user / user123</p>
-          </div>
-        </div>
       </section>
 
       <BaseCard class="mx-auto w-full max-w-xl" :highlight="true">
@@ -77,8 +70,8 @@ async function onSubmit() {
           Login al backend Esseduesoft
         </h2>
         <p class="mt-3 text-sm leading-6 text-steel-700">
-          Il client salva access token e refresh token in localStorage e usa un
-          interceptor centralizzato per il bearer token.
+          Il client mantiene l'access token solo in memoria e usa un cookie
+          `HttpOnly` per il refresh della sessione autenticata.
         </p>
 
         <form class="mt-8 space-y-5" @submit.prevent="onSubmit">
