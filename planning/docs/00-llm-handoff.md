@@ -207,9 +207,10 @@ Ordine consigliato:
 1. [planning/struttura.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/struttura.md)
 2. [planning/docs/project-state/current-state.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/project-state/current-state.md)
 3. [planning/docs/architecture/production-readiness-gap-analysis.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-gap-analysis.md)
-4. [planning/docs/backend/10-backend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
-5. [planning/docs/backend/11-tenant-admin-configuration.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
-6. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
+4. [planning/docs/architecture/production-readiness-execution-backlog.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-execution-backlog.md)
+5. [planning/docs/backend/10-backend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
+6. [planning/docs/backend/11-tenant-admin-configuration.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
+7. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
 
 ## Prossimi step coerenti
 

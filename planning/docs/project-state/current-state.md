@@ -80,6 +80,18 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - console `Super Admin` e `Tenant Admin` separate anche nella navigazione e nelle guardie router
 - demo frontend di task report asincrono con polling integrata nella dashboard
 
+## Stato delivery e runtime operativo
+
+- workflow `.github/workflows/checks.yml` attivo come quality gate minimo
+- workflow `.github/workflows/publish-backend-image.yml` attivo per la publication backend su `GHCR`
+- publication backend pensata per partire con `GITHUB_TOKEN`, non con PAT manuale
+- requisito repository GitHub noto: `Settings > Actions > General > Workflow permissions = Read and write permissions`
+- naming immagine backend atteso: `ghcr.io/<owner-lowercase>/<repo-lowercase>-backend`
+- tag backend attesi: `sha-<commit>`, `main`, `latest`
+- pull futuro da Aruba non ancora automatizzato
+- per Aruba e gia definita la regola operativa: package privato letto via `PAT classic` con scope minimo `read:packages`
+- deploy Aruba, login `GHCR` server-side e rollout SSH restano step successivi
+
 ## Decisioni attive
 
 - approccio `modular monolith`
@@ -97,3 +109,4 @@ Per ripartire con un altro LLM o con un altro sviluppatore, il punto di ingresso
 
 - [00-llm-handoff.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/00-llm-handoff.md)
 - [production-readiness-gap-analysis.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-gap-analysis.md)
+- [production-readiness-execution-backlog.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-execution-backlog.md)

@@ -29,6 +29,7 @@ Documento guida principale per il backend:
 Documento architetturale per il salto a produzione:
 
 - [production-readiness-gap-analysis.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-gap-analysis.md)
+- [production-readiness-execution-backlog.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-execution-backlog.md)
 
 Documento guida principale per il frontend:
 
