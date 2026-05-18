@@ -140,7 +140,7 @@ const auditLocale = [
         </div>
       </div>
 
-      <div class="mt-8 grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+      <div class="mt-6 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
         <KpiTile
           v-for="indicatore in indicatoriTenantAdmin"
           :key="indicatore.label"
@@ -151,7 +151,7 @@ const auditLocale = [
       </div>
     </BaseCard>
 
-    <div class="grid gap-6 2xl:grid-cols-[1.15fr_0.85fr]">
+    <div class="grid gap-4 sm:gap-6 xl:grid-cols-[1.15fr_0.85fr]">
       <BaseCard>
         <div class="flex items-center justify-between gap-4">
           <div>
@@ -169,8 +169,8 @@ const auditLocale = [
               <thead class="bg-steel-100">
                 <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
                   <th class="px-4 py-3">Utente</th>
-                  <th class="px-4 py-3">Ruolo</th>
-                  <th class="px-4 py-3">Permessi</th>
+                  <th class="hidden px-4 py-3 sm:table-cell">Ruolo</th>
+                  <th class="hidden px-4 py-3 md:table-cell">Permessi</th>
                   <th class="px-4 py-3">Stato</th>
                 </tr>
               </thead>
@@ -181,8 +181,8 @@ const auditLocale = [
                   class="transition hover:bg-brand-50/45"
                 >
                   <td class="px-4 py-3 font-medium text-steel-900">{{ utente.nome }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ utente.ruolo }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ utente.permessi }}</td>
+                  <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ utente.ruolo }}</td>
+                  <td class="hidden max-w-[160px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ utente.permessi }}</td>
                   <td class="px-4 py-3">
                     <span
                       class="inline-flex min-w-[112px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700"
@@ -257,10 +257,10 @@ const auditLocale = [
           <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
             <thead class="bg-steel-100">
               <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
-                <th class="px-4 py-3">Timestamp</th>
+                <th class="hidden px-4 py-3 sm:table-cell">Timestamp</th>
                 <th class="px-4 py-3">Utente</th>
                 <th class="px-4 py-3">Evento</th>
-                <th class="px-4 py-3">Dettaglio</th>
+                <th class="hidden px-4 py-3 md:table-cell">Dettaglio</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-steel-100">
@@ -269,10 +269,10 @@ const auditLocale = [
                 :key="`${entry.timestamp}-${entry.utente}`"
                 class="transition hover:bg-brand-50/45"
               >
-                <td class="px-4 py-3 text-steel-700">{{ entry.timestamp }}</td>
+                <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ entry.timestamp }}</td>
                 <td class="px-4 py-3 font-medium text-steel-900">{{ entry.utente }}</td>
                 <td class="px-4 py-3 text-steel-700">{{ entry.evento }}</td>
-                <td class="px-4 py-3 text-steel-700">{{ entry.dettaglio }}</td>
+                <td class="hidden max-w-[180px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ entry.dettaglio }}</td>
               </tr>
             </tbody>
           </table>

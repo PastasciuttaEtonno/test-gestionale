@@ -114,3 +114,51 @@ Non usare il rosso come colore dominante di tutta la pagina.
 - ogni nuova vista deve partire da questa palette
 - se viene introdotto un nuovo colore, deve avere una motivazione funzionale
 - i componenti condivisi devono usare token semantici, non colori hardcoded sparsi
+
+## Integrazione PrimeVue
+
+Il progetto usa **PrimeVue v4 in modalità `unstyled: true`** per componenti ad alta complessità
+logica (Password toggle, DataTable, DatePicker, MultiSelect, Dialog).
+
+### Principio
+
+PrimeVue non porta stili propri. Ogni componente PrimeVue viene stilizzato interamente tramite
+il sistema **Pass-Through (PT)**, applicando le stesse utility class Tailwind v4 usate nei
+componenti custom.
+
+### Cosa non usare
+
+- **Non importare** `primevue/passthrough/tailwind` — quel preset è per Tailwind v3 e non
+  riconosce i token custom (`brand-500`, `steel-900`).
+- **Non importare** `@primevue/themes` — serve solo per la modalità styled (Aura, Lara, Nora).
+- **Non importare** `primeicons` — usare i slot `#maskicon` / `#unmaskicon` (Password) o SVG
+  inline per le icone dei componenti.
+
+### Pattern PT
+
+```vue
+<ComponentePrimeVue
+  :pt="{
+    root: { class: '...' },
+    pcinput: { root: { class: 'campo-input' } },
+    toggleButton: { class: '...' },
+  }"
+/>
+```
+
+- `root` — wrapper esterno del componente
+- `pcinput.root` — l'`<input>` sottostante (per componenti che wrappano InputText)
+- Classi Tailwind applicate come stringhe: riutilizzare le classi CSS del progetto (es. `campo-input`)
+
+### Confini di responsabilità
+
+| Componente | Approccio |
+|---|---|
+| BaseButton, BaseCard, SectionLabel, KpiTile | Scritto a mano con Tailwind — nessuna dipendenza da PrimeVue |
+| Password, DataTable, DatePicker, MultiSelect, Dialog | PrimeVue unstyled + PT Tailwind |
+
+### PT inline vs condiviso
+
+- **PT inline nel componente** — per uso in un solo punto della codebase
+- **`src/plugins/primevue-pt.js`** — estrarre il PT quando lo stesso componente PrimeVue
+  viene usato in ≥ 2 view, per evitare duplicazione

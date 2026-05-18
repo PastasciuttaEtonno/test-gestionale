@@ -8,7 +8,8 @@ import SectionLabel from "../components/ui/SectionLabel.vue";
 import SidebarSection from "../components/ui/SidebarSection.vue";
 import { useAuthStore } from "../stores/auth";
 import { avviaGenerazioneReport, recuperaStatoTask } from "../services/reports";
-
+import { useSidebar } from "../composables/useSidebar";
+const { drawerAperto, chiudiDrawer } = useSidebar();
 const authStore = useAuthStore();
 
 const vociSidebar = [
@@ -190,8 +191,38 @@ const righeDocumenti = [
 </script>
 
 <template>
-  <div class="grid gap-6 xl:grid-cols-[248px_minmax(0,1fr)]">
-    <aside class="rounded-[1.75rem] border border-steel-200 bg-[#232a31] p-4 text-white shadow-panel">
+  <div class="relative grid gap-4 xl:gap-6 xl:grid-cols-[248px_minmax(0,1fr)]">
+
+    <!-- Overlay scrim (mobile) -->
+    <Transition name="fade">
+      <div
+        v-if="drawerAperto"
+        class="fixed inset-0 z-30 bg-steel-900/60 xl:hidden"
+        @click="chiudiDrawer"
+      />
+    </Transition>
+
+    <!-- Sidebar -->
+    <aside
+      :class="drawerAperto ? 'translate-x-0' : '-translate-x-full'"
+      class="fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto rounded-none border-r border-steel-200 bg-[#232a31] p-4 text-white shadow-panel transition-transform duration-300 xl:static xl:z-auto xl:w-auto xl:translate-x-0 xl:overflow-visible xl:rounded-[1.75rem] xl:border xl:border-steel-200"
+    >
+
+      <!-- Close button (mobile only) -->
+      <div class="mb-4 flex items-center justify-between xl:hidden">
+        <span class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-100">Menu operativo</span>
+        <button
+          type="button"
+          class="flex h-9 w-9 items-center justify-center rounded-xl text-white/60 transition hover:bg-white/10 hover:text-white"
+          @click="chiudiDrawer"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
       <div class="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] px-4 py-4">
         <div class="flex items-center gap-3">
           <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-xs font-semibold uppercase tracking-[0.2em] text-white">
@@ -230,12 +261,12 @@ const righeDocumenti = [
       </div>
     </aside>
 
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
       <BaseCard :highlight="true">
         <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div>
             <SectionLabel>Workspace standard</SectionLabel>
-            <h2 class="mt-3 text-3xl font-semibold text-steel-900">
+            <h2 class="mt-3 text-2xl font-semibold text-steel-900 sm:text-3xl">
               Vista elenco documenti
             </h2>
             <p class="mt-3 max-w-3xl text-sm leading-6 text-steel-700">
@@ -256,7 +287,7 @@ const righeDocumenti = [
           </div>
         </div>
 
-        <div class="mt-8 grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+        <div class="mt-6 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
           <KpiTile
             v-for="indicatore in indicatori"
             :key="indicatore.label"
@@ -343,7 +374,7 @@ const righeDocumenti = [
             </p>
           </div>
           <div class="flex flex-wrap gap-3">
-            <div class="flex h-11 min-w-[160px] items-center rounded-xl border border-steel-200 bg-steel-50 px-4 text-sm text-steel-700">
+            <div class="flex h-11 w-full items-center rounded-xl border border-steel-200 bg-steel-50 px-4 text-sm text-steel-700 sm:w-auto sm:min-w-[160px]">
               Cerca cliente o documento
             </div>
             <div class="flex h-11 min-w-[132px] items-center rounded-xl border border-steel-200 bg-steel-50 px-4 text-sm text-steel-700">
@@ -360,11 +391,11 @@ const righeDocumenti = [
             <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
               <thead class="bg-steel-100">
                 <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
-                  <th class="px-4 py-3">Data</th>
-                  <th class="px-4 py-3">Tipo</th>
+                  <th class="hidden px-4 py-3 md:table-cell">Data</th>
+                  <th class="hidden px-4 py-3 sm:table-cell">Tipo</th>
                   <th class="px-4 py-3">Numero</th>
-                  <th class="px-4 py-3">Cliente</th>
-                  <th class="px-4 py-3">Causale</th>
+                  <th class="hidden px-4 py-3 md:table-cell">Cliente</th>
+                  <th class="hidden px-4 py-3 lg:table-cell">Causale</th>
                   <th class="px-4 py-3">Importo</th>
                   <th class="px-4 py-3">Stato</th>
                 </tr>
@@ -375,11 +406,11 @@ const righeDocumenti = [
                   :key="`${riga.numero}-${riga.stato}`"
                   class="transition hover:bg-brand-50/55"
                 >
-                  <td class="px-4 py-3 text-steel-700">{{ riga.data }}</td>
-                  <td class="px-4 py-3 font-medium text-steel-900">{{ riga.tipo }}</td>
+                  <td class="hidden px-4 py-3 text-steel-700 md:table-cell">{{ riga.data }}</td>
+                  <td class="hidden px-4 py-3 font-medium text-steel-900 sm:table-cell">{{ riga.tipo }}</td>
                   <td class="px-4 py-3 font-medium text-steel-900">{{ riga.numero }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ riga.cliente }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ riga.causale }}</td>
+                  <td class="hidden max-w-[160px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ riga.cliente }}</td>
+                  <td class="hidden max-w-[160px] truncate px-4 py-3 text-steel-700 lg:table-cell">{{ riga.causale }}</td>
                   <td class="px-4 py-3 text-steel-700">{{ riga.importo }}</td>
                   <td class="px-4 py-3">
                     <span
