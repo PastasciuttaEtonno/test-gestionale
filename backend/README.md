@@ -12,9 +12,11 @@ Stato attuale:
 - migration Alembic attive
 - JWT reali con refresh token persistiti
 - containerizzazione con Docker
+- Redis asincrono condiviso lato FastAPI
 - dipendenze gestite con `uv`
 - immagini base Docker pin esplicite
 - protezione login persistita con rate limiting e cooldown basilare
+- logging strutturato con `request_id` e health endpoint `live/ready`
 
 Non include ancora:
 
@@ -46,6 +48,12 @@ uv run python -m compileall app alembic
 docker compose up --build
 ```
 
+Nel flusso Docker Compose:
+
+- `db_migrator` esegue `alembic upgrade head`
+- `core_service` parte solo dopo il completamento positivo delle migration
+- `celery_worker` parte solo dopo il completamento positivo delle migration
+
 ## Baseline versioni correnti
 
 - runtime Python container: `python:3.12.13-slim-trixie`
@@ -58,12 +66,16 @@ docker compose up --build
 Endpoint disponibili:
 
 - `GET /health`
+- `GET /health/live`
+- `GET /health/ready`
 - `POST /api/v1/auth/login`
 - `POST /api/v1/auth/refresh`
 - `POST /api/v1/auth/logout`
 - `GET /api/v1/auth/me`
 - `GET /api/v1/users`
 - `GET /api/v1/admin/audit-log`
+- `GET /api/v1/dashboard/kpis`
+- `PUT /api/v1/production/update`
 - `GET /api/v1/tenant-admin/audit-log`
 - `GET /api/v1/tenant-admin/company-settings`
 - `PUT /api/v1/tenant-admin/company-settings`
@@ -88,6 +100,11 @@ Comportamento attuale:
 - il refresh token viene esposto al browser solo via cookie `HttpOnly`
 - la rotazione del refresh token revoca il token precedente
 - il logout revoca tutte le sessioni refresh attive dell'utente
+- i KPI dashboard tenant-aware vengono cacheati in Redis per `5` minuti
+- l'endpoint dashboard applica rate limiting per utente/IP
+- una mutazione di produzione invalida la sola cache KPI del tenant coinvolto
+- gli update reali di configurazione tenant invalidano anch'essi la cache KPI del tenant
+- un fault Redis in invalidazione cache non annulla una mutazione gia committata su PostgreSQL
 - il ruolo `tenant_admin` e disponibile e autenticabile
 - il profilo autenticato espone `tenant_id` quando l'utente appartiene a una specifica azienda
 - la gestione utenti e tenant-aware: il `tenant_admin` vede e modifica solo utenti del proprio tenant
@@ -96,6 +113,9 @@ Comportamento attuale:
 - la password SMTP viene cifrata lato backend e non viene mai restituita nelle API
 - il super admin mantiene la vista globale su utenti e audit
 - gli eventi auth registrano `ip_address` e `user_agent` reali
+- ogni risposta backend espone `X-Request-ID`
+- il backend puo emettere log testo o JSON tramite `LOG_JSON`
+- il web container non esegue piu migration implicite in bootstrap
 
 Variabili runtime aggiuntive per la protezione auth:
 
@@ -107,3 +127,6 @@ Variabili runtime aggiuntive per la protezione auth:
 - `REFRESH_COOKIE_SECURE`
 - `REFRESH_COOKIE_SAMESITE`
 - `REFRESH_COOKIE_PATH`
+- `REDIS_URL`
+- `DASHBOARD_KPI_CACHE_TTL_SECONDS`
+- `API_RATE_LIMIT_REQUESTS_PER_MINUTE`

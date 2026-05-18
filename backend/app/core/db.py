@@ -1,6 +1,7 @@
 """Bootstrap del database e primitive SQLAlchemy condivise."""
 
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
+from contextlib import contextmanager
 
 from sqlalchemy import MetaData, create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
@@ -38,6 +39,16 @@ SessionLocal = sessionmaker(
 
 def get_db_session() -> Generator[Session, None, None]:
     """Restituisce una sessione database per richiesta."""
+    session = SessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+@contextmanager
+def get_db_session_context() -> Iterator[Session]:
+    """Restituisce una sessione database esplicita per worker o script esterni."""
     session = SessionLocal()
     try:
         yield session

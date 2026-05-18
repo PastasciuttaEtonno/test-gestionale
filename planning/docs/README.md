@@ -10,6 +10,7 @@ Obiettivi:
 
 Struttura:
 
+- `architecture/`: analisi architetturali trasversali e gap verso la produzione
 - `backend/`: documentazione strutturata del backend e dei moduli tecnici
 - `frontend/`: documentazione del client Vue di test
 - `quality/`: controlli automatici e pipeline minima
@@ -24,6 +25,10 @@ Documento guida principale per il backend:
 
 - [10-backend-usage-and-maintenance-guide.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
 - [11-tenant-admin-configuration.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
+
+Documento architetturale per il salto a produzione:
+
+- [production-readiness-gap-analysis.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-gap-analysis.md)
 
 Documento guida principale per il frontend:
 

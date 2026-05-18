@@ -55,11 +55,16 @@ class AuthService:
         request_context: SecurityRequestContext,
     ) -> AuthSessionResult:
         """Autentica un utente contro PostgreSQL."""
+        identifier = payload.identifier.strip()
         lock_key_ip = request_context.ip_address or "unknown"
-        if await self.login_protection_service.is_locked(payload.identifier, lock_key_ip):
+        lock_state = await self.login_protection_service.get_lock_result(identifier, lock_key_ip)
+        if lock_state.locked_until is not None:
             await self._registra_evento_audit(
                 event_type=AuditEventType.LOGIN_COOLDOWN_ACTIVE.value,
-                payload_json={"identificativo": payload.identifier},
+                payload_json={
+                    "identificativo": identifier,
+                    "scope_attivi": lock_state.active_scopes,
+                },
                 request_context=request_context,
             )
             self.session.commit()
@@ -68,20 +73,21 @@ class AuthService:
                 detail="Troppi tentativi di accesso. Riprovare piu tardi.",
             )
 
-        user = await self.user_repository.get_user_by_username(payload.identifier)
+        user = await self.user_repository.get_user_by_username(identifier)
         if user is None or not self.password_hasher.verify_password(
             payload.password,
             user.password_hash,
         ):
             protection_state = await self.login_protection_service.register_failed_attempt(
-                identifier=payload.identifier,
+                identifier=identifier,
                 ip_address=lock_key_ip,
             )
             await self._registra_evento_audit(
                 event_type=AuditEventType.LOGIN_FAILED.value,
                 payload_json={
-                    "identificativo": payload.identifier,
+                    "identificativo": identifier,
                     "tentativi_falliti": protection_state.failed_count,
+                    "scope_attivi": protection_state.active_scopes,
                 },
                 request_context=request_context,
             )
@@ -89,8 +95,9 @@ class AuthService:
                 await self._registra_evento_audit(
                     event_type=AuditEventType.LOGIN_RATE_LIMITED.value,
                     payload_json={
-                        "identificativo": payload.identifier,
+                        "identificativo": identifier,
                         "bloccato_fino": protection_state.locked_until.isoformat(),
+                        "scope_attivi": protection_state.active_scopes,
                     },
                     request_context=request_context,
                 )
@@ -113,11 +120,11 @@ class AuthService:
             )
             self.session.commit()
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Utente non attivo.",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Credenziali non valide.",
             )
 
-        await self.login_protection_service.clear_state(payload.identifier, lock_key_ip)
+        await self.login_protection_service.clear_state(identifier, lock_key_ip)
         token_response = await self._genera_token_response(user, request_context)
         user.last_login_at = datetime.now(UTC)
         await self.user_repository.update_user(user)

@@ -1,8 +1,13 @@
 """Servizio applicativo per le impostazioni tenant admin."""
 
 from fastapi import HTTPException, status
+from redis.asyncio import Redis
 from sqlalchemy.orm import Session
 
+from app.core.cache import (
+    build_tenant_dashboard_kpis_cache_key,
+    invalidate_cache_key_best_effort,
+)
 from app.core.security.field_encryption import FieldEncryptionService
 from app.models.core.tenant_company_settings import TenantCompanySettings
 from app.models.core.tenant_document_sequence import TenantDocumentSequence
@@ -50,6 +55,7 @@ class TenantSettingsService:
         self,
         payload: UpdateCompanySettingsRequest,
         current_user: CurrentUserResponse,
+        redis_client: Redis,
     ) -> CompanySettingsResponse:
         """Aggiorna le impostazioni anagrafiche e documentali del tenant corrente."""
         tenant = await self._get_current_tenant(current_user)
@@ -73,6 +79,7 @@ class TenantSettingsService:
 
         saved = await self.tenant_settings_repository.upsert_company_settings(entity)
         self.session.commit()
+        await self._invalidate_dashboard_kpis_cache(tenant.id, redis_client)
         return self._to_company_response(saved)
 
     async def get_smtp_settings(
@@ -93,6 +100,7 @@ class TenantSettingsService:
         self,
         payload: UpdateSmtpSettingsRequest,
         current_user: CurrentUserResponse,
+        redis_client: Redis,
     ) -> SmtpSettingsResponse:
         """Aggiorna la configurazione SMTP del tenant corrente."""
         tenant = await self._get_current_tenant(current_user)
@@ -116,6 +124,7 @@ class TenantSettingsService:
 
         saved = await self.tenant_settings_repository.upsert_smtp_settings(entity)
         self.session.commit()
+        await self._invalidate_dashboard_kpis_cache(tenant.id, redis_client)
         return self._to_smtp_response(saved)
 
     async def list_document_sequences(
@@ -133,6 +142,7 @@ class TenantSettingsService:
         sequence_code: str,
         payload: UpdateDocumentSequenceRequest,
         current_user: CurrentUserResponse,
+        redis_client: Redis,
     ) -> DocumentSequenceResponse:
         """Aggiorna una numerazione documentale del tenant corrente."""
         tenant = await self._get_current_tenant(current_user)
@@ -155,6 +165,7 @@ class TenantSettingsService:
 
         saved = await self.tenant_settings_repository.upsert_document_sequence(entity)
         self.session.commit()
+        await self._invalidate_dashboard_kpis_cache(tenant.id, redis_client)
         return self._to_sequence_response(saved)
 
     async def _get_current_tenant(self, current_user: CurrentUserResponse):
@@ -223,3 +234,12 @@ class TenantSettingsService:
             is_active=entity.is_active,
             updated_at=entity.updated_at,
         )
+
+    async def _invalidate_dashboard_kpis_cache(
+        self,
+        tenant_id: str,
+        redis_client: Redis,
+    ) -> None:
+        """Invalida in best-effort la cache KPI della dashboard del tenant."""
+        cache_key = build_tenant_dashboard_kpis_cache_key(tenant_id)
+        await invalidate_cache_key_best_effort(redis_client, cache_key)

@@ -13,6 +13,10 @@ Spiegare come funziona il backend oggi, come avviarlo, come modificarlo corretta
 - `PostgreSQL` come persistenza primaria
 - `uv` per dipendenze e comandi Python
 - `Docker Compose` per avvio integrato backend + database
+- `Celery` per task asincroni
+- `Redis` come broker e result backend
+- `redis.asyncio` per cache applicativa e rate limiting
+- logging strutturato con `request_id` propagato
 
 ## Struttura logica
 
@@ -43,8 +47,10 @@ Caratteristiche:
 - JWT reali
 - refresh token persistiti e revocabili
 - audit su login, refresh e logout con `ip_address` e `user_agent` reali
-- rate limiting persistito su PostgreSQL per il login
-- cooldown basilare con risposta `429` quando la soglia viene superata
+- rate limiting persistito su PostgreSQL per il login con scope `pair`, `identifier`, `ip`
+- cooldown con risposta `429` quando una soglia viene superata
+- controllo `Origin` / `Referer` sugli endpoint auth cookie-based
+- validazione fail-fast della postura di sicurezza in staging e produzione
 
 ### Users
 
@@ -85,6 +91,35 @@ Caratteristiche:
 - `tenant_id` risolto dal profilo autenticato
 - password SMTP cifrata lato backend
 
+### Reports Async
+
+Gestisce:
+
+- accodamento generazione report lunga
+- lettura stato task per il frontend
+
+Caratteristiche:
+
+- task inviati a `Celery`
+- stato persistito in `Redis`
+- worker eseguito in processo separato da FastAPI
+- sessioni SQLAlchemy aperte nel worker tramite context manager dedicato
+
+### Dashboard
+
+Gestisce:
+
+- KPI tenant-aware cacheati
+- rate limiting per endpoint ad alta frequenza
+
+Caratteristiche:
+
+- cache Redis isolata per tenant
+- chiave `tenant:{tenant_id}:dashboard:kpis`
+- TTL default `300` secondi
+- invalidazione puntuale sulle mutazioni rilevanti
+- invalidazione eseguita in best-effort dopo `commit` delle mutazioni su PostgreSQL
+
 ## Avvio locale
 
 ### Con `uv`
@@ -104,6 +139,7 @@ uv sync --group dev
 uv run ruff check app alembic
 uv run ruff format --check app alembic
 uv run python -m compileall app alembic
+uv run python -m pytest
 ```
 
 Approccio scelto:
@@ -111,6 +147,7 @@ Approccio scelto:
 - lint leggero ma utile con `ruff`
 - check di formattazione non distruttivo
 - verifica minima di importabilita Python
+- baseline test backend veloce senza dipendere da PostgreSQL o Redis reali
 
 ### Con Docker
 
@@ -118,10 +155,11 @@ Approccio scelto:
 docker compose up --build
 ```
 
-In questo flusso il container backend esegue automaticamente:
+In questo flusso:
 
-1. migration Alembic
-2. avvio Uvicorn
+1. `db_migrator` esegue `alembic upgrade head`
+2. `core_service` parte solo dopo migration riuscita
+3. `celery_worker` parte solo dopo migration riuscita
 
 ## Credenziali iniziali
 
@@ -139,6 +177,11 @@ Questi utenti esistono nello schema `security.users`.
 
 - [backend/app/core/config.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/config.py)
 - [backend/.env.example](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/.env.example)
+- [backend/app/core/logging.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/logging.py)
+- [backend/app/core/request_id.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/request_id.py)
+- [backend/app/core/redis.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/redis.py)
+- [backend/app/core/cache.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/cache.py)
+- [backend/app/core/rate_limit.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/rate_limit.py)
 
 ### Database e sessione
 
@@ -162,8 +205,16 @@ Questi utenti esistono nello schema `security.users`.
 
 - [backend/app/services/auth/auth_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/auth/auth_service.py)
 - [backend/app/services/auth/login_protection_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/auth/login_protection_service.py)
+- [backend/app/services/dashboard/dashboard_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/dashboard/dashboard_service.py)
+- [backend/app/services/production/production_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/production/production_service.py)
+- [backend/app/services/reports/report_task_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/reports/report_task_service.py)
 - [backend/app/services/users/user_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/users/user_service.py)
 - [backend/app/services/audit/audit_service.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/services/audit/audit_service.py)
+
+### Coda asincrona
+
+- [backend/app/core/celery_app.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/core/celery_app.py)
+- [backend/app/tasks/report_tasks.py](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/app/tasks/report_tasks.py)
 
 ## Come aggiungere o modificare endpoint
 
@@ -227,6 +278,9 @@ Prestare attenzione a:
 - durata refresh token
 - soglie di `LOGIN_RATE_LIMIT_*`
 - messaggi di errore neutri durante i fallimenti di login
+- `REFRESH_COOKIE_SECURE=true` in staging e produzione
+- `AUTH_ENFORCE_ORIGIN_CHECK=true` in staging e produzione
+- `TRUSTED_PROXY_IPS` valorizzato correttamente dietro reverse proxy, altrimenti `X-Forwarded-For` viene ignorato
 
 ### Repository vs Service
 
@@ -243,6 +297,8 @@ Prestare attenzione a:
 - non esporre query utenti globali al ruolo `tenant_admin`
 - mantenere `tenant_id` nullo per i super admin globali
 - evitare che il `tenant_admin` possa assegnare il ruolo `admin`
+- per gli endpoint tenant-aware preferire `RequirePermission(resource, action, ...)` rispetto a check manuali sul ruolo
+- il `tenant_id` inviato dal client va trattato come input da validare o cross-checkare, non come fonte di verita
 - non restituire segreti tenant in chiaro dalle API
 
 ### OpenAPI
@@ -257,13 +313,47 @@ Prestare attenzione a:
 
 ### Docker
 
-Oggi il container esegue `Alembic` in avvio.
+Oggi il runtime locale separa `db_migrator` da `core_service`.
 
 Prestare attenzione a:
 
 - tempi di bootstrap
 - comportamento in ambienti condivisi
-- eventuale necessità futura di separare migration e runtime
+- distinzione netta tra migration job e web runtime
+- il check container del web deve puntare a `/health/ready`, non a una liveness cieca
+
+### Osservabilita minima
+
+Regole operative:
+
+- propagare sempre `X-Request-ID` verso il client
+- includere il `request_id` in tutti i log applicativi
+- usare `LOG_JSON=true` in staging/produzione se i log vengono raccolti da sistemi esterni
+- distinguere tra:
+  - `/health/live`: processo vivo
+  - `/health/ready`: web pronto con DB e Redis raggiungibili
+
+### Celery e worker
+
+Regole operative:
+
+- creare l'istanza `Celery` fuori da `main.py`
+- non importare l'app FastAPI dentro il worker
+- non riusare sessioni database del web server
+- aprire sempre una nuova `SessionLocal` dentro task o service usati dal task
+- aggiornare lo stato task con `update_state(...)` se il frontend deve mostrare progressi
+
+### Redis cache e rate limiting
+
+Regole operative:
+
+- inizializzare il client Redis asincrono nel `lifespan` FastAPI
+- salvare il client in `app.state.redis`
+- usare chiavi esplicite e tenant-aware per la cache condivisa
+- invalidare la chiave del solo tenant impattato dopo ogni mutazione business rilevante
+- non usare la cache come fonte di verita: il dato canonico resta PostgreSQL
+- se Redis fallisce in invalidazione dopo un commit DB, non riportare falso rollback applicativo al client
+- applicare rate limiting come dependency riusabile, non con logica duplicata nei router
 
 ## Come aggiornare il backend in futuro
 
@@ -280,22 +370,92 @@ Quando fai una modifica:
 
 Il backend applica una protezione basilare del login:
 
-- chiave di controllo: `identifier + ip_address`
+- chiavi di controllo: `identifier + ip_address`, solo `identifier`, solo `ip_address`
 - soglia di default: `5` tentativi falliti
+- soglia di default per identificativo: `10` tentativi falliti
+- soglia di default per IP: `30` tentativi falliti
 - finestra di default: `15` minuti
 - lockout di default: `15` minuti
 
 Variabili runtime:
 
 - `LOGIN_RATE_LIMIT_MAX_ATTEMPTS`
+- `LOGIN_RATE_LIMIT_IDENTIFIER_MAX_ATTEMPTS`
+- `LOGIN_RATE_LIMIT_IP_MAX_ATTEMPTS`
 - `LOGIN_RATE_LIMIT_WINDOW_MINUTES`
 - `LOGIN_RATE_LIMIT_LOCKOUT_MINUTES`
+- `AUTH_ALLOWED_ORIGINS`
+- `AUTH_ENFORCE_ORIGIN_CHECK`
+- `TRUSTED_PROXY_IPS`
 
 Regole operative:
 
 - usare `429` per i tentativi bloccati
 - non esporre dettagli che aiutino enumeration o brute force
 - mantenere il reset dello stato su login riuscito
+- usare `401` generico per credenziali errate o account inattivo
+- fidarsi di `X-Forwarded-For` solo dietro proxy esplicitamente noto
+- non avviare ambienti staging/produzione con secret JWT placeholder o cookie refresh insicuri
+
+## Hardening produzione
+
+Impostazioni minime richieste in ambienti non development:
+
+- `APP_ENV=staging` o `APP_ENV=production`
+- `JWT_SECRET_KEY` reale, non placeholder
+- `REFRESH_COOKIE_SECURE=true`
+- `AUTH_ENFORCE_ORIGIN_CHECK=true`
+- `AUTH_ALLOWED_ORIGINS` esplicito
+- `TRUSTED_PROXY_IPS` esplicito se e presente un reverse proxy
+
+Residui ancora non implementati ma raccomandati:
+
+- reuse detection e revoca di famiglia per refresh token
+- absolute session timeout indipendente dalla sola rotazione del refresh token
+- password breach screening su cambio/reset password
+- re-authentication per azioni sensibili future
+
+## Endpoint task asincroni
+
+Endpoint demo attivi:
+
+- `POST /api/v1/reports/generate`
+- `GET /api/v1/tasks/{task_id}/status`
+
+Flusso:
+
+1. il client invia `tenant_id`
+2. FastAPI valida accesso e tenant
+3. il backend restituisce `202 Accepted` con `task_id`
+4. il frontend effettua polling leggero
+5. il worker aggiorna `progress`, `message` e `result_url`
+
+## RBAC dichiarativo tenant-aware
+
+- il backend dispone gia di catalogo `roles`, `permissions`, `role_permissions`
+- per questa fase ERP e preferibile una matrice ruoli/permessi interna rispetto a Casbin: meno moving parts, seed piu semplici, audit piu leggibile
+- Casbin ha senso solo quando emergeranno policy dinamiche per reparto, documento o record-level rule molto variabili
+- usare `RequirePermission("resource", "action")` come dependency standard
+- quando la risorsa e tenant-scoped:
+- usare `tenant_field_name` se il `tenant_id` e nella request
+- usare `resource_id_param_name` + `tenant_resolver` se il tenant va ricavato dal database
+- il controllo tenant deve avvenire prima dell'accesso ai dati applicativi per ridurre il rischio di IDOR
+
+## Endpoint cache e rate limiting
+
+Endpoint demo attivi:
+
+- `GET /api/v1/dashboard/kpis`
+- `PUT /api/v1/production/update`
+
+Flusso cache:
+
+1. il backend costruisce la chiave `tenant:{tenant_id}:dashboard:kpis`
+2. se Redis contiene gia il payload, il backend risponde dal cache layer
+3. se Redis non contiene il payload, il backend legge PostgreSQL
+4. il risultato viene serializzato in JSON con TTL di `300` secondi
+5. una mutazione di produzione invalida la sola chiave del tenant toccato
+6. gli update `company-settings`, `smtp-settings` e `document-sequences` invalidano la stessa chiave KPI del tenant
 
 ## Checklist minima prima di chiudere una modifica
 

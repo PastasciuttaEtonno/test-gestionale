@@ -22,11 +22,42 @@ services:
     depends_on:
       db_service:
         condition: service_healthy
+      redis_service:
+        condition: service_healthy
+      db_migrator:
+        condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()"]
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready').read()"]
       interval: 15s
       timeout: 5s
       retries: 5
+
+  db_migrator:
+    build:
+      context: ./backend
+    container_name: esseduesoft_db_migrator
+    command: ["/app/.venv/bin/alembic", "upgrade", "head"]
+    restart: "no"
+    env_file:
+      - ./backend/.env.example
+    depends_on:
+      db_service:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: ./backend
+    container_name: esseduesoft_celery_worker
+    command: ["/app/.venv/bin/celery", "-A", "app.core.celery_app:celery_app", "worker", "--loglevel=info"]
+    env_file:
+      - ./backend/.env.example
+    depends_on:
+      db_service:
+        condition: service_healthy
+      redis_service:
+        condition: service_healthy
+      db_migrator:
+        condition: service_completed_successfully
 
   db_service:
     image: postgres:17.9-alpine3.23
@@ -41,6 +72,17 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U app -d esseduesoft"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis_service:
+    image: redis:8.2.1-alpine3.22
+    container_name: esseduesoft_redis_service
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -37,6 +37,10 @@ jobs:
         working-directory: backend
         run: uv run python -m compileall app alembic
 
+      - name: Run backend tests
+        working-directory: backend
+        run: uv run python -m pytest
+
   frontend-checks:
     runs-on: ubuntu-latest
 

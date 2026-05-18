@@ -27,15 +27,14 @@
 
 - `/login`: accesso guest only
 - `/dashboard`: accesso autenticato, scaffold statico standard-user
-- `/tenant-admin`: accesso autenticato con ruolo `tenant_admin`
-- `/admin-only`: accesso autenticato con ruolo `admin`
+- `/tenant-admin`: accesso autenticato con metadato `requiredRoles: ['tenant_admin']`
+- `/admin-only`: accesso autenticato con metadato `requiredRoles: ['admin']`
+- `/:pathMatch(.*)*`: pagina `404 Not Found` per URL non riconosciuti
 
 ## Visibilita ruoli
 
-- l'utente non admin viene reindirizzato fuori da `/admin-only`
-- l'utente non `tenant_admin` viene reindirizzato fuori da `/tenant-admin`
-- l'utente non admin non vede il link `Super Admin` nella shell
-- l'utente non tenant admin non vede il link `Tenant Admin` nella shell
+- l'utente senza `requiredRoles` validi viene reindirizzato fuori dalla rotta
+- la shell legge ruolo e permessi dallo store `Pinia`, non da controlli hardcoded sparsi nelle viste
 - la home gestionale di base resta identica tra utente operativo e admin
 
 ## Mockup standard-user
@@ -70,7 +69,8 @@ La vista `/tenant-admin` corrente:
 - nessun form business
 - nessuna gestione multi-tab sofisticata
 - nessuna UI per revoca sessioni
-- nessun state manager esterno come Pinia, per mantenere il client minimo
+- `Pinia` usata solo per sessione auth e permessi correnti
+- l'autorizzazione reale resta del backend: il router blocca UX, non sostituisce il controllo server-side
 
 ## Regola di evoluzione UI
 

@@ -25,3 +25,4 @@ class AuditEventType(StrEnum):
     LOGIN_RATE_LIMITED = "login_rate_limited"
     LOGIN_COOLDOWN_ACTIVE = "login_cooldown_active"
     ACCESS_DENIED = "access_denied"
+    PRODUCTION_ORDER_UPDATED = "production_order_updated"

@@ -10,9 +10,9 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const utente = computed(() => authStore.user);
-const mostraShell = computed(() => route.name !== "login");
-const mostraNavigazioneAdmin = computed(() => utente.value?.role_code === "admin");
-const mostraNavigazioneTenantAdmin = computed(() => utente.value?.role_code === "tenant_admin");
+const mostraShell = computed(() => route.meta.hideShell !== true);
+const mostraNavigazioneAdmin = computed(() => authStore.hasRole("admin"));
+const mostraNavigazioneTenantAdmin = computed(() => authStore.hasRole("tenant_admin"));
 
 async function eseguiLogout() {
   await authStore.logout();

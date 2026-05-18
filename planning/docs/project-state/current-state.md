@@ -29,6 +29,8 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - `SQLAlchemy` attivo come ORM layer
 - `PostgreSQL` attivo via `docker-compose`
 - `Alembic` attivo per lo schema `security`
+- `Celery + Redis` introdotti per task asincroni backend
+- Redis asincrono introdotto anche come cache applicativa e motore di rate limiting
 - `AuthService` collegato al DB reale
 - `UserService` collegato al DB reale
 - `AuditService` collegato al DB reale
@@ -36,14 +38,24 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - refresh token persistiti e ruotati
 - audit esteso anche alle operazioni amministrative utenti
 - ruolo reale `tenant_admin` introdotto nel dominio sicurezza
+- RBAC dichiarativo tenant-aware disponibile con ruoli `admin`, `tenant_admin`, `manager`, `worker`, `user`
+- endpoint demo protetti: `GET /api/v1/bom/{bom_id}` e `POST /api/v1/finance/costs`
 - introdotto schema `tenants` con collegamento `user.tenant_id`
 - gestione utenti resa tenant-aware per il livello 2
 - audit locale tenant esposto tramite endpoint dedicato
 - configurazione aziendale tenant-aware esposta tramite API dedicate
 - cifratura lato backend introdotta per i segreti SMTP del tenant
 - protezione login persistita introdotta su `/auth/login`
-- cooldown basilare e rate limiting attivi per coppia `identifier + ip_address`
+- cooldown e rate limiting auth attivi su tre scope: `identifier + ip_address`, solo `identifier`, solo `ip_address`
 - audit auth con `ip_address` e `user_agent` reali
+- hardening produzione introdotto su auth: fail-fast configurazione sensibile, trusted proxy espliciti e controllo `Origin` / `Referer` sugli endpoint cookie-based
+- endpoint dashboard KPI tenant-aware protetto con cache Redis e rate limiting
+- endpoint demo di mutazione produzione con invalidazione mirata della cache tenant
+- update reali tenant admin allineati con invalidazione cache KPI del tenant in best-effort
+- osservabilita minima backend introdotta con `request_id`, logging strutturato e health endpoint `live/ready`
+- baseline test backend introdotta su `health`, `auth` e RBAC tenant-aware, eseguita anche in CI
+- migration discipline iniziale introdotta: `db_migrator` separato da web e worker nel runtime Docker
+- publication discipline iniziale introdotta: workflow GitHub Actions per publish backend image su `GHCR`
 - dipendenze frontend aggiornate a versioni recenti e prive di vulnerabilita note da `npm audit`
 - immagini Docker principali aggiornate e pin esplicite
 
@@ -52,9 +64,12 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - `Vue 3` con `script setup`
 - `Vite` attivo come dev server
 - `Tailwind CSS` attivo per styling rapido
+- `Pinia` attiva per lo stato auth condiviso
 - `Axios` attivo con interceptor centralizzato
-- `Vue Router` attivo con guardie `auth`, `admin` e `tenant_admin`
+- store auth esteso con helper ruolo/permessi
+- `Vue Router` attivo con guardie dichiarative per auth, ruoli e permessi
 - login con access token in memoria e refresh token in cookie `HttpOnly`
+- direttiva `v-can` disponibile per la visibilita degli elementi UI
 - dashboard protetta collegata a `GET /api/v1/auth/me`
 - vista `admin-only` collegata a `GET /api/v1/admin/audit-log`
 - home gestionale di base resa comune per tutti gli utenti autenticati
@@ -62,6 +77,7 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - area `Super Admin` Esseduesoft trasformata in mockup statico enterprise
 - area `Tenant Admin` cliente trasformata in mockup statico enterprise
 - console `Super Admin` e `Tenant Admin` separate anche nella navigazione e nelle guardie router
+- demo frontend di task report asincrono con polling integrata nella dashboard
 
 ## Decisioni attive
 
@@ -79,3 +95,4 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 Per ripartire con un altro LLM o con un altro sviluppatore, il punto di ingresso rapido e:
 
 - [00-llm-handoff.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/00-llm-handoff.md)
+- [production-readiness-gap-analysis.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-gap-analysis.md)

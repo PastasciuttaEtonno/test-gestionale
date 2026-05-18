@@ -1,10 +1,12 @@
 """Route di configurazione tenant admin."""
 
 from fastapi import APIRouter, Depends, HTTPException, Path, status
+from redis.asyncio import Redis
 from sqlalchemy.orm import Session
 
 from app.api.deps.auth import require_tenant_admin
 from app.core.db import get_db_session
+from app.core.redis import get_redis_client
 from app.schemas.auth.responses import CurrentUserResponse
 from app.schemas.tenant_admin.requests import (
     UpdateCompanySettingsRequest,
@@ -68,12 +70,14 @@ async def get_company_settings(
 async def update_company_settings(
     payload: UpdateCompanySettingsRequest,
     current_user: CurrentUserResponse = Depends(require_tenant_admin),
+    redis_client: Redis = Depends(get_redis_client),
     tenant_settings_service: TenantSettingsService = Depends(get_tenant_settings_service),
 ) -> CompanySettingsResponse:
     """Aggiorna anagrafica aziendale, recapiti e branding documentale del tenant."""
     return await tenant_settings_service.update_company_settings(
         payload=payload,
         current_user=current_user,
+        redis_client=redis_client,
     )
 
 
@@ -113,12 +117,14 @@ async def get_smtp_settings(
 async def update_smtp_settings(
     payload: UpdateSmtpSettingsRequest,
     current_user: CurrentUserResponse = Depends(require_tenant_admin),
+    redis_client: Redis = Depends(get_redis_client),
     tenant_settings_service: TenantSettingsService = Depends(get_tenant_settings_service),
 ) -> SmtpSettingsResponse:
     """Aggiorna la configurazione SMTP del tenant cifrando la password lato backend."""
     return await tenant_settings_service.update_smtp_settings(
         payload=payload,
         current_user=current_user,
+        redis_client=redis_client,
     )
 
 
@@ -164,6 +170,7 @@ async def update_document_sequence(
         examples=["invoice_electronic"],
     ),
     current_user: CurrentUserResponse = Depends(require_tenant_admin),
+    redis_client: Redis = Depends(get_redis_client),
     tenant_settings_service: TenantSettingsService = Depends(get_tenant_settings_service),
 ) -> DocumentSequenceResponse:
     """Aggiorna una singola numerazione documentale nel perimetro del tenant corrente."""
@@ -172,6 +179,7 @@ async def update_document_sequence(
             sequence_code=sequence_code,
             payload=payload,
             current_user=current_user,
+            redis_client=redis_client,
         )
     except HTTPException:
         raise

@@ -1,0 +1,1 @@
+"""Task Celery del backend."""

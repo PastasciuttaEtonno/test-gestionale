@@ -6,6 +6,7 @@ Client minimale `Vue 3` usato per validare il flusso `JWT` del backend Essedueso
 
 - Node container: `node:24.14.1-alpine3.23`
 - `Vue`: `3.5.34`
+- `Pinia`: `3.0.4`
 - `Axios`: `1.16.1`
 - `Vite`: `8.0.13`
 - `@vitejs/plugin-vue`: `6.0.7`
@@ -45,6 +46,7 @@ docker compose up --build
 - ripristino sessione tramite `POST /api/v1/auth/refresh`
 - refresh automatico del token tramite interceptor Axios
 - mockup ERP statico per utenti standard con sidebar, header e lista documenti
+- demo di task asincrono report con polling su backend `Celery + Redis`
 - console `Tenant Admin` statica per l'amministratore della singola azienda cliente
 - console `Super Admin` statica per il personale Esseduesoft
 - console `Super Admin` visibile solo a utenti con ruolo `admin`
@@ -57,9 +59,10 @@ docker compose up --build
 - `src/components/ui/`: componenti UI condivisi
 - `src/components/ui/SidebarSection.vue`: pattern condiviso per sidebar ERP
 - `src/router/index.js`: rotte e guardie
-- `src/stores/auth.js`: sessione in memoria e inizializzazione auth
+- `src/stores/auth.js`: store Pinia della sessione auth in memoria e inizializzazione auth
 - `src/lib/http.js`: client Axios e refresh centralizzato
 - `src/services/auth.js`: chiamate API
+- `src/services/reports.js`: accodamento report e polling stato task
 - `src/views/`: viste di login, dashboard e aree amministrative
 
 ## Attenzioni
@@ -67,6 +70,7 @@ docker compose up --build
 - la protezione reale resta nel backend
 - il refresh token non e leggibile dal frontend: viene inviato solo dal browser tramite cookie `HttpOnly`
 - `withCredentials` deve restare attivo nel client Axios per supportare il refresh cookie
+- Pinia e introdotta solo per lo stato `auth`; non usare ancora uno store globale monolitico per i futuri moduli business
 - se cambiano shape o URL degli endpoint backend, aggiornare prima `src/services/` e poi la documentazione in `planning/docs/frontend/`
 - Tailwind 4 usa il plugin Vite ufficiale `@tailwindcss/vite`, quindi non ci sono piu `postcss.config.js` e `tailwind.config.js` in questa fase
 - nuovi pattern visivi vanno aggiunti prima in `src/components/ui/` e poi riusati nelle viste

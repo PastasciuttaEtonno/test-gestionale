@@ -53,6 +53,7 @@ File di riferimento: `frontend/.env.example`
 
 - runtime container: `node:24.14.1-alpine3.23`
 - `Vue`: `3.5.34`
+- `Pinia`: `3.0.4`
 - `Axios`: `1.16.1`
 - `Vite`: `8.0.13`
 - `@vitejs/plugin-vue`: `6.0.7`
@@ -68,14 +69,17 @@ La direzione visiva del gestionale e documentata in:
 
 ### Sessione
 
-Lo stato auth e centralizzato in `src/stores/auth.js`.
+Lo stato auth e centralizzato in uno store `Pinia` in `src/stores/auth.js`.
 
 Regole attive:
 
 - `accessToken` mantenuto solo in memoria
 - `user` mantenuto solo in memoria
+- `roleCode` e `permissions` derivati dal profilo utente autenticato
 - `refresh_token` conservato dal browser in cookie `HttpOnly`
 - inizializzazione sessione via `POST /api/v1/auth/refresh`
+- router e interceptor Axios leggono lo stesso store Pinia, evitando stato duplicato
+- le autorizzazioni client-side si esprimono con meta router e direttiva `v-can`, non con `if role === ...` sparsi
 
 ### Interceptor
 
@@ -124,8 +128,12 @@ La response interceptor:
 ### Manutenzione
 
 - ogni nuova chiamata API deve passare da `src/services/`
-- ogni nuova regola di accesso deve essere esplicitata in `router/index.js`
+- ogni nuova regola di accesso deve essere esplicitata in `router/index.js` tramite meta dichiarativi
+- ogni nuovo controllo su pulsanti o azioni secondarie deve preferire `v-can` o helper dello store
+- le rotte non riconosciute devono convergere su una vista `404` dedicata
 - evitare richieste Axios dirette dentro molte viste
+- non concentrare nuovo stato applicativo dentro `auth`: creare nuovi store Pinia separati quando emergeranno domini reali
+- per i task asincroni centralizzare polling e chiamate in `src/services/`
 - con Tailwind 4 il progetto usa `@tailwindcss/vite`; non reintrodurre `postcss.config.js` o `tailwind.config.js` senza una necessita concreta
 - i nuovi componenti devono usare la palette grigio tecnico + rosso operativo definita nel planning
 - i nuovi pattern visuali devono essere centralizzati in `src/components/ui/` o `src/components/layout/`
@@ -137,9 +145,10 @@ La response interceptor:
 
 Quando il frontend crescera:
 
-- introdurre `Pinia` se lo stato diventera piu ricco
+- aggiungere store `Pinia` separati per `ui`, `tenant-admin`, `dashboard` o altri domini solo quando comparira stato condiviso reale
 - separare layout, componenti business e componenti shared
 - aggiungere test automatici UI e test di integrazione API
+- valutare `SSE` o `WebSocket` se il polling task diventera frequente o massivo
 
 ## Checklist modifica frontend
 

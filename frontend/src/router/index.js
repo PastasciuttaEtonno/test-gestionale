@@ -4,6 +4,7 @@ import { useAuthStore } from "../stores/auth";
 import AdminOnlyView from "../views/AdminOnlyView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import LoginView from "../views/LoginView.vue";
+import NotFoundView from "../views/NotFoundView.vue";
 import TenantAdminView from "../views/TenantAdminView.vue";
 
 const router = createRouter({
@@ -19,6 +20,7 @@ const router = createRouter({
       component: LoginView,
       meta: {
         guestOnly: true,
+        hideShell: true,
       },
     },
     {
@@ -35,7 +37,7 @@ const router = createRouter({
       component: AdminOnlyView,
       meta: {
         requiresAuth: true,
-        requiresSuperAdmin: true,
+        requiredRoles: ["admin"],
       },
     },
     {
@@ -44,7 +46,15 @@ const router = createRouter({
       component: TenantAdminView,
       meta: {
         requiresAuth: true,
-        requiresTenantAdmin: true,
+        requiredRoles: ["tenant_admin"],
+      },
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: NotFoundView,
+      meta: {
+        hideShell: true,
       },
     },
   ],
@@ -70,11 +80,14 @@ router.beforeEach(async (to) => {
     };
   }
 
-  if (to.meta.requiresSuperAdmin && authStore.user?.role_code !== "admin") {
+  if (to.meta.requiredRoles && !authStore.hasRole(...to.meta.requiredRoles)) {
     return { name: "dashboard" };
   }
 
-  if (to.meta.requiresTenantAdmin && authStore.user?.role_code !== "tenant_admin") {
+  if (
+    to.meta.requiredPermissions &&
+    !authStore.hasEveryPermission(to.meta.requiredPermissions)
+  ) {
     return { name: "dashboard" };
   }
 

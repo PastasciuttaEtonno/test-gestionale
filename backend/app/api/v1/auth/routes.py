@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.deps.auth import get_active_user, get_auth_service
 from app.core.config import settings
+from app.core.security.origin_validation import require_allowed_auth_origin
 from app.core.security.request_context import build_security_request_context
 from app.schemas.auth.requests import LoginRequest
 from app.schemas.auth.responses import (
@@ -58,6 +59,7 @@ async def login(
     payload: LoginRequest,
     request: Request,
     response: Response,
+    _: None = Depends(require_allowed_auth_origin),
     auth_service: AuthService = Depends(get_auth_service),
 ) -> AuthSessionResponse:
     """Autentica un utente e restituisce l'access token.
@@ -89,6 +91,7 @@ async def login(
 async def refresh_token(
     request: Request,
     response: Response,
+    _: None = Depends(require_allowed_auth_origin),
     auth_service: AuthService = Depends(get_auth_service),
 ) -> AuthSessionResponse:
     """Aggiorna un access token usando il refresh token nel cookie `HttpOnly`.

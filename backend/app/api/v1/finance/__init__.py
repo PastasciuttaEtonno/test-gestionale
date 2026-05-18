@@ -1,0 +1,1 @@
+"""Router del dominio finance."""

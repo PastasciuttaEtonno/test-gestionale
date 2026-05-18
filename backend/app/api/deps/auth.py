@@ -40,6 +40,20 @@ async def get_current_user(
         ) from exc
 
 
+async def get_optional_current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> CurrentUserResponse | None:
+    """Risolve l'utente corrente quando disponibile, altrimenti restituisce None."""
+    if credentials is None:
+        return None
+
+    try:
+        return await auth_service.get_current_user(credentials.credentials)
+    except (InvalidTokenError, InactiveUserError):
+        return None
+
+
 async def get_active_user(
     current_user: CurrentUserResponse = Depends(get_current_user),
 ) -> CurrentUserResponse:

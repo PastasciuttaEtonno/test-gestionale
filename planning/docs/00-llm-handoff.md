@@ -23,9 +23,12 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - refresh token persistiti
 - refresh token esposti al browser solo via cookie `HttpOnly`
 - audit persistito
-- ruoli `admin`, `tenant_admin`, `user`
+- ruoli `admin`, `tenant_admin`, `manager`, `worker`, `user`
 - primo scoping tenant reale
 - frontend Vue 3 di test e mockup enterprise
+- hardening auth backend con throttling multi-scope, trusted proxy espliciti e origin check sugli endpoint cookie-based
+- infrastruttura `Celery + Redis` pronta per task lunghi backend
+- Redis asincrono condiviso da FastAPI per cache KPI tenant-aware e rate limiting
 
 ## Cosa funziona davvero oggi
 
@@ -41,13 +44,16 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - configurazione aziendale tenant-aware
 - configurazione SMTP tenant-aware
 - numerazioni documentali tenant-aware
+- generazione report asincrona demo via `Celery`
+- KPI dashboard cacheati in Redis e invalidati per tenant
+- aggiornamenti tenant admin reali invalidano la cache KPI del tenant senza far fallire mutazioni gia committate se Redis non risponde
 
 ### Frontend
 
 - login reale
 - access token in memoria
 - ripristino sessione via refresh da cookie `HttpOnly`
-- route guard per `admin` e `tenant_admin`
+- route guard dichiarative per ruoli e permessi
 - dashboard standard-user statica
 - console `Super Admin` statica
 - console `Tenant Admin` statica
@@ -73,8 +79,6 @@ Il frontend oggi e soprattutto:
 - fatture reali
 - spedizioni reali
 - reporting reale
-- worker async reale
-- redis reale
 - api gateway reale
 - upload reale del logo aziendale
 - test SMTP reale
@@ -89,6 +93,8 @@ Il frontend oggi e soprattutto:
 - ORM: `SQLAlchemy`
 - DB: `PostgreSQL`
 - migrations: `Alembic`
+- queue worker: `Celery`
+- broker/result backend: `Redis`
 - dipendenze: `uv`
 - containerizzazione: `Docker Compose`
 
@@ -96,6 +102,7 @@ Il frontend oggi e soprattutto:
 
 - framework: `Vue 3`
 - bundler: `Vite`
+- state management: `Pinia` per la sessione auth
 - styling: `Tailwind CSS`
 - HTTP client: `Axios`
 - routing: `Vue Router`
@@ -135,6 +142,16 @@ Il frontend oggi e soprattutto:
 - gestisce configurazione aziendale del proprio tenant
 - non accede al perimetro globale Esseduesoft
 
+### `manager`
+
+- appartiene a un solo tenant
+- puo ricevere permessi di scrittura mirati come `finance.costs.write`
+
+### `worker`
+
+- appartiene a un solo tenant
+- ha permessi operativi di lettura come `bom.read`
+
 ### `user`
 
 - ruolo operativo base
@@ -146,6 +163,7 @@ Regola critica:
 
 - il `tenant_id` **non** deve essere trattato come dato affidabile proveniente dal frontend
 - il `tenant_id` va derivato dal profilo autenticato corrente
+- per risorse tenant-aware usare `RequirePermission` e, se serve, risolvere il tenant dal record DB prima di concedere accesso
 
 Questo e gia vero nei service tenant-aware implementati.
 
@@ -159,6 +177,8 @@ Questo e gia vero nei service tenant-aware implementati.
 - password SMTP cifrata lato backend
 - OpenAPI curata endpoint per endpoint
 - commenti, docstring e messaggi descrittivi in italiano
+- controllo `Origin` / `Referer` su `login` e `refresh` quando abilitato
+- fail-fast configurazione insicura in staging e produzione
 
 ## Convenzioni operative da rispettare
 
@@ -186,9 +206,10 @@ Ordine consigliato:
 
 1. [planning/struttura.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/struttura.md)
 2. [planning/docs/project-state/current-state.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/project-state/current-state.md)
-3. [planning/docs/backend/10-backend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
-4. [planning/docs/backend/11-tenant-admin-configuration.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
-5. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
+3. [planning/docs/architecture/production-readiness-gap-analysis.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-gap-analysis.md)
+4. [planning/docs/backend/10-backend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
+5. [planning/docs/backend/11-tenant-admin-configuration.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
+6. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
 
 ## Prossimi step coerenti
 
@@ -198,6 +219,8 @@ Le direzioni piu sensate da qui sono:
 2. introdurre `Anagrafiche` come primo dominio business tenant-aware
 3. aggiungere test automatici API per scoping `admin` vs `tenant_admin`
 4. aggiungere test automatici sul flusso `memory access token + HttpOnly refresh cookie`
+5. introdurre reuse detection e family revocation dei refresh token
+6. sostituire il task demo report con un caso reale come PDF massivo o invio mail bulk
 
 ## Rischi o limiti da tenere presenti
 

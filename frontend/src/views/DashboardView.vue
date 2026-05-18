@@ -1,9 +1,15 @@
 <script setup>
+import { onBeforeUnmount, ref } from "vue";
+
 import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
 import KpiTile from "../components/ui/KpiTile.vue";
 import SectionLabel from "../components/ui/SectionLabel.vue";
 import SidebarSection from "../components/ui/SidebarSection.vue";
+import { useAuthStore } from "../stores/auth";
+import { avviaGenerazioneReport, recuperaStatoTask } from "../services/reports";
+
+const authStore = useAuthStore();
 
 const vociSidebar = [
   {
@@ -47,6 +53,83 @@ const azioniRapide = [
   "Apri cliente",
   "Cerca documento",
 ];
+
+const tenantIdInput = ref(authStore.user?.tenant_id || "");
+const taskId = ref("");
+const taskStatus = ref("idle");
+const taskMessage = ref("Nessun report asincrono avviato.");
+const taskProgress = ref(0);
+const resultUrl = ref("");
+const loadingTask = ref(false);
+
+let pollingId = null;
+
+function fermaPolling() {
+  if (pollingId) {
+    window.clearInterval(pollingId);
+    pollingId = null;
+  }
+}
+
+async function aggiornaStatoTask() {
+  if (!taskId.value) {
+    return;
+  }
+
+  const stato = await recuperaStatoTask(taskId.value);
+  taskStatus.value = stato.status;
+  taskMessage.value = stato.message;
+  taskProgress.value = stato.progress;
+  resultUrl.value = stato.result_url || "";
+
+  if (["success", "failure"].includes(stato.status)) {
+    loadingTask.value = false;
+    fermaPolling();
+  }
+}
+
+async function avviaTaskReport() {
+  if (!tenantIdInput.value) {
+    taskStatus.value = "failure";
+    taskMessage.value = "Inserire un tenant_id valido prima di avviare il report.";
+    return;
+  }
+
+  fermaPolling();
+  loadingTask.value = true;
+  taskProgress.value = 0;
+  resultUrl.value = "";
+  taskStatus.value = "pending";
+  taskMessage.value = "Accodamento task in corso.";
+
+  try {
+    const response = await avviaGenerazioneReport({
+      tenant_id: tenantIdInput.value,
+    });
+    taskId.value = response.task_id;
+    taskStatus.value = "accepted";
+    taskMessage.value = response.message;
+    await aggiornaStatoTask();
+    pollingId = window.setInterval(() => {
+      aggiornaStatoTask().catch((error) => {
+        loadingTask.value = false;
+        taskStatus.value = "failure";
+        taskMessage.value =
+          error?.response?.data?.detail || "Polling task non riuscito.";
+        fermaPolling();
+      });
+    }, 2000);
+  } catch (error) {
+    loadingTask.value = false;
+    taskStatus.value = "failure";
+    taskMessage.value =
+      error?.response?.data?.detail || "Accodamento report non riuscito.";
+  }
+}
+
+onBeforeUnmount(() => {
+  fermaPolling();
+});
 
 const righeDocumenti = [
   {
@@ -181,6 +264,73 @@ const righeDocumenti = [
             :value="indicatore.value"
             :note="indicatore.note"
           />
+        </div>
+
+        <div class="mt-8 rounded-[1.5rem] border border-steel-200 bg-steel-50/80 p-5">
+          <div class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+            <div class="max-w-2xl">
+              <SectionLabel>Async Queue Demo</SectionLabel>
+              <h3 class="mt-3 text-2xl font-semibold text-steel-900">
+                Generazione report con Celery e Redis
+              </h3>
+              <p class="mt-3 text-sm leading-6 text-steel-700">
+                Questo blocco dimostra il flusso `POST /reports/generate` seguito
+                dal polling leggero su `GET /tasks/{taskId}/status`.
+              </p>
+            </div>
+
+            <div class="flex w-full max-w-xl flex-col gap-3 xl:items-end">
+              <input
+                v-model="tenantIdInput"
+                class="campo-input w-full"
+                type="text"
+                placeholder="Tenant ID da elaborare"
+              />
+              <BaseButton
+                type="button"
+                variant="secondary"
+                :disabled="loadingTask"
+                @click="avviaTaskReport"
+              >
+                {{ loadingTask ? "Report in esecuzione..." : "Avvia report asincrono" }}
+              </BaseButton>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-2xl border border-steel-200 bg-white p-4">
+            <div class="mb-4 flex flex-wrap gap-3">
+              <span class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-steel-700">
+                Ruolo: {{ authStore.user?.role_code || "guest" }}
+              </span>
+              <span class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-steel-700">
+                Permessi: {{ authStore.permissions.join(", ") || "nessuno" }}
+              </span>
+            </div>
+            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-steel-400">
+                  Stato task
+                </p>
+                <p class="mt-2 text-sm font-medium text-steel-900">
+                  {{ taskStatus }}
+                  <span v-if="taskId" class="text-steel-500">· {{ taskId }}</span>
+                </p>
+                <p class="mt-2 text-sm text-steel-700">{{ taskMessage }}</p>
+              </div>
+              <p class="text-2xl font-semibold text-brand-700">{{ taskProgress }}%</p>
+            </div>
+
+            <div class="mt-4 h-3 overflow-hidden rounded-full bg-steel-100">
+              <div
+                class="h-full rounded-full bg-[linear-gradient(90deg,#8c1d18_0%,#d2412e_100%)] transition-all duration-500"
+                :style="{ width: `${taskProgress}%` }"
+              />
+            </div>
+
+            <p v-if="resultUrl" class="mt-4 text-sm text-steel-700">
+              File pronto: <span class="font-medium text-steel-900">{{ resultUrl }}</span>
+            </p>
+          </div>
         </div>
       </BaseCard>
 
