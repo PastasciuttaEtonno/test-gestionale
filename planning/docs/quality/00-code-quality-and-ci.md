@@ -54,12 +54,14 @@ Workflow:
 
 - `.github/workflows/checks.yml`
 - `.github/workflows/publish-backend-image.yml`
+- `.github/workflows/deploy-backend-aruba.yml`
 
 Job:
 
 - `backend-checks`
 - `frontend-checks`
 - `publish-backend-image`
+- `deploy-backend-aruba`
 
 La pipeline deve restare veloce. Se un controllo introduce troppo attrito, va giustificato
 prima di essere reso obbligatorio.
@@ -135,3 +137,15 @@ Scope non necessari per il solo pull:
 - `delete:packages`
 
 Il PAT per Aruba va trattato come secret runtime del server, non come credenziale da usare per la publication standard del workflow.
+
+## Disciplina iniziale di deploy
+
+E presente una prima pipeline di deploy backend su Aruba:
+
+- trigger manuale via `workflow_dispatch`
+- pull immagine backend da `GHCR`
+- migration Alembic eseguita prima del rollout runtime
+- restart controllato di `core_service` e `celery_worker`
+- verifica finale di `/health/ready`
+
+Questa pipeline e intenzionalmente backend-only e non copre ancora frontend, reverse proxy o TLS.

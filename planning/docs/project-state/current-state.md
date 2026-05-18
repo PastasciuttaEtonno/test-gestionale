@@ -84,13 +84,14 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 
 - workflow `.github/workflows/checks.yml` attivo come quality gate minimo
 - workflow `.github/workflows/publish-backend-image.yml` attivo per la publication backend su `GHCR`
+- workflow `.github/workflows/deploy-backend-aruba.yml` preparato per deploy backend manuale via SSH
 - publication backend pensata per partire con `GITHUB_TOKEN`, non con PAT manuale
 - requisito repository GitHub noto: `Settings > Actions > General > Workflow permissions = Read and write permissions`
 - naming immagine backend atteso: `ghcr.io/<owner-lowercase>/<repo-lowercase>-backend`
 - tag backend attesi: `sha-<commit>`, `main`, `latest`
-- pull futuro da Aruba non ancora automatizzato
-- per Aruba e gia definita la regola operativa: package privato letto via `PAT classic` con scope minimo `read:packages`
-- deploy Aruba, login `GHCR` server-side e rollout SSH restano step successivi
+- pull da Aruba previsto via `PAT classic` con scope minimo `read:packages`
+- compose backend dedicato per Aruba preparato in `docker-compose.aruba.yml`
+- deploy Aruba resta da configurare con secret reali e primo test ambiente
 
 ## Decisioni attive
 

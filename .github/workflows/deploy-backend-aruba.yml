@@ -1,0 +1,203 @@
+name: Deploy Backend Aruba
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Tag immagine backend GHCR da deployare (es. sha-..., main, latest)"
+        required: true
+        default: "main"
+      skip_migrations:
+        description: "Saltare le migration Alembic per questo deploy"
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-backend-aruba
+  cancel-in-progress: false
+
+jobs:
+  deploy-backend-aruba:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Derive image name
+        id: image-name
+        run: |
+          owner="$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')"
+          repo="$(echo "${GITHUB_EVENT_REPOSITORY_NAME}" | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${owner}/${repo}-backend" >> "${GITHUB_OUTPUT}"
+        env:
+          GITHUB_EVENT_REPOSITORY_NAME: ${{ github.event.repository.name }}
+
+      - name: Validate deploy configuration
+        env:
+          ARUBA_SSH_HOST: ${{ secrets.ARUBA_SSH_HOST }}
+          ARUBA_SSH_PORT: ${{ secrets.ARUBA_SSH_PORT }}
+          ARUBA_SSH_USER: ${{ secrets.ARUBA_SSH_USER }}
+          ARUBA_SSH_PRIVATE_KEY: ${{ secrets.ARUBA_SSH_PRIVATE_KEY }}
+          ARUBA_SSH_KNOWN_HOSTS: ${{ secrets.ARUBA_SSH_KNOWN_HOSTS }}
+          ARUBA_BACKEND_ENV_FILE: ${{ secrets.ARUBA_BACKEND_ENV_FILE }}
+          GHCR_PULL_USERNAME: ${{ secrets.GHCR_PULL_USERNAME }}
+          GHCR_PULL_TOKEN: ${{ secrets.GHCR_PULL_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          missing=0
+
+          for secret_name in \
+            ARUBA_SSH_HOST \
+            ARUBA_SSH_PORT \
+            ARUBA_SSH_USER \
+            ARUBA_SSH_PRIVATE_KEY \
+            ARUBA_SSH_KNOWN_HOSTS \
+            ARUBA_BACKEND_ENV_FILE \
+            GHCR_PULL_USERNAME \
+            GHCR_PULL_TOKEN; do
+            if [ -z "${!secret_name}" ]; then
+              echo "::error::GitHub secret mancante: ${secret_name}"
+              missing=1
+            fi
+          done
+
+          if [ "${missing}" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Prepare SSH and deploy assets
+        id: deploy-asset-prep
+        env:
+          ARUBA_SSH_PRIVATE_KEY: ${{ secrets.ARUBA_SSH_PRIVATE_KEY }}
+          ARUBA_SSH_KNOWN_HOSTS: ${{ secrets.ARUBA_SSH_KNOWN_HOSTS }}
+          ARUBA_BACKEND_ENV_FILE: ${{ secrets.ARUBA_BACKEND_ENV_FILE }}
+          GHCR_PULL_TOKEN: ${{ secrets.GHCR_PULL_TOKEN }}
+          GHCR_PULL_USERNAME: ${{ secrets.GHCR_PULL_USERNAME }}
+          DEPLOY_PATH_VAR: ${{ vars.ARUBA_DEPLOY_PATH }}
+          BACKEND_PORT_VAR: ${{ vars.ARUBA_BACKEND_PORT }}
+          COMPOSE_PROJECT_VAR: ${{ vars.ARUBA_COMPOSE_PROJECT_NAME }}
+        run: |
+          set -euo pipefail
+
+          deploy_path="${DEPLOY_PATH_VAR:-/opt/esseduesoft/backend}"
+          backend_port="${BACKEND_PORT_VAR:-8000}"
+          compose_project_name="${COMPOSE_PROJECT_VAR:-esseduesoft-backend}"
+
+          install -m 700 -d "${HOME}/.ssh" .tmp
+
+          printf '%s\n' "${ARUBA_SSH_PRIVATE_KEY}" > "${HOME}/.ssh/id_ed25519"
+          chmod 600 "${HOME}/.ssh/id_ed25519"
+
+          printf '%s\n' "${ARUBA_SSH_KNOWN_HOSTS}" > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/known_hosts"
+
+          printf '%s' "${ARUBA_BACKEND_ENV_FILE}" | base64 -w0 > .tmp/backend.env.b64
+          printf '%s' "${GHCR_PULL_TOKEN}" > .tmp/ghcr-token.txt
+
+          cat > .tmp/deploy-backend-aruba.sh <<EOF
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          deploy_path='${deploy_path}'
+          backend_port='${backend_port}'
+          compose_project_name='${compose_project_name}'
+          image_repository='${{ steps.image-name.outputs.image }}'
+          image_tag='${{ github.event.inputs.image_tag }}'
+          skip_migrations='${{ github.event.inputs.skip_migrations }}'
+          ghcr_username='${GHCR_PULL_USERNAME}'
+
+          mkdir -p "\${deploy_path}"
+          cd "\${deploy_path}"
+
+          chmod 600 backend.env.b64 ghcr-token.txt docker-compose.aruba.yml deploy-backend-aruba.sh
+
+          base64 -d backend.env.b64 > backend.env
+          rm -f backend.env.b64
+
+          cat > .deploy.env <<ENVVARS
+          BACKEND_IMAGE_REPOSITORY=\${image_repository}
+          BACKEND_IMAGE_TAG=\${image_tag}
+          BACKEND_PORT=\${backend_port}
+          ENVVARS
+
+          echo "Login a GHCR..."
+          docker login ghcr.io -u "\${ghcr_username}" --password-stdin < ghcr-token.txt
+          rm -f ghcr-token.txt
+
+          export COMPOSE_PROJECT_NAME="\${compose_project_name}"
+
+          echo "Pull immagini applicative..."
+          docker compose --env-file .deploy.env -f docker-compose.aruba.yml pull db_migrator core_service celery_worker
+
+          if [ "\${skip_migrations}" != "true" ]; then
+            echo "Esecuzione migration Alembic..."
+            docker compose --env-file .deploy.env -f docker-compose.aruba.yml run --rm db_migrator
+          else
+            echo "Migration saltate su richiesta."
+          fi
+
+          echo "Avvio o aggiornamento runtime backend..."
+          docker compose --env-file .deploy.env -f docker-compose.aruba.yml up -d core_service celery_worker
+
+          echo "Attesa readiness backend..."
+          for attempt in \$(seq 1 20); do
+            if curl -fsS "http://127.0.0.1:\${backend_port}/health/ready" > /dev/null; then
+              echo "Backend pronto."
+              break
+            fi
+
+            if [ "\${attempt}" -eq 20 ]; then
+              echo "Healthcheck finale fallito." >&2
+              exit 1
+            fi
+
+            sleep 3
+          done
+
+          docker compose --env-file .deploy.env -f docker-compose.aruba.yml ps
+          EOF
+
+          chmod 600 .tmp/deploy-backend-aruba.sh
+
+          echo "deploy_path=${deploy_path}" >> "${GITHUB_OUTPUT}"
+          echo "backend_port=${backend_port}" >> "${GITHUB_OUTPUT}"
+
+      - name: Upload deploy files to Aruba
+        env:
+          ARUBA_SSH_HOST: ${{ secrets.ARUBA_SSH_HOST }}
+          ARUBA_SSH_PORT: ${{ secrets.ARUBA_SSH_PORT }}
+          ARUBA_SSH_USER: ${{ secrets.ARUBA_SSH_USER }}
+          DEPLOY_PATH: ${{ steps.deploy-asset-prep.outputs.deploy_path }}
+        run: |
+          set -euo pipefail
+
+          ssh -i "${HOME}/.ssh/id_ed25519" -p "${ARUBA_SSH_PORT}" "${ARUBA_SSH_USER}@${ARUBA_SSH_HOST}" "mkdir -p '${DEPLOY_PATH}'"
+
+          scp \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -P "${ARUBA_SSH_PORT}" \
+            docker-compose.aruba.yml \
+            .tmp/backend.env.b64 \
+            .tmp/ghcr-token.txt \
+            .tmp/deploy-backend-aruba.sh \
+            "${ARUBA_SSH_USER}@${ARUBA_SSH_HOST}:${DEPLOY_PATH}/"
+
+      - name: Run remote deploy
+        env:
+          ARUBA_SSH_HOST: ${{ secrets.ARUBA_SSH_HOST }}
+          ARUBA_SSH_PORT: ${{ secrets.ARUBA_SSH_PORT }}
+          ARUBA_SSH_USER: ${{ secrets.ARUBA_SSH_USER }}
+          DEPLOY_PATH: ${{ steps.deploy-asset-prep.outputs.deploy_path }}
+        run: |
+          set -euo pipefail
+
+          ssh \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -p "${ARUBA_SSH_PORT}" \
+            "${ARUBA_SSH_USER}@${ARUBA_SSH_HOST}" \
+            "cd '${DEPLOY_PATH}' && bash ./deploy-backend-aruba.sh"

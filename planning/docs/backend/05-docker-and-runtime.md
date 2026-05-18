@@ -12,6 +12,7 @@ Usare Docker non come formalita, ma come ambiente minimo ripetibile per:
 ## File attivi
 
 - [docker-compose.yml](/c:/Users/ivan.lisciotto_webra/Desktop/project/docker-compose.yml)
+- [docker-compose.aruba.yml](/c:/Users/ivan.lisciotto_webra/Desktop/project/docker-compose.aruba.yml)
 - [backend/Dockerfile](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/Dockerfile)
 - [backend/.env.example](/c:/Users/ivan.lisciotto_webra/Desktop/project/backend/.env.example)
 
@@ -128,3 +129,7 @@ Portare la stessa disciplina nel deploy reale Aruba con job GitHub Actions separ
 - migration
 - rollout web
 - rollout worker
+
+Questo step e ora preparato tramite:
+
+- [planning/docs/backend/12-aruba-deploy-setup.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/12-aruba-deploy-setup.md)

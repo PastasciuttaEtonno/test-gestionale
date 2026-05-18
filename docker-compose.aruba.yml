@@ -1,0 +1,29 @@
+services:
+  db_migrator:
+    image: ${BACKEND_IMAGE_REPOSITORY}:${BACKEND_IMAGE_TAG}
+    restart: "no"
+    env_file:
+      - ./backend.env
+    command: ["/app/.venv/bin/alembic", "upgrade", "head"]
+
+  core_service:
+    image: ${BACKEND_IMAGE_REPOSITORY}:${BACKEND_IMAGE_TAG}
+    container_name: esseduesoft_core_service
+    restart: unless-stopped
+    env_file:
+      - ./backend.env
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready').read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  celery_worker:
+    image: ${BACKEND_IMAGE_REPOSITORY}:${BACKEND_IMAGE_TAG}
+    container_name: esseduesoft_celery_worker
+    restart: unless-stopped
+    env_file:
+      - ./backend.env
+    command: ["/app/.venv/bin/celery", "-A", "app.core.celery_app:celery_app", "worker", "--loglevel=info"]

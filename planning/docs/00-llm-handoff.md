@@ -6,7 +6,6 @@ Questo documento serve come punto di ingresso rapido per un altro LLM o per un a
 
 ## Contesto progetto
 
-- azienda: **Esseduesoft S.r.l.**
 - dominio: gestionale enterprise per aziende ceramiche/logistiche
 - origine: applicativo desktop legacy in VB/VB.NET
 - target: web app moderna
@@ -210,7 +209,8 @@ Ordine consigliato:
 4. [planning/docs/architecture/production-readiness-execution-backlog.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-execution-backlog.md)
 5. [planning/docs/backend/10-backend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
 6. [planning/docs/backend/11-tenant-admin-configuration.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
-7. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
+7. [planning/docs/backend/12-aruba-deploy-setup.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/12-aruba-deploy-setup.md)
+8. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
 
 ## Prossimi step coerenti
 

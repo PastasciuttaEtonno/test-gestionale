@@ -25,6 +25,7 @@ Documento guida principale per il backend:
 
 - [10-backend-usage-and-maintenance-guide.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
 - [11-tenant-admin-configuration.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
+- [12-aruba-deploy-setup.md](/c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/12-aruba-deploy-setup.md)
 
 Documento architetturale per il salto a produzione:
 
