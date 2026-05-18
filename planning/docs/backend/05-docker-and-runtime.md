@@ -62,6 +62,65 @@ La pipeline di publication:
 - parte solo dopo il successo del workflow `Checks` su `main`
 - costruisce l'immagine partendo dal `backend/Dockerfile`
 
+## Setup Registry e Aruba
+
+### Publication da GitHub Actions
+
+Il workflow `.github/workflows/publish-backend-image.yml` usa gia il token effimero del job:
+
+- login registry con `github.actor`
+- password `secrets.GITHUB_TOKEN`
+- permessi richiesti al job:
+  - `contents: read`
+  - `packages: write`
+
+Prerequisito repository:
+
+- `Settings > Actions > General > Workflow permissions`
+- valore richiesto: `Read and write permissions`
+
+Questo e sufficiente per pubblicare su `GHCR` senza PAT aggiuntivi.
+
+### Pull futuro da Aruba
+
+Sul server Aruba la situazione e diversa: il server non gira dentro GitHub Actions e quindi non puo usare `GITHUB_TOKEN`.
+
+Per il pull privato da `GHCR` servira:
+
+- un utente GitHub o service account leggibile dal server
+- un `Personal Access Token (classic)` con almeno:
+  - `read:packages`
+
+Comando tipico lato server:
+
+```bash
+docker login ghcr.io -u <github-username> -p <pat-read-packages>
+```
+
+Poi:
+
+```bash
+docker pull ghcr.io/<owner>/<repo>-backend:sha-<commit>
+```
+
+### Gestione corretta dei secret
+
+Non mettere il PAT Aruba:
+
+- nel repository
+- in `.env.example`
+- hardcodato in script shell versionati
+
+Strategia consigliata:
+
+- secret memorizzato nella piattaforma CI per il deploy
+- oppure secret installato direttamente sulla VM Aruba
+- rotazione periodica del PAT
+
+### Nota operativa
+
+Se il package GHCR resta privato, il deploy Aruba fallira finche il server non ha eseguito con successo `docker login ghcr.io`.
+
 ## Step successivo
 
 Portare la stessa disciplina nel deploy reale Aruba con job GitHub Actions separato per:

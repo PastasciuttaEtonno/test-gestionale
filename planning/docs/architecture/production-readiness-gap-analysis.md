@@ -140,6 +140,18 @@ Target pragmatico:
    - restart controllato web e worker
    - verifica healthcheck
 
+### Nota pratica GHCR
+
+Per la publication da GitHub Actions non serve introdurre subito un PAT custom se il repository usa:
+
+- `GITHUB_TOKEN`
+- job permissions corrette
+- `Workflow permissions = Read and write` nel repository
+
+Il PAT serve invece lato server Aruba per il pull di immagini private da `GHCR`, tipicamente con scope minimo:
+
+- `read:packages`
+
 ### Obiettivo zero-downtime pragmatico
 
 - almeno 2 istanze web dietro proxy

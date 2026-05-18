@@ -56,6 +56,7 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - baseline test backend introdotta su `health`, `auth` e RBAC tenant-aware, eseguita anche in CI
 - migration discipline iniziale introdotta: `db_migrator` separato da web e worker nel runtime Docker
 - publication discipline iniziale introdotta: workflow GitHub Actions per publish backend image su `GHCR`
+- setup operativo GHCR chiarito: publish via `GITHUB_TOKEN`, futuro pull Aruba via PAT `read:packages`
 - dipendenze frontend aggiornate a versioni recenti e prive di vulnerabilita note da `npm audit`
 - immagini Docker principali aggiornate e pin esplicite
 
