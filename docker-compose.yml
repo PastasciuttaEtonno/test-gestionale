@@ -60,7 +60,7 @@ services:
         condition: service_completed_successfully
 
   db_service:
-    image: postgres:17.9-alpine3.23
+    image: postgres:17.10-alpine3.23
     container_name: esseduesoft_db_service
     environment:
       POSTGRES_DB: esseduesoft
@@ -77,7 +77,7 @@ services:
       retries: 5
 
   redis_service:
-    image: redis:8.2.1-alpine3.22
+    image: redis:8.2.6-alpine3.22
     container_name: esseduesoft_redis_service
     ports:
       - "6379:6379"

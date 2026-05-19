@@ -33,9 +33,28 @@ Usare Docker non come formalita, ma come ambiente minimo ripetibile per:
 ## Immagini correnti
 
 - backend runtime: `python:3.12.13-slim-trixie`
-- tool `uv` copiato da: `ghcr.io/astral-sh/uv:0.11.11`
-- database: `postgres:17.9-alpine3.23`
-- redis: `redis:8.2.1-alpine3.22`
+- tool `uv` copiato da: `ghcr.io/astral-sh/uv:0.11.14`
+- database: `postgres:17.10-alpine3.23`
+- redis: `redis:8.2.6-alpine3.22`
+
+## Verifica aggiornamento immagini
+
+Le immagini principali usate in runtime, build e pipeline sono state ricontrollate rispetto ai tag ufficiali correnti.
+
+Esito sintetico:
+
+- `python:3.12.13-slim-trixie`
+  - gia allineata alla patch corrente della linea `3.12`
+- `ghcr.io/astral-sh/uv`
+  - aggiornata da `0.11.11` a `0.11.14`
+- `postgres`
+  - aggiornato da `17.9-alpine3.23` a `17.10-alpine3.23`
+- `redis`
+  - aggiornato da `8.2.1-alpine3.22` a `8.2.6-alpine3.22`
+- `node`
+  - aggiornato in `frontend/Dockerfile` da `24.14.1-alpine3.23` a `24.15.0-alpine3.23`
+
+Per le GitHub Actions runner e stato anche eliminato il riferimento flottante `ubuntu-latest` in favore di `ubuntu-24.04`, cosi da ridurre drift e sorprese tra run successive.
 
 ## Disciplina corrente
 

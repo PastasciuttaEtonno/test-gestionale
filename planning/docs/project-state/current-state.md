@@ -59,6 +59,7 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - setup operativo GHCR chiarito: publish via `GITHUB_TOKEN`, futuro pull Aruba via PAT `read:packages`
 - dipendenze frontend aggiornate a versioni recenti e prive di vulnerabilita note da `npm audit`
 - immagini Docker principali aggiornate e pin esplicite
+- immagini runtime e build ricontrollate rispetto ai tag ufficiali correnti; aggiornati `uv`, `node`, `postgres` e `redis`, mantenuto `python 3.12.13` e runner CI pin a `ubuntu-24.04`
 
 ## Stato frontend attuale
 

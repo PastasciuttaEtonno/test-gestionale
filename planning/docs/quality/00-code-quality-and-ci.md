@@ -66,6 +66,12 @@ Job:
 La pipeline deve restare veloce. Se un controllo introduce troppo attrito, va giustificato
 prima di essere reso obbligatorio.
 
+Nota operativa sulle runner image:
+
+- le workflow principali usano ora `ubuntu-24.04`
+- si evita `ubuntu-latest` per ridurre drift non controllato del runtime CI
+- il criterio adottato e: restare su una base recente, ma pin esplicito dove la ripetibilita conta
+
 Baseline attuale backend in CI:
 
 - test route-level su `health`
