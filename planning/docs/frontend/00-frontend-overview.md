@@ -22,13 +22,19 @@ Fornire un client web minimale in `Vue 3` per validare il modulo `Auth & Identit
 - inizializzazione sessione tramite endpoint `POST /api/v1/auth/refresh`
 - refresh automatico del token su `401`
 - frontend completamente responsive mobile-first (375px → desktop)
-- sidebar ERP off-canvas su mobile, statica su desktop, gestita da `useSidebar.js`
-- mockup ERP standard-user con sidebar, toolbar e griglia dati con filtri reali (testo libero + Select tipo/stato)
-- demo di task asincrono report con polling ogni 2 secondi
+- sidebar di navigazione globale in `AppShell`: persistente su desktop (colonna sinistra), drawer off-canvas su mobile via hamburger, gestita da `useSidebar.js`
+- la sidebar mostra: Dashboard, Anagrafiche (reali), Tenant Admin / Super Admin (role-gated), moduli mockup futuri (Bolle, Fatture…) chiaramente disabilitati
+- chiusura automatica del drawer al cambio di route (watch sul prop `routeName`)
+- mockup ERP standard-user con toolbar e griglia dati con filtri reali (testo libero + Select tipo/stato)
+- demo di task asincrono report con SSE real-time
 - console `Tenant Admin` statica per l'azienda cliente
 - console `Super Admin` statica per il personale Gestionale
 - componenti UI condivisi per shell, card, bottoni, badge, label, tile KPI
-- PrimeVue integrato per: Tooltip, Avatar, InputText, Select, Tag, ProgressBar
+- PrimeVue integrato per: Tooltip, Avatar, IconField, InputIcon, InputText, Select, Tag, Dialog, ProgressBar
+- **Anagrafiche** — primo modulo business collegato ad API reali:
+  - `AnagraficheView`: lista filtrata (IconField+InputText, Select tipo con PT, toggle "Solo attivi", reset filtri), righe cliccabili, modale create/edit, soft-delete
+  - `AnagraficaDetailView`: hero card, dati fiscali, fatturazione elettronica, indirizzi, sidebar riepilogo, pulsante back con hover animato
+  - routing `/anagrafiche` e `/anagrafiche/:id` con guardia `anagrafiche.read`
 
 ## Scelte attive
 

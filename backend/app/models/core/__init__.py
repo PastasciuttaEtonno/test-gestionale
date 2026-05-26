@@ -1,5 +1,7 @@
 """Pacchetto dei modelli core tenant-aware."""
 
+from app.models.core.anagrafica import Anagrafica
+from app.models.core.anagrafica_indirizzo import AnagraficaIndirizzo
 from app.models.core.bom import Bom
 from app.models.core.finance_cost_entry import FinanceCostEntry
 from app.models.core.notification import Notification
@@ -8,6 +10,8 @@ from app.models.core.tenant_document_sequence import TenantDocumentSequence
 from app.models.core.tenant_smtp_settings import TenantSmtpSettings
 
 __all__ = [
+    "Anagrafica",
+    "AnagraficaIndirizzo",
     "Bom",
     "FinanceCostEntry",
     "Notification",

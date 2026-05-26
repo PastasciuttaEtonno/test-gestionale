@@ -13,8 +13,8 @@ Questo documento serve come punto di ingresso rapido per un altro LLM o per un a
 
 ## Stato reale del progetto
 
-Il progetto **non** e ancora nel dominio business principale.  
-La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
+Il progetto ha completato il nucleo tecnico e il **primo modulo business reale** (Anagrafiche).  
+La parte realmente costruita oggi include:
 
 - backend FastAPI reale
 - PostgreSQL reale
@@ -53,6 +53,12 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - `GET /api/v1/events/stream` — SSE stream autenticato (Bearer o `?token=`)
 - `GET/PATCH/POST /api/v1/notifications` — Notification Center persistito
 - `EventPublisher` (async) e `SyncEventPublisher` (Celery sync) per publish su bus Redis Pub/Sub
+- **Anagrafiche** — primo modulo business reale tenant-aware:
+  - CRUD clienti, fornitori, agenti con P.IVA, CF, codice SDI, PEC
+  - Indirizzi multipli per tipo (legale, operativo, spedizione, fatturazione)
+  - Permessi RBAC: `anagrafiche.read/write/delete`
+  - Seed demo 6 soggetti realistici (ceramica/logistica)
+- **UUID nativo PostgreSQL** su tutte le colonne id/FK (migration 0008)
 
 ### Frontend
 
@@ -65,6 +71,9 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - `NotificationBell` nell'header con badge unread e pannello dropdown
 - console `Super Admin` statica
 - console `Tenant Admin` statica
+- **sidebar di navigazione globale** in `AppShell`: Desktop (colonna xl:248px) + mobile drawer via hamburger; voci reali: Dashboard, Anagrafiche, Tenant Admin, Super Admin; voci mockup disabilitate: Bolle, Fatture, Articoli, Spedizioni, Scadenze
+- **`AnagraficheView`** (`/anagrafiche`): lista filtrata con `IconField`+`InputText`+`Select` PrimeVue PT, toggle "Solo attivi", reset filtri, righe cliccabili verso la detail, modale create/edit, soft-delete
+- **`AnagraficaDetailView`** (`/anagrafiche/:id`): hero card, dati fiscali, SDI/PEC, indirizzi, sidebar riepilogo, bottone back con hover animato
 
 ## Cosa e solo mockup
 
@@ -82,7 +91,7 @@ Il frontend oggi e soprattutto:
 
 ## Cosa non esiste ancora
 
-- anagrafiche reali
+- gestione indirizzi anagrafiche da frontend (CRUD indirizzi disponibile da API, non ancora esposto in UI)
 - bolle reali
 - fatture reali
 - spedizioni reali

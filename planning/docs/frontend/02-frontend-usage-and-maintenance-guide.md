@@ -143,8 +143,15 @@ La response interceptor:
 - la sidebar ERP deve evolvere tramite componenti condivisi e non con markup duplicato nelle viste
 - ogni nuova view deve essere mobile-first: definire il layout mobile prima dei breakpoint desktop
 - lo stato del drawer mobile e gestito da `useSidebar.js` — non creare altri sistemi di stato per navigazione
+- la sidebar e in `AppShell`, non nelle singole view — aggiungere nuove voci reali li dentro con `RouterLink`, mai duplicare la sidebar in una view
+- i moduli non ancora implementati vanno nella sezione "In arrivo" della sidebar come voci disabilitate (`cursor-not-allowed`, `text-white/28`) — non come RouterLink
+- per aggiungere un nuovo modulo alla navigazione: 1) aggiungere la route in `router/index.js`, 2) aggiungere il `RouterLink` nella sezione "Moduli" di `AppShell`, 3) rimuoverlo dalla sezione "In arrivo"
 - PrimeVue: usare solo in modalita `unstyled: true` con PT Tailwind — mai importare `primevue/passthrough/tailwind` (Tailwind v3 only) o `@primevue/themes`
 - PT inline per componente se usato in un solo punto; estrarre in `src/plugins/primevue-pt.js` se usato in piu viste
+- non sostituire `<Select>` PrimeVue con `<select>` nativo per problemi di stile — definire il PT completo (root, label, dropdown, overlay, list, option, clearIcon); vedi pattern in `DashboardView.vue` e `AnagraficheView.vue`
+- per input con icona usare sempre `IconField` + `InputIcon` + `InputText` con PT — non wrappare l'input in un `<div>` con SVG absolute
+- toggle booleani semplici (es. "Solo attivi") si implementano con `<button>` nativo + span animato Tailwind — nessun componente PrimeVue necessario
+- le view con navigazione master/detail (`AnagraficheView` → `AnagraficaDetailView`) usano route con `props: true` e parametro `:id` — il `tenant_id` non transita mai come prop o query param
 
 ### Evoluzione futura
 

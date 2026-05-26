@@ -158,7 +158,8 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - compose backend dedicato per Aruba preparato in `docker-compose.aruba.yml`
 - deploy Aruba resta da configurare con secret reali e primo test ambiente
 - frontend completamente responsive mobile-first (375px → 1280px+)
-- sidebar ERP off-canvas su mobile con overlay scrim e transizione fade; statica su desktop
+- **sidebar di navigazione globale** in `AppShell` (refactoring da DashboardView): colonna fissa `248px` su desktop `xl`, drawer off-canvas su mobile via hamburger, overlay scrim, chiusura automatica al cambio route
+- voci reali: Dashboard, Anagrafiche, Tenant Admin (role), Super Admin (role); voci mockup disabilitate: Bolle, Fatture, Articoli, Spedizioni, Scadenze
 - stato drawer condiviso tramite composable `useSidebar.js` (module-level reactive)
 - tabelle con column hiding responsive in tutte le view
 - griglia KPI con `grid-cols-1 → md:grid-cols-2 → xl:grid-cols-4`
@@ -167,6 +168,10 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - `ProgressBar` PrimeVue per utilizzo risorse DB e utenti in AdminOnlyView
 - `Avatar` e `Tooltip` PrimeVue in AppShell
 - `AppShell` aggiornata con header mobile (burger + brand center + logout compatto) e desktop invariato
+- **`AnagraficheView`**: lista anagrafiche reale con filtri (IconField+InputText+Select con PT completo, toggle "Solo attivi" nativo, reset filtri), righe cliccabili verso detail, modale create/edit (`Dialog` PrimeVue PT), soft-delete
+- **`AnagraficaDetailView`**: view dettaglio singola anagrafica — hero, dati fiscali, SDI/PEC, indirizzi, sidebar riepilogo, bottone back con hover + micro-animazione freccia
+- route `/anagrafiche/:id` con `props: true` e guardia `anagrafiche.read` nel router
+- `Dialog` PrimeVue introdotto (unstyled + PT) per i form modali Anagrafiche
 
 ## Stato delivery e runtime operativo
 

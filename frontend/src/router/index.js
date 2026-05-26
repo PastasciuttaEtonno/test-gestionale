@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useAuthStore } from "../stores/auth";
 import AdminOnlyView from "../views/AdminOnlyView.vue";
+import AnagraficaDetailView from "../views/AnagraficaDetailView.vue";
+import AnagraficheView from "../views/AnagraficheView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -29,6 +31,25 @@ const router = createRouter({
       component: DashboardView,
       meta: {
         requiresAuth: true,
+      },
+    },
+    {
+      path: "/anagrafiche",
+      name: "anagrafiche",
+      component: AnagraficheView,
+      meta: {
+        requiresAuth: true,
+        requiredPermissions: ["anagrafiche.read"],
+      },
+    },
+    {
+      path: "/anagrafiche/:id",
+      name: "anagrafica-detail",
+      component: AnagraficaDetailView,
+      props: true,
+      meta: {
+        requiresAuth: true,
+        requiredPermissions: ["anagrafiche.read"],
       },
     },
     {

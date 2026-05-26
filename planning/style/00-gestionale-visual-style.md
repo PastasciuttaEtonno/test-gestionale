@@ -134,6 +134,9 @@ componenti custom.
 - **Non importare** `primeicons` — usare SVG inline per le icone dei componenti.
 - **Non usare PrimeVue** per `<input>` semplici, toggle booleani, o elementi che non aggiungono
   logica reale rispetto a HTML nativo — es. il toggle password usa `ref` locale + `<input :type>`.
+- **Non sostituire `<Select>` con `<select>` nativo** per allineare lo stile — la soluzione corretta
+  è definire un PT completo (root, label, dropdown, overlay, list, option, clearIcon). Il `<select>`
+  nativo non porta keyboard nav né `show-clear` e rende il codebase incoerente.
 
 ### Componenti attivi
 
@@ -141,9 +144,10 @@ componenti custom.
 |---|---|---|
 | `Tooltip` | AppShell | Tooltip accessibili senza implementazione custom |
 | `Avatar` | AppShell | Label avatar con fallback iniziale |
-| `IconField` + `InputIcon` + `InputText` | DashboardView | Input con icona posizionata correttamente |
-| `Select` | DashboardView | Dropdown con keyboard nav, `show-clear`, opzioni filtrabili |
-| `Tag` | DashboardView, AdminOnlyView, TenantAdminView | Badge semantico con PT status-aware |
+| `IconField` + `InputIcon` + `InputText` | DashboardView, AnagraficheView | Input con icona posizionata correttamente |
+| `Select` | DashboardView, AnagraficheView, form modali | Dropdown con keyboard nav, `show-clear`, opzioni filtrabili |
+| `Tag` | DashboardView, AdminOnlyView, TenantAdminView, AnagraficheView, AnagraficaDetailView | Badge semantico con PT status-aware |
+| `Dialog` | AnagraficheView, AnagraficaDetailView | Modale create/edit con footer azioni |
 | `ProgressBar` | AdminOnlyView | Barra utilizzo risorse con valore percentuale |
 
 ### Componenti candidati futuri
@@ -193,8 +197,9 @@ function ptTag(stato) {
 | Componente | Approccio |
 |---|---|
 | BaseButton, BaseCard, SectionLabel, KpiTile, SidebarSection | Scritto a mano con Tailwind — nessuna dipendenza da PrimeVue |
-| Tooltip, Avatar, InputText, Select, Tag, ProgressBar | PrimeVue unstyled + PT Tailwind |
-| DataTable, Dialog, DatePicker, MultiSelect | PrimeVue unstyled + PT Tailwind — da introdurre nella fase dati reali |
+| Toggle booleano (es. "Solo attivi") | `<button>` nativo con span animato Tailwind — non serve PrimeVue |
+| Tooltip, Avatar, InputText, IconField, InputIcon, Select, Tag, Dialog, ProgressBar | PrimeVue unstyled + PT Tailwind |
+| DataTable, DatePicker, MultiSelect | PrimeVue unstyled + PT Tailwind — da introdurre nella fase dati reali |
 
 ### PT inline vs condiviso
 

@@ -9,13 +9,10 @@ import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
 import KpiTile from "../components/ui/KpiTile.vue";
 import SectionLabel from "../components/ui/SectionLabel.vue";
-import SidebarSection from "../components/ui/SidebarSection.vue";
 import { useAuthStore } from "../stores/auth";
 import { useDashboardStore } from "../stores/dashboard";
 import { useTasksStore } from "../stores/tasks";
 import { avviaGenerazioneReport } from "../services/reports";
-import { useSidebar } from "../composables/useSidebar";
-const { drawerAperto, chiudiDrawer } = useSidebar();
 const authStore = useAuthStore();
 const tasksStore = useTasksStore();
 const dashboardStore = useDashboardStore();
@@ -67,19 +64,6 @@ const ptTagStato = {
       "inline-flex min-w-[108px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700",
   },
 };
-
-const vociSidebar = [
-  {
-    gruppo: "Operativita",
-    items: ["Dashboard", "Clienti", "Articoli", "Bolle", "Fatture", "Spedizioni"],
-  },
-  {
-    gruppo: "Consultazione",
-    items: ["Scadenze", "Listini", "Movimenti", "Archivio documenti"],
-  },
-];
-
-const voceAttivaSidebar = "Bolle";
 
 const indicatori = [
   {
@@ -222,77 +206,7 @@ const righeFiltraite = computed(() => {
 </script>
 
 <template>
-  <div class="relative grid gap-4 xl:gap-6 xl:grid-cols-[248px_minmax(0,1fr)]">
-
-    <!-- Overlay scrim (mobile) -->
-    <Transition name="fade">
-      <div
-        v-if="drawerAperto"
-        class="fixed inset-0 z-30 bg-steel-900/60 xl:hidden"
-        @click="chiudiDrawer"
-      />
-    </Transition>
-
-    <!-- Sidebar -->
-    <aside
-      :class="drawerAperto ? 'translate-x-0' : '-translate-x-full'"
-      class="fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto rounded-none border-r border-steel-200 bg-[#232a31] p-4 text-white shadow-panel transition-transform duration-300 xl:static xl:z-auto xl:w-auto xl:translate-x-0 xl:overflow-visible xl:rounded-[1.75rem] xl:border xl:border-steel-200"
-    >
-
-      <!-- Close button (mobile only) -->
-      <div class="mb-4 flex items-center justify-between xl:hidden">
-        <span class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-100">Menu operativo</span>
-        <button
-          type="button"
-          class="flex h-9 w-9 items-center justify-center rounded-xl text-white/60 transition hover:bg-white/10 hover:text-white"
-          @click="chiudiDrawer"
-        >
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
-
-      <div class="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] px-4 py-4">
-        <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-xs font-semibold uppercase tracking-[0.2em] text-white">
-            OP
-          </div>
-          <div>
-            <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-100">
-              Menu operativo
-            </p>
-            <p class="mt-1 text-sm font-medium text-white">Workspace standard</p>
-          </div>
-        </div>
-        <p class="mt-3 text-sm leading-6 text-white/74">
-          Navigazione laterale pensata per utenti standard del gestionale.
-        </p>
-      </div>
-
-      <div class="mt-6 space-y-5">
-        <SidebarSection
-          v-for="sezione in vociSidebar"
-          :key="sezione.gruppo"
-          :title="sezione.gruppo"
-          :items="sezione.items"
-          :active-item="voceAttivaSidebar"
-        />
-      </div>
-
-      <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/42">
-          Attenzione
-        </p>
-        <p class="mt-2 text-sm font-medium text-white">4 anagrafiche incomplete</p>
-        <p class="mt-2 text-sm leading-6 text-white/68">
-          Verificare indirizzi di consegna e dati fiscali prima della prossima emissione.
-        </p>
-      </div>
-    </aside>
-
-    <div class="space-y-4 sm:space-y-6">
+  <div class="space-y-4 sm:space-y-6">
       <BaseCard :highlight="true">
         <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div>
@@ -500,5 +414,4 @@ const righeFiltraite = computed(() => {
         </div>
       </BaseCard>
     </div>
-  </div>
 </template>

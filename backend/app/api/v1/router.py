@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from app.api.v1.admin.routes import router as admin_router
+from app.api.v1.anagrafiche.routes import router as anagrafiche_router
 from app.api.v1.auth.routes import router as auth_router
 from app.api.v1.events.routes import router as events_router
 from app.api.v1.notifications.routes import router as notifications_router
@@ -17,6 +18,7 @@ from app.api.v1.tenant_admin.settings_routes import router as tenant_admin_setti
 from app.api.v1.users.routes import router as users_router
 
 api_router = APIRouter()
+api_router.include_router(anagrafiche_router, prefix="/anagrafiche")
 api_router.include_router(auth_router, prefix="/auth")
 api_router.include_router(events_router, prefix="/events")
 api_router.include_router(notifications_router, prefix="/notifications")
