@@ -2,7 +2,7 @@
 
 ## Obiettivo della fase
 
-Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal modulo trasversale `Auth & Identity`.
+Preparare il nucleo tecnico del nuovo gestionale web Gestionale partendo dal modulo trasversale `Auth & Identity`.
 
 ## Stato raggiunto
 
@@ -22,6 +22,59 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - definita e applicata una prima linea stilistica del gestionale su palette grigio e rosso
 - estratti componenti UI condivisi per evitare duplicazione nelle viste frontend
 
+## Messaging Layer (aggiunto 2026-05-26)
+
+Il progetto dispone ora di un bus eventi real-time basato su **SSE + Redis Pub/Sub**.
+
+### Architettura
+
+```
+Celery worker / FastAPI route
+        │  publish() su Redis Pub/Sub (db 3 per subscriber, db 2 per publisher)
+        ▼
+Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend)
+                  (tenant-scoped)               │
+                                         Pinia eventsStore
+                                          ├─ notificationsStore (notification.new)
+                                          ├─ tasksStore (task.progress/completed/failed)
+                                          └─ dashboardStore (kpi.updated)
+```
+
+### Funzionalità implementate
+
+**STEP 1 — SSE infrastruttura base**
+- `GET /api/v1/events/stream` endpoint SSE autenticato, tenant-scoped
+- token accettato da header `Authorization: Bearer` o query param `?token=` (per EventSource browser)
+- canali Redis separati per tenant, admin e user
+- heartbeat ogni 15 secondi per keepalive
+- `EventPublisher` async per route FastAPI, `SyncEventPublisher` per Celery worker
+
+**STEP 2 — Notification Center**
+- tabella `core.notifications` (migration `20260526_0007`)
+- `NotificationService`: persist + publish atomici
+- endpoint `GET /api/v1/notifications`, `PATCH /{id}/read`, `POST /read-all`, `POST /test`
+- frontend: `NotificationBell` con badge unread, `NotificationPanel` dropdown, `useNotificationsStore`
+- `NotificationBell` integrata nell'header `AppShell` per tutti gli utenti autenticati
+
+**STEP 3 — Task Progress via SSE**
+- `report_tasks.py` pubblica `task.progress`, `task.completed`, `task.failed` su Redis ad ogni step
+- frontend: `useTasksStore` sostituisce il polling `setInterval(2s)` con listener SSE
+- dashboard aggiornata: barra di avanzamento guidata da eventi in tempo reale
+
+**STEP 4 — KPI Live Update**
+- `ProductionService.update_production_status` pubblica `kpi.updated` dopo cache invalidation
+- frontend: `useDashboardStore` si iscrive a `kpi.updated` e chiama `GET /dashboard/kpis`
+- dashboard mostra sezione "KPI Tenant Live" con auto-refresh su evento SSE
+
+### Redis db layout
+
+| db | Uso                                 |
+|----|-------------------------------------|
+| 0  | Celery broker                       |
+| 1  | Celery result backend               |
+| 2  | Cache applicativa + EventPublisher  |
+| 3  | Subscriber SSE (connessioni dedicate per stream) |
+
 ## Stato backend attuale
 
 - `FastAPI` configurato
@@ -31,6 +84,11 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - `Alembic` attivo per lo schema `security`
 - `Celery + Redis` introdotti per task asincroni backend
 - Redis asincrono introdotto anche come cache applicativa e motore di rate limiting
+- **SSE + Redis Pub/Sub** introdotti come bus eventi real-time (4 db Redis separati per responsabilita)
+- `EventPublisher` (async) e `SyncEventPublisher` (Celery) disponibili per publish su canali tenant/admin/user
+- `NotificationService` con persistenza DB + publish SSE atomici
+- task Celery pubblicano progress events via `SyncEventPublisher` invece di solo `update_state`
+- `ProductionService` pubblica `kpi.updated` dopo invalidazione cache
 - `AuthService` collegato al DB reale
 - `UserService` collegato al DB reale
 - `AuditService` collegato al DB reale
@@ -71,17 +129,23 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - store auth esteso con helper ruolo/permessi
 - `Vue Router` attivo con guardie dichiarative per auth, ruoli e permessi
 - `PrimeVue v4` integrato in modalita `unstyled: true` con Pass-Through Tailwind
-- login enterprise con toggle password nativo e copy istituzionale Esseduesoft
+- login enterprise con toggle password nativo e copy istituzionale Gestionale
 - login con access token in memoria e refresh token in cookie `HttpOnly`
 - direttiva `v-can` disponibile per la visibilita degli elementi UI
 - dashboard protetta collegata a `GET /api/v1/auth/me`
 - vista `admin-only` collegata a `GET /api/v1/admin/audit-log`
 - home gestionale di base resa comune per tutti gli utenti autenticati
 - navigazione admin nascosta ai non admin
-- area `Super Admin` Esseduesoft trasformata in mockup statico enterprise
+- area `Super Admin` Gestionale trasformata in mockup statico enterprise
 - area `Tenant Admin` cliente trasformata in mockup statico enterprise
 - console `Super Admin` e `Tenant Admin` separate anche nella navigazione e nelle guardie router
-- demo frontend di task report asincrono con polling integrata nella dashboard
+- demo frontend di task report asincrono con **SSE real-time** integrata nella dashboard (polling rimosso)
+- `NotificationBell` con badge unread nell'header AppShell per tutti gli utenti autenticati
+- `NotificationPanel` dropdown con lista notifiche, mark-read e mark-all-read
+- `useDashboardStore` con KPI reali da API e auto-refresh via evento SSE `kpi.updated`
+- `useEventsStore` come bus SSE centralizzato (EventSource browser con reconnect automatico)
+- `useTasksStore` per tracking task Celery via SSE senza polling
+- `useNotificationsStore` con caricamento iniziale + aggiornamento live via SSE
 
 - workflow `.github/workflows/checks.yml` attivo come quality gate minimo
 - workflow `.github/workflows/publish-backend-image.yml` attivo per la publication backend su `GHCR`

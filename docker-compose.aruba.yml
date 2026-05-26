@@ -8,7 +8,7 @@ services:
 
   core_service:
     image: ${BACKEND_IMAGE_REPOSITORY}:${BACKEND_IMAGE_TAG}
-    container_name: esseduesoft_core_service
+    container_name: Gestionale_core_service
     restart: unless-stopped
     env_file:
       - ./backend.env
@@ -22,7 +22,7 @@ services:
 
   celery_worker:
     image: ${BACKEND_IMAGE_REPOSITORY}:${BACKEND_IMAGE_TAG}
-    container_name: esseduesoft_celery_worker
+    container_name: Gestionale_celery_worker
     restart: unless-stopped
     env_file:
       - ./backend.env

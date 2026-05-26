@@ -12,17 +12,17 @@ class Settings(BaseSettings):
     """Configurazione runtime caricata da variabili d'ambiente."""
 
     app_env: Literal["development", "test", "staging", "production"] = "development"
-    app_name: str = "Esseduesoft Core Service"
+    app_name: str = "Gestionale Core Service"
     app_version: str = "0.1.0"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     log_json: bool = False
     request_id_header_name: str = "X-Request-ID"
     api_v1_prefix: str = "/api/v1"
-    database_url: str = Field(default="postgresql+psycopg://app:app@localhost:5432/esseduesoft")
+    database_url: str = Field(default="postgresql+psycopg://app:app@localhost:5432/gestionale")
     jwt_secret_key: str = Field(default=DEFAULT_JWT_SECRET_KEY)
     field_encryption_key: str = Field(default="5hS0d52CvtQdjq6V2N4xZfJ6S0bFFH4hD4Xf7wYmQx0=")
     jwt_algorithm: str = "HS256"
-    jwt_issuer: str = "esseduesoft-core-service"
+    jwt_issuer: str = "Gestionale-core-service"
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
     login_rate_limit_max_attempts: int = 5
@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     celery_task_default_queue: str = "default"
     celery_task_track_started: bool = True
     redis_url: str = "redis://redis_service:6379/2"
+    redis_pubsub_url: str = "redis://redis_service:6379/3"
     dashboard_kpi_cache_ttl_seconds: int = 300
     api_rate_limit_requests_per_minute: int = 100
     cors_allowed_origins: list[str] = Field(
@@ -43,7 +44,7 @@ class Settings(BaseSettings):
     trusted_proxy_ips: list[str] = Field(default_factory=list)
     auth_allowed_origins: list[str] = Field(default_factory=list)
     auth_enforce_origin_check: bool = False
-    refresh_cookie_name: str = "esseduesoft_refresh_token"
+    refresh_cookie_name: str = "Gestionale_refresh_token"
     refresh_cookie_secure: bool = False
     refresh_cookie_samesite: str = "lax"
     refresh_cookie_path: str = "/api/v1/auth"

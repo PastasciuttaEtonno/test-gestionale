@@ -26,7 +26,7 @@ Fornire un client web minimale in `Vue 3` per validare il modulo `Auth & Identit
 - mockup ERP standard-user con sidebar, toolbar e griglia dati con filtri reali (testo libero + Select tipo/stato)
 - demo di task asincrono report con polling ogni 2 secondi
 - console `Tenant Admin` statica per l'azienda cliente
-- console `Super Admin` statica per il personale Esseduesoft
+- console `Super Admin` statica per il personale Gestionale
 - componenti UI condivisi per shell, card, bottoni, badge, label, tile KPI
 - PrimeVue integrato per: Tooltip, Avatar, InputText, Select, Tag, ProgressBar
 

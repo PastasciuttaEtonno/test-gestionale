@@ -59,7 +59,7 @@ def test_login_restituisce_sessione_cookie_refresh_e_request_id(client) -> None:
     assert body["access_token"] == "access-token-demo"
     assert body["user"]["username"] == "tenant.admin"
     assert response.headers["x-request-id"]
-    assert "esseduesoft_refresh_token=refresh-token-demo" in response.headers["set-cookie"]
+    assert "Gestionale_refresh_token=refresh-token-demo" in response.headers["set-cookie"]
 
 
 def test_refresh_senza_cookie_restituisce_401(client) -> None:

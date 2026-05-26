@@ -28,6 +28,10 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - hardening auth backend con throttling multi-scope, trusted proxy espliciti e origin check sugli endpoint cookie-based
 - infrastruttura `Celery + Redis` pronta per task lunghi backend
 - Redis asincrono condiviso da FastAPI per cache KPI tenant-aware e rate limiting
+- **SSE + Redis Pub/Sub** come bus eventi real-time tenant-scoped
+- Notification Center persistito (DB + SSE)
+- Task Celery con progress events live (no polling)
+- KPI dashboard con auto-refresh su evento `kpi.updated`
 
 ## Cosa funziona davvero oggi
 
@@ -43,9 +47,12 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - configurazione aziendale tenant-aware
 - configurazione SMTP tenant-aware
 - numerazioni documentali tenant-aware
-- generazione report asincrona demo via `Celery`
+- generazione report asincrona demo via `Celery` con progress events SSE
 - KPI dashboard cacheati in Redis e invalidati per tenant
 - aggiornamenti tenant admin reali invalidano la cache KPI del tenant senza far fallire mutazioni gia committate se Redis non risponde
+- `GET /api/v1/events/stream` — SSE stream autenticato (Bearer o `?token=`)
+- `GET/PATCH/POST /api/v1/notifications` — Notification Center persistito
+- `EventPublisher` (async) e `SyncEventPublisher` (Celery sync) per publish su bus Redis Pub/Sub
 
 ### Frontend
 
@@ -53,7 +60,9 @@ La parte realmente costruita oggi e il nucleo tecnico della piattaforma:
 - access token in memoria
 - ripristino sessione via refresh da cookie `HttpOnly`
 - route guard dichiarative per ruoli e permessi
-- dashboard standard-user statica
+- dashboard con KPI reali tenant-aware + KPI mock ERP
+- task progress live via SSE (no polling)
+- `NotificationBell` nell'header con badge unread e pannello dropdown
 - console `Super Admin` statica
 - console `Tenant Admin` statica
 
@@ -81,7 +90,7 @@ Il frontend oggi e soprattutto:
 - api gateway reale
 - upload reale del logo aziendale
 - test SMTP reale
-- impersonation reale Esseduesoft
+- impersonation reale Gestionale
 
 ## Architettura corrente
 
@@ -128,7 +137,7 @@ Il frontend oggi e soprattutto:
 
 ### `admin`
 
-- e il super admin Esseduesoft
+- e il super admin Gestionale
 - vede audit globale
 - vede tutti gli utenti
 - non usa la console tenant
@@ -139,7 +148,7 @@ Il frontend oggi e soprattutto:
 - vede solo utenti del proprio tenant
 - vede solo audit locale del proprio tenant
 - gestisce configurazione aziendale del proprio tenant
-- non accede al perimetro globale Esseduesoft
+- non accede al perimetro globale Gestionale
 
 ### `manager`
 

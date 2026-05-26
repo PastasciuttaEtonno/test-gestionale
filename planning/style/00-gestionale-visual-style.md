@@ -2,7 +2,7 @@
 
 ## Obiettivo
 
-Definire una direzione visiva coerente per il gestionale Esseduesoft, in modo che
+Definire una direzione visiva coerente per il gestionale Gestionale, in modo che
 frontend e componenti futuri condividano gli stessi criteri di colore, gerarchia
 e percezione operativa.
 

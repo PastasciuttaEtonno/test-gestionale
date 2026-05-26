@@ -1,4 +1,4 @@
-# Linee Guida Responsive — Gestionale Esseduesoft
+# Linee Guida Responsive — Gestionale Gestionale
 
 ## Obiettivo
 

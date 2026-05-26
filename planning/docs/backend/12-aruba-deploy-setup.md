@@ -114,11 +114,11 @@ Username GitHub usato dal server per fare `docker login ghcr.io`.
 Se non valorizzate, il workflow usa default sensati.
 
 - `ARUBA_DEPLOY_PATH`
-  - default: `/opt/esseduesoft/backend`
+  - default: `/opt/Gestionale/backend`
 - `ARUBA_BACKEND_PORT`
   - default: `8000`
 - `ARUBA_COMPOSE_PROJECT_NAME`
-  - default: `esseduesoft-backend`
+  - default: `Gestionale-backend`
 
 ## Prerequisiti sulla VM Aruba
 

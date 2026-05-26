@@ -2,7 +2,7 @@
 
 ## 1. Obiettivo
 
-Definire il modulo trasversale di autenticazione e autorizzazione per la nuova piattaforma web Esseduesoft, basata su FastAPI, Vue.js e PostgreSQL.
+Definire il modulo trasversale di autenticazione e autorizzazione per la nuova piattaforma web Gestionale, basata su FastAPI, Vue.js e PostgreSQL.
 
 Questo modulo nasce come componente di piattaforma del `core_service` e ha i seguenti obiettivi:
 
@@ -334,7 +334,7 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 - assegnazione ruoli
 - consultazione audit
 - accesso completo ai moduli abilitati
-- visione globale Esseduesoft
+- visione globale Gestionale
 
 `tenant_admin`
 
@@ -343,7 +343,7 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 - configurazione aziendale del proprio tenant
 - configurazione SMTP del proprio tenant
 - configurazione numerazioni documentali del proprio tenant
-- nessun accesso al perimetro globale Esseduesoft
+- nessun accesso al perimetro globale Gestionale
 
 `user`
 

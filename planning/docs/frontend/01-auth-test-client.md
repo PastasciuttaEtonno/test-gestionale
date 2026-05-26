@@ -53,7 +53,7 @@ La vista `/dashboard` corrente:
 
 La vista `/admin-only` corrente:
 
-- dedicata al personale Esseduesoft
+- dedicata al personale Gestionale
 - modella tenants, licenze, health e audit globale con dati dummy
 - status critici ("Bloccabile", "Scaduto", "Da osservare") mostrati con `Tag` rossa solida
 - utilizzo risorse DB e utenti mostrato con `ProgressBar` PrimeVue nelle card licenze

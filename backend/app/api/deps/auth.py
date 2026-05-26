@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
@@ -100,6 +100,37 @@ async def require_admin_or_tenant_admin(
             detail="Ruolo admin o tenant admin richiesto.",
         )
     return current_user
+
+
+async def get_sse_user(
+    token: str | None = Query(default=None, alias="token"),
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> CurrentUserResponse:
+    """Dependency per endpoint SSE: accetta token da header Bearer o query param.
+
+    EventSource del browser non supporta header custom, quindi il token puo
+    essere passato come ?token=<access_token> nell'URL della connessione.
+    """
+    raw_token = credentials.credentials if credentials else token
+    if not raw_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Autenticazione richiesta.",
+        )
+    try:
+        user = await auth_service.get_current_user(raw_token)
+    except (InvalidTokenError, InactiveUserError) as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(exc),
+        ) from exc
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Utente non attivo.",
+        )
+    return user
 
 
 def require_permission(permission_code: str) -> Callable:

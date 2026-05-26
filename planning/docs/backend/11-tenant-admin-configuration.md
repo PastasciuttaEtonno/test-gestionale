@@ -41,7 +41,7 @@ Le API oggi coperte sono:
 
 - accesso consentito solo al ruolo `tenant_admin`
 - il `tenant_id` non arriva dal client: viene risolto dal profilo autenticato corrente
-- il `tenant_admin` non puo accedere all'audit globale Esseduesoft
+- il `tenant_admin` non puo accedere all'audit globale Gestionale
 - il `tenant_admin` non puo operare su utenti di altri tenant
 - la password SMTP viene accettata in chiaro solo in input API, poi cifrata lato backend
 - la password SMTP non viene mai restituita nelle response

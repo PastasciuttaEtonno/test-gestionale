@@ -1,6 +1,6 @@
 # Backend Skeleton
 
-Questo folder contiene il `core_service` FastAPI del progetto Esseduesoft, con il primo modulo trasversale `Auth & Identity` gia collegato a PostgreSQL.
+Questo folder contiene il `core_service` FastAPI del progetto Gestionale, con il primo modulo trasversale `Auth & Identity` gia collegato a PostgreSQL.
 
 Stato attuale:
 

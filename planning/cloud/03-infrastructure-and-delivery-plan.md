@@ -38,9 +38,9 @@ Motivo:
 
 Separazione minima:
 
-- `rg-esseduesoft-shared-<env>`
-- `rg-esseduesoft-app-<env>`
-- `rg-esseduesoft-data-<env>`
+- `rg-Gestionale-shared-<env>`
+- `rg-Gestionale-app-<env>`
+- `rg-Gestionale-data-<env>`
 
 ## 2. Networking
 

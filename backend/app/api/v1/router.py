@@ -4,6 +4,8 @@ from fastapi import APIRouter
 
 from app.api.v1.admin.routes import router as admin_router
 from app.api.v1.auth.routes import router as auth_router
+from app.api.v1.events.routes import router as events_router
+from app.api.v1.notifications.routes import router as notifications_router
 from app.api.v1.bom.routes import router as bom_router
 from app.api.v1.dashboard.routes import router as dashboard_router
 from app.api.v1.finance.routes import router as finance_router
@@ -16,6 +18,8 @@ from app.api.v1.users.routes import router as users_router
 
 api_router = APIRouter()
 api_router.include_router(auth_router, prefix="/auth")
+api_router.include_router(events_router, prefix="/events")
+api_router.include_router(notifications_router, prefix="/notifications")
 api_router.include_router(users_router, prefix="/users")
 api_router.include_router(admin_router, prefix="/admin")
 api_router.include_router(bom_router, prefix="/bom")

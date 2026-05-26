@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlalchemy import DateTime, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base
+from app.models.base import Base, UUIDStr
 
 
 class LoginProtection(Base):
@@ -18,7 +18,7 @@ class LoginProtection(Base):
         {"schema": "security"},
     )
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    id: Mapped[str] = mapped_column(UUIDStr(), primary_key=True, default=lambda: str(uuid4()))
     identifier: Mapped[str] = mapped_column(String(255), index=True)
     ip_address: Mapped[str] = mapped_column(String(64), index=True)
     failed_count: Mapped[int] = mapped_column(default=0)

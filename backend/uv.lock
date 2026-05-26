@@ -318,7 +318,7 @@ wheels = [
 ]
 
 [[package]]
-name = "esseduesoft-core-service"
+name = "Gestionale-core-service"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, ref, computed } from "vue";
+import { computed, ref, watch } from "vue";
 import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
@@ -11,10 +11,14 @@ import KpiTile from "../components/ui/KpiTile.vue";
 import SectionLabel from "../components/ui/SectionLabel.vue";
 import SidebarSection from "../components/ui/SidebarSection.vue";
 import { useAuthStore } from "../stores/auth";
-import { avviaGenerazioneReport, recuperaStatoTask } from "../services/reports";
+import { useDashboardStore } from "../stores/dashboard";
+import { useTasksStore } from "../stores/tasks";
+import { avviaGenerazioneReport } from "../services/reports";
 import { useSidebar } from "../composables/useSidebar";
 const { drawerAperto, chiudiDrawer } = useSidebar();
 const authStore = useAuthStore();
+const tasksStore = useTasksStore();
+const dashboardStore = useDashboardStore();
 
 const filtroTesto = ref("");
 const filtroTipo = ref(null);
@@ -109,80 +113,43 @@ const azioniRapide = [
 
 const tenantIdInput = ref(authStore.user?.tenant_id || "");
 const taskId = ref("");
-const taskStatus = ref("idle");
-const taskMessage = ref("Nessun report asincrono avviato.");
-const taskProgress = ref(0);
-const resultUrl = ref("");
 const loadingTask = ref(false);
 
-let pollingId = null;
+const taskState = computed(() =>
+  taskId.value ? tasksStore.getTask(taskId.value) : null,
+);
+const taskStatus = computed(() => taskState.value?.status || "idle");
+const taskProgress = computed(() => taskState.value?.progress || 0);
+const taskMessage = computed(
+  () => taskState.value?.message || "Nessun report asincrono avviato.",
+);
+const resultUrl = computed(() => taskState.value?.resultUrl || "");
 
-function fermaPolling() {
-  if (pollingId) {
-    window.clearInterval(pollingId);
-    pollingId = null;
-  }
-}
-
-async function aggiornaStatoTask() {
-  if (!taskId.value) {
-    return;
-  }
-
-  const stato = await recuperaStatoTask(taskId.value);
-  taskStatus.value = stato.status;
-  taskMessage.value = stato.message;
-  taskProgress.value = stato.progress;
-  resultUrl.value = stato.result_url || "";
-
-  if (["success", "failure"].includes(stato.status)) {
+watch(taskStatus, (status) => {
+  if (["success", "failure"].includes(status)) {
     loadingTask.value = false;
-    fermaPolling();
   }
-}
+});
 
 async function avviaTaskReport() {
   if (!tenantIdInput.value) {
-    taskStatus.value = "failure";
-    taskMessage.value = "Inserire un tenant_id valido prima di avviare il report.";
     return;
   }
 
-  fermaPolling();
   loadingTask.value = true;
-  taskProgress.value = 0;
-  resultUrl.value = "";
-  taskStatus.value = "pending";
-  taskMessage.value = "Accodamento task in corso.";
 
   try {
     const response = await avviaGenerazioneReport({
       tenant_id: tenantIdInput.value,
     });
     taskId.value = response.task_id;
-    taskStatus.value = "accepted";
-    taskMessage.value = response.message;
-    await aggiornaStatoTask();
-    pollingId = window.setInterval(() => {
-      aggiornaStatoTask().catch((error) => {
-        loadingTask.value = false;
-        taskStatus.value = "failure";
-        taskMessage.value =
-          error?.response?.data?.detail || "Polling task non riuscito.";
-        fermaPolling();
-      });
-    }, 2000);
+    tasksStore.initTask(response.task_id);
   } catch (error) {
     loadingTask.value = false;
-    taskStatus.value = "failure";
-    taskMessage.value =
-      error?.response?.data?.detail || "Accodamento report non riuscito.";
+    taskId.value = "";
+    console.error("Avvio report fallito:", error?.response?.data?.detail);
   }
 }
-
-onBeforeUnmount(() => {
-  fermaPolling();
-});
 
 const righeDocumenti = [
   {
@@ -361,16 +328,40 @@ const righeFiltraite = computed(() => {
           />
         </div>
 
+        <!-- KPI reali tenant-aware (aggiornati via SSE) -->
+        <div
+          v-if="dashboardStore.kpis"
+          class="mt-6 rounded-[1.5rem] border border-brand-100 bg-brand-50/40 p-5"
+        >
+          <div class="mb-4 flex items-center justify-between">
+            <SectionLabel>KPI Tenant Live</SectionLabel>
+            <span
+              v-if="dashboardStore.lastUpdated"
+              class="text-[11px] text-steel-400"
+            >
+              Aggiornato {{ dashboardStore.lastUpdated.toLocaleTimeString("it-IT") }}
+            </span>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <KpiTile label="Utenti totali" :value="String(dashboardStore.kpis.total_users)" note="Utenti nel tenant." />
+            <KpiTile label="Utenti attivi" :value="String(dashboardStore.kpis.active_users)" note="Account attivi." />
+            <KpiTile label="Audit 24h" :value="String(dashboardStore.kpis.audit_events_last_24h)" note="Operazioni nelle ultime 24 ore." />
+            <KpiTile label="Profilo azienda" :value="dashboardStore.kpis.company_profile_configured ? 'Configurato' : 'Mancante'" note="Dati aziendali." />
+            <KpiTile label="SMTP" :value="dashboardStore.kpis.smtp_configured ? 'Configurato' : 'Non configurato'" note="Impostazioni email." />
+          </div>
+        </div>
+
         <div class="mt-8 rounded-[1.5rem] border border-steel-200 bg-steel-50/80 p-5">
           <div class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div class="max-w-2xl">
               <SectionLabel>Async Queue Demo</SectionLabel>
               <h3 class="mt-3 text-2xl font-semibold text-steel-900">
-                Generazione report con Celery e Redis
+                Generazione report con Celery e SSE
               </h3>
               <p class="mt-3 text-sm leading-6 text-steel-700">
-                Questo blocco dimostra il flusso `POST /reports/generate` seguito
-                dal polling leggero su `GET /tasks/{taskId}/status`.
+                Il task Celery pubblica gli aggiornamenti su Redis Pub/Sub.
+                Il frontend riceve i progressi in tempo reale via Server-Sent Events,
+                senza polling.
               </p>
             </div>
 

@@ -5,12 +5,14 @@ from redis.asyncio import Redis
 from sqlalchemy.orm import Session
 
 from app.api.deps.auth import get_active_user
+from app.api.deps.events import get_event_publisher
 from app.core.db import get_db_session
 from app.core.redis import get_redis_client
 from app.core.security.request_context import build_security_request_context
 from app.schemas.auth.responses import CurrentUserResponse
 from app.schemas.production.requests import ProductionUpdateRequest
 from app.schemas.production.responses import ProductionUpdateResponse
+from app.services.events.event_publisher import EventPublisher
 from app.services.production.production_service import ProductionService
 
 router = APIRouter(tags=["Production"])
@@ -38,12 +40,14 @@ async def update_production(
     request: Request,
     current_user: CurrentUserResponse = Depends(get_active_user),
     redis_client: Redis = Depends(get_redis_client),
+    event_publisher: EventPublisher = Depends(get_event_publisher),
     production_service: ProductionService = Depends(get_production_service),
 ) -> ProductionUpdateResponse:
-    """Simula una mutazione produzione persistita e invalida i KPI cacheati del tenant."""
+    """Simula una mutazione produzione persistita, invalida i KPI cacheati e notifica via SSE."""
     return await production_service.update_production_status(
         payload=payload,
         current_user=current_user,
         request_context=build_security_request_context(request),
         redis_client=redis_client,
+        event_publisher=event_publisher,
     )

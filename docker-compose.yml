@@ -2,7 +2,7 @@ services:
   client:
     build:
       context: ./frontend
-    container_name: esseduesoft_client
+    container_name: Gestionale_client
     ports:
       - "5173:5173"
     env_file:
@@ -14,7 +14,7 @@ services:
   core_service:
     build:
       context: ./backend
-    container_name: esseduesoft_core_service
+    container_name: Gestionale_core_service
     ports:
       - "8000:8000"
     env_file:
@@ -35,7 +35,7 @@ services:
   db_migrator:
     build:
       context: ./backend
-    container_name: esseduesoft_db_migrator
+    container_name: Gestionale_db_migrator
     command: ["/app/.venv/bin/alembic", "upgrade", "head"]
     restart: "no"
     env_file:
@@ -47,7 +47,7 @@ services:
   celery_worker:
     build:
       context: ./backend
-    container_name: esseduesoft_celery_worker
+    container_name: Gestionale_celery_worker
     command: ["/app/.venv/bin/celery", "-A", "app.core.celery_app:celery_app", "worker", "--loglevel=info"]
     env_file:
       - ./backend/.env.example
@@ -61,9 +61,9 @@ services:
 
   db_service:
     image: postgres:17.10-alpine3.23
-    container_name: esseduesoft_db_service
+    container_name: Gestionale_db_service
     environment:
-      POSTGRES_DB: esseduesoft
+      POSTGRES_DB: gestionale
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
     ports:
@@ -71,14 +71,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app -d esseduesoft"]
+      test: ["CMD-SHELL", "pg_isready -U app -d gestionale"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis_service:
     image: redis:8.2.6-alpine3.22
-    container_name: esseduesoft_redis_service
+    container_name: Gestionale_redis_service
     ports:
       - "6379:6379"
     healthcheck:

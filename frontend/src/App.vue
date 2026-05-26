@@ -1,18 +1,44 @@
 <script setup>
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 
 import AppShell from "./components/layout/AppShell.vue";
 import { useAuthStore } from "./stores/auth";
+import { useDashboardStore } from "./stores/dashboard";
+import { useEventsStore } from "./stores/events";
+import { useNotificationsStore } from "./stores/notifications";
+import { useTasksStore } from "./stores/tasks";
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
+const eventsStore = useEventsStore();
+const notificationsStore = useNotificationsStore();
+const tasksStore = useTasksStore();
+const dashboardStore = useDashboardStore();
+
+notificationsStore.setupEventListeners();
+tasksStore.setupEventListeners();
+dashboardStore.setupEventListeners();
 
 const utente = computed(() => authStore.user);
 const mostraShell = computed(() => route.meta.hideShell !== true);
 const mostraNavigazioneAdmin = computed(() => authStore.hasRole("admin"));
 const mostraNavigazioneTenantAdmin = computed(() => authStore.hasRole("tenant_admin"));
+
+watch(
+  () => authStore.accessToken,
+  (token) => {
+    if (token) {
+      eventsStore.connect(token);
+      notificationsStore.load();
+      dashboardStore.loadKpis();
+    } else {
+      eventsStore.disconnect();
+    }
+  },
+  { immediate: true },
+);
 
 async function eseguiLogout() {
   await authStore.logout();

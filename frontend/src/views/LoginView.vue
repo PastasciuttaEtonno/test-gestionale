@@ -59,7 +59,7 @@ async function onSubmit() {
               ES
             </div>
             <span class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-300">
-              Esseduesoft
+              Gestionale
             </span>
           </div>
 
@@ -87,7 +87,7 @@ async function onSubmit() {
         </div>
 
         <p class="text-xs text-white/40">
-          © 2026 Esseduesoft S.r.l. — Tutti i diritti riservati
+          © 2026 Gestionale S.r.l. — Tutti i diritti riservati
         </p>
       </section>
 
@@ -97,7 +97,7 @@ async function onSubmit() {
             ES
           </div>
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-brand-700">Esseduesoft</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-brand-700">Gestionale</p>
             <p class="text-xs text-steel-400">Gestionale aziendale</p>
           </div>
         </div>

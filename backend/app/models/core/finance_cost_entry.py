@@ -7,7 +7,7 @@ from uuid import uuid4
 from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base
+from app.models.base import Base, UUIDStr
 
 
 class FinanceCostEntry(Base):
@@ -16,9 +16,9 @@ class FinanceCostEntry(Base):
     __tablename__ = "finance_cost_entries"
     __table_args__ = {"schema": "core"}
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
-    tenant_id: Mapped[str] = mapped_column(ForeignKey("security.tenants.id"), index=True)
-    created_by_user_id: Mapped[str] = mapped_column(ForeignKey("security.users.id"), index=True)
+    id: Mapped[str] = mapped_column(UUIDStr(), primary_key=True, default=lambda: str(uuid4()))
+    tenant_id: Mapped[str] = mapped_column(UUIDStr(), ForeignKey("security.tenants.id"), index=True)
+    created_by_user_id: Mapped[str] = mapped_column(UUIDStr(), ForeignKey("security.users.id"), index=True)
     cost_center: Mapped[str] = mapped_column(String(100))
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     currency: Mapped[str] = mapped_column(String(3), default="EUR")

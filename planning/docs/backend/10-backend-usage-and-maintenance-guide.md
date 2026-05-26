@@ -263,7 +263,7 @@ Prestare attenzione a:
 - qual e la risorsa target
 - quali dati minimi servono nel `payload_json`
 - evitare di loggare segreti o password
-- distinguere sempre tra audit globale Esseduesoft e audit locale tenant
+- distinguere sempre tra audit globale Gestionale e audit locale tenant
 - acquisire sempre `ip_address` e `user_agent` quando il contesto request e disponibile
 
 ### JWT e secret

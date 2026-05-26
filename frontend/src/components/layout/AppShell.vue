@@ -2,6 +2,7 @@
 import { RouterLink } from "vue-router";
 import Avatar from "primevue/avatar";
 
+import NotificationBell from "../notifications/NotificationBell.vue";
 import BaseButton from "../ui/BaseButton.vue";
 import RoleBadge from "../ui/RoleBadge.vue";
 import { useSidebar } from "../../composables/useSidebar";
@@ -67,7 +68,7 @@ const { toggleDrawer } = useSidebar();
           </div>
           <div class="min-w-0">
             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-brand-700">
-              Esseduesoft
+              Gestionale
             </p>
             <h1 class="truncate text-base font-semibold text-steel-900">
               Gestionale aziendale
@@ -104,6 +105,7 @@ const { toggleDrawer } = useSidebar();
 
         <!-- User area -->
         <div class="flex items-center justify-end gap-3">
+          <NotificationBell />
           <div class="hidden h-11 items-center gap-3 rounded-xl border border-steel-200 bg-steel-50 px-3 xl:flex">
             <Avatar
               :label="username ? username.charAt(0).toUpperCase() : '?'"

@@ -1,7 +1,7 @@
 [project]
-name = "esseduesoft-core-service"
+name = "Gestionale-core-service"
 version = "0.1.0"
-description = "FastAPI backend skeleton for Esseduesoft modular monolith."
+description = "FastAPI backend skeleton for Gestionale modular monolith."
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.18.4,<2.0.0",

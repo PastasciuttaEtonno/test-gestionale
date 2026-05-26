@@ -106,7 +106,7 @@ La response interceptor:
 - il client dipende dal cookie `HttpOnly`, quindi `withCredentials` non va rimosso
 - evitare di duplicare logica autorizzativa complessa nel frontend
 - i riferimenti a funzioni amministrative devono essere nascosti ai non admin anche a livello di navigazione
-- `admin` e `tenant_admin` devono vedere console differenti: il super admin Esseduesoft non deve navigare la console tenant, e il tenant admin non deve vedere la console globale Esseduesoft
+- `admin` e `tenant_admin` devono vedere console differenti: il super admin Gestionale non deve navigare la console tenant, e il tenant admin non deve vedere la console globale Gestionale
 
 ### Mockup standard-user
 

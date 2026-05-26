@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base
+from app.models.base import Base, UUIDStr
 
 
 class TenantCompanySettings(Base):
@@ -15,6 +15,7 @@ class TenantCompanySettings(Base):
     __table_args__ = {"schema": "core"}
 
     tenant_id: Mapped[str] = mapped_column(
+        UUIDStr(),
         ForeignKey("security.tenants.id"),
         primary_key=True,
     )

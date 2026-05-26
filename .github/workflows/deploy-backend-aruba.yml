@@ -84,9 +84,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          deploy_path="${DEPLOY_PATH_VAR:-/opt/esseduesoft/backend}"
+          deploy_path="${DEPLOY_PATH_VAR:-/opt/Gestionale/backend}"
           backend_port="${BACKEND_PORT_VAR:-8000}"
-          compose_project_name="${COMPOSE_PROJECT_VAR:-esseduesoft-backend}"
+          compose_project_name="${COMPOSE_PROJECT_VAR:-Gestionale-backend}"
 
           install -m 700 -d "${HOME}/.ssh" .tmp
 

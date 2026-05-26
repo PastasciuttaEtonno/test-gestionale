@@ -1,6 +1,6 @@
 # Frontend Auth Client
 
-Client minimale `Vue 3` usato per validare il flusso `JWT` del backend Esseduesoft.
+Client minimale `Vue 3` usato per validare il flusso `JWT` del backend Gestionale.
 
 ## Baseline versioni correnti
 
@@ -48,7 +48,7 @@ docker compose up --build
 - mockup ERP statico per utenti standard con sidebar, header e lista documenti
 - demo di task asincrono report con polling su backend `Celery + Redis`
 - console `Tenant Admin` statica per l'amministratore della singola azienda cliente
-- console `Super Admin` statica per il personale Esseduesoft
+- console `Super Admin` statica per il personale Gestionale
 - console `Super Admin` visibile solo a utenti con ruolo `admin`
 - console `Tenant Admin` visibile solo a utenti con ruolo `tenant_admin`
 - le viste gestionali usano la larghezza completa della viewport per massimizzare lo spazio utile

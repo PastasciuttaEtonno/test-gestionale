@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base
+from app.models.base import Base, UUIDStr
 
 
 class RefreshToken(Base):
@@ -15,8 +15,8 @@ class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
     __table_args__ = {"schema": "security"}
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
-    user_id: Mapped[str] = mapped_column(ForeignKey("security.users.id"), index=True)
+    id: Mapped[str] = mapped_column(UUIDStr(), primary_key=True, default=lambda: str(uuid4()))
+    user_id: Mapped[str] = mapped_column(UUIDStr(), ForeignKey("security.users.id"), index=True)
     token_identifier: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

@@ -1,4 +1,4 @@
-"""Configurazione Alembic per il backend Esseduesoft."""
+"""Configurazione Alembic per il backend Gestionale."""
 
 from logging.config import fileConfig
 
@@ -7,7 +7,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.core.config import settings
 from app.core.db import Base
-from app.models import security  # noqa: F401
+from app.models import core, security  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.database_url)

@@ -45,7 +45,7 @@ Il modulo `Auth`:
 ## Limiti attuali
 
 - lo scoping tenant e oggi applicato a utenti e audit locale, non ancora ai futuri domini business come anagrafiche, bolle o fatture
-- non esiste ancora una gestione completa dei tenant lato backoffice Esseduesoft
+- non esiste ancora una gestione completa dei tenant lato backoffice Gestionale
 - il rate limiting e oggi basato su PostgreSQL e non ancora su Redis o infrastruttura distribuita
 - manca ancora una session policy completa con assolute timeout lato sessione refresh e reuse detection per famiglie di refresh token
 - manca ancora un motore dedicato anti-abuso distribuito basato su Redis o edge gateway

@@ -165,10 +165,10 @@ const auditGlobale = [
         <div>
           <SectionLabel>Livello 1</SectionLabel>
           <h2 class="mt-3 text-3xl font-semibold text-steel-900">
-            Console Super Admin Esseduesoft
+            Console Super Admin Gestionale
           </h2>
           <p class="mt-3 max-w-4xl text-sm leading-6 text-steel-700">
-            Mockup enterprise per il personale Esseduesoft: gestione tenant,
+            Mockup enterprise per il personale Gestionale: gestione tenant,
             controllo licenze, osservabilita piattaforma e audit globale in ottica NIS2.
           </p>
         </div>
@@ -300,7 +300,7 @@ const auditGlobale = [
         <div>
           <SectionLabel>Audit globale NIS2</SectionLabel>
           <h3 class="mt-2 text-xl font-semibold text-steel-900">
-            Tracciamento operazioni Esseduesoft
+            Tracciamento operazioni Gestionale
           </h3>
         </div>
         <BaseButton type="button" variant="secondary">Esporta log</BaseButton>

@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlalchemy import JSON, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base
+from app.models.base import Base, UUIDStr
 
 
 class AuditLog(Base):
@@ -15,8 +15,9 @@ class AuditLog(Base):
     __tablename__ = "audit_log"
     __table_args__ = {"schema": "security"}
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    id: Mapped[str] = mapped_column(UUIDStr(), primary_key=True, default=lambda: str(uuid4()))
     user_id: Mapped[str | None] = mapped_column(
+        UUIDStr(),
         ForeignKey("security.users.id"),
         nullable=True,
         index=True,

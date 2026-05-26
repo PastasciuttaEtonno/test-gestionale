@@ -6,7 +6,7 @@ from uuid import uuid4
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base
+from app.models.base import Base, UUIDStr
 
 
 class TenantDocumentSequence(Base):
@@ -15,8 +15,8 @@ class TenantDocumentSequence(Base):
     __tablename__ = "tenant_document_sequences"
     __table_args__ = {"schema": "core"}
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
-    tenant_id: Mapped[str] = mapped_column(ForeignKey("security.tenants.id"), index=True)
+    id: Mapped[str] = mapped_column(UUIDStr(), primary_key=True, default=lambda: str(uuid4()))
+    tenant_id: Mapped[str] = mapped_column(UUIDStr(), ForeignKey("security.tenants.id"), index=True)
     sequence_code: Mapped[str] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(255))
     prefix: Mapped[str | None] = mapped_column(String(32), nullable=True)

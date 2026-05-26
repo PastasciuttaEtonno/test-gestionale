@@ -82,7 +82,7 @@ Responsabilita attuali:
 
 Ruoli attualmente reali:
 
-- `admin`: super admin Esseduesoft
+- `admin`: super admin Gestionale
 - `tenant_admin`: amministratore dell'azienda cliente
 - `user`: utente operativo standard
 
@@ -159,7 +159,7 @@ Vincoli ancora aperti:
 - acquisizione reale di `ip_address` e `user_agent`
 - MFA eventuale
 - rate limiting sugli endpoint auth
-- gestione completa impersonation per assistenza Esseduesoft
+- gestione completa impersonation per assistenza Gestionale
 
 ## 9. Stato della Migrazione
 

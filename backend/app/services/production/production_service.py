@@ -15,8 +15,10 @@ from app.models.security.audit_log import AuditLog
 from app.models.security.tenant import Tenant
 from app.repositories.security.audit_repository import AuditRepository
 from app.schemas.auth.responses import CurrentUserResponse
+from app.schemas.events.sse import EventTypes
 from app.schemas.production.requests import ProductionUpdateRequest
 from app.schemas.production.responses import ProductionUpdateResponse
+from app.services.events.event_publisher import EventPublisher
 
 
 class ProductionService:
@@ -32,8 +34,10 @@ class ProductionService:
         current_user: CurrentUserResponse,
         request_context: SecurityRequestContext,
         redis_client: Redis,
+        event_publisher: EventPublisher | None = None,
     ) -> ProductionUpdateResponse:
-        """Simula una mutazione produzione persistendo audit e pulendo la cache KPI."""
+        """Simula una mutazione produzione persistendo audit, pulendo la cache KPI
+        e notificando i client connessi via SSE."""
         tenant_id = await self._validate_tenant_scope(payload.tenant_id.strip(), current_user)
 
         await self.audit_repository.log_event(
@@ -55,6 +59,13 @@ class ProductionService:
 
         cache_key = build_tenant_dashboard_kpis_cache_key(tenant_id)
         await invalidate_cache_key_best_effort(redis_client, cache_key)
+
+        if event_publisher:
+            await event_publisher.publish_to_tenant(
+                tenant_id,
+                EventTypes.KPI_UPDATED,
+                {"tenant_id": tenant_id, "reason": "production_update"},
+            )
 
         return ProductionUpdateResponse(
             tenant_id=tenant_id,
