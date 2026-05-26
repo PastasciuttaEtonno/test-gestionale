@@ -65,11 +65,13 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 
 - `Vue 3` con `script setup`
 - `Vite` attivo come dev server
-- `Tailwind CSS` attivo per styling rapido
+- `Tailwind CSS v4` attivo (CSS-first via `@tailwindcss/vite`)
 - `Pinia` attiva per lo stato auth condiviso
 - `Axios` attivo con interceptor centralizzato
 - store auth esteso con helper ruolo/permessi
 - `Vue Router` attivo con guardie dichiarative per auth, ruoli e permessi
+- `PrimeVue v4` integrato in modalita `unstyled: true` con Pass-Through Tailwind
+- login enterprise con toggle password nativo e copy istituzionale Esseduesoft
 - login con access token in memoria e refresh token in cookie `HttpOnly`
 - direttiva `v-can` disponibile per la visibilita degli elementi UI
 - dashboard protetta collegata a `GET /api/v1/auth/me`
@@ -81,8 +83,6 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - console `Super Admin` e `Tenant Admin` separate anche nella navigazione e nelle guardie router
 - demo frontend di task report asincrono con polling integrata nella dashboard
 
-## Stato delivery e runtime operativo
-
 - workflow `.github/workflows/checks.yml` attivo come quality gate minimo
 - workflow `.github/workflows/publish-backend-image.yml` attivo per la publication backend su `GHCR`
 - workflow `.github/workflows/deploy-backend-aruba.yml` preparato per deploy backend manuale via SSH
@@ -93,8 +93,18 @@ Preparare il nucleo tecnico del nuovo gestionale web Esseduesoft partendo dal mo
 - pull da Aruba previsto via `PAT classic` con scope minimo `read:packages`
 - compose backend dedicato per Aruba preparato in `docker-compose.aruba.yml`
 - deploy Aruba resta da configurare con secret reali e primo test ambiente
+- frontend completamente responsive mobile-first (375px → 1280px+)
+- sidebar ERP off-canvas su mobile con overlay scrim e transizione fade; statica su desktop
+- stato drawer condiviso tramite composable `useSidebar.js` (module-level reactive)
+- tabelle con column hiding responsive in tutte le view
+- griglia KPI con `grid-cols-1 → md:grid-cols-2 → xl:grid-cols-4`
+- filtri reali nella DashboardView: `InputText` con `IconField` + due `Select` (tipo/stato) con `computed righeFiltraite`
+- `Tag` PrimeVue con PT status-aware in DashboardView, AdminOnlyView e TenantAdminView
+- `ProgressBar` PrimeVue per utilizzo risorse DB e utenti in AdminOnlyView
+- `Avatar` e `Tooltip` PrimeVue in AppShell
+- `AppShell` aggiornata con header mobile (burger + brand center + logout compatto) e desktop invariato
 
-## Decisioni attive
+## Stato delivery e runtime operativo
 
 - approccio `modular monolith`
 - `Auth & Identity` come primo asse trasversale

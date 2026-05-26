@@ -11,21 +11,24 @@ Fornire un client web minimale in `Vue 3` per validare il modulo `Auth & Identit
 - `Vue Router` per routing e guardie
 - `Pinia` per lo stato auth condiviso
 - `Axios` come client HTTP centralizzato
-- `Tailwind CSS` per styling rapido
+- `Tailwind CSS v4` per styling (CSS-first, nessun `tailwind.config.js`)
+- `PrimeVue v4` in modalità `unstyled: true` per componenti interattivi complessi
 
 ## Ambito attuale
 
-- login con `identifier` e `password`
+- login enterprise con `identifier` e `password`, toggle visibilità nativo
 - access token mantenuto solo in memoria
 - refresh token mantenuto in cookie `HttpOnly`
 - inizializzazione sessione tramite endpoint `POST /api/v1/auth/refresh`
 - refresh automatico del token su `401`
-- mockup ERP standard-user con sidebar, toolbar e griglia dati statica
+- frontend completamente responsive mobile-first (375px → desktop)
+- sidebar ERP off-canvas su mobile, statica su desktop, gestita da `useSidebar.js`
+- mockup ERP standard-user con sidebar, toolbar e griglia dati con filtri reali (testo libero + Select tipo/stato)
 - demo di task asincrono report con polling ogni 2 secondi
 - console `Tenant Admin` statica per l'azienda cliente
 - console `Super Admin` statica per il personale Esseduesoft
-- primi componenti UI condivisi estratti per shell, card, bottoni, badge e label
-- sidebar ERP trattata come pattern UI condiviso
+- componenti UI condivisi per shell, card, bottoni, badge, label, tile KPI
+- PrimeVue integrato per: Tooltip, Avatar, InputText, Select, Tag, ProgressBar
 
 ## Scelte attive
 

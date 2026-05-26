@@ -1,6 +1,10 @@
 <script setup>
-import { onBeforeUnmount, ref } from "vue";
-
+import { onBeforeUnmount, ref, computed } from "vue";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
+import Tag from "primevue/tag";
 import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
 import KpiTile from "../components/ui/KpiTile.vue";
@@ -11,6 +15,54 @@ import { avviaGenerazioneReport, recuperaStatoTask } from "../services/reports";
 import { useSidebar } from "../composables/useSidebar";
 const { drawerAperto, chiudiDrawer } = useSidebar();
 const authStore = useAuthStore();
+
+const filtroTesto = ref("");
+const filtroTipo = ref(null);
+const filtroStato = ref(null);
+
+const opzioniTipo = ["Fattura", "Bolla"];
+const opzioniStato = ["Aperta", "Bozza", "Confermata", "Da chiudere", "Da inviare", "Emessa"];
+
+const ptInputText = {
+  root: {
+    class:
+      "h-11 w-full rounded-xl border border-steel-200 bg-steel-50 pl-9 pr-4 text-sm text-steel-900 placeholder:text-steel-400 transition focus:border-brand-500 focus:bg-white focus:outline-none sm:w-auto sm:min-w-[200px]",
+  },
+};
+
+const ptIconField = { root: { class: "relative" } };
+const ptInputIcon = {
+  root: { class: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-steel-400" },
+};
+
+const ptSelect = {
+  root: {
+    class:
+      "relative flex h-11 min-w-[132px] cursor-pointer select-none items-center rounded-xl border border-steel-200 bg-steel-50 text-sm transition focus:outline-none",
+  },
+  label: { class: "flex-1 truncate px-4 text-steel-700" },
+  dropdown: { class: "flex shrink-0 items-center justify-center pr-3 text-steel-400" },
+  overlay: {
+    class:
+      "absolute left-0 top-full z-50 mt-1 min-w-full overflow-hidden rounded-xl border border-steel-200 bg-white shadow-lg",
+  },
+  listContainer: { class: "max-h-60 overflow-y-auto" },
+  list: { class: "py-1" },
+  option: {
+    class:
+      "cursor-pointer px-4 py-2.5 text-sm text-steel-700 transition hover:bg-brand-50 hover:text-brand-700",
+  },
+  optionLabel: { class: "" },
+  emptyMessage: { class: "px-4 py-2.5 text-sm text-steel-400 italic" },
+  clearIcon: { class: "mr-2 h-3.5 w-3.5 text-steel-400 hover:text-steel-700 transition" },
+};
+
+const ptTagStato = {
+  root: {
+    class:
+      "inline-flex min-w-[108px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700",
+  },
+};
 
 const vociSidebar = [
   {
@@ -188,6 +240,18 @@ const righeDocumenti = [
     stato: "Da chiudere",
   },
 ];
+
+const righeFiltraite = computed(() => {
+  return righeDocumenti.filter((riga) => {
+    const testoOk =
+      !filtroTesto.value ||
+      riga.cliente.toLowerCase().includes(filtroTesto.value.toLowerCase()) ||
+      riga.numero.toLowerCase().includes(filtroTesto.value.toLowerCase());
+    const tipoOk = !filtroTipo.value || riga.tipo === filtroTipo.value;
+    const statoOk = !filtroStato.value || riga.stato === filtroStato.value;
+    return testoOk && tipoOk && statoOk;
+  });
+});
 </script>
 
 <template>
@@ -370,19 +434,37 @@ const righeDocumenti = [
           <div>
             <SectionLabel>Filtro rapido</SectionLabel>
             <p class="mt-2 text-sm text-steel-700">
-              Cliente: Tutti · Stato: Aperto/Bozza · Periodo: Ultimi 15 giorni
+              {{ righeFiltraite.length }} document{{ righeFiltraite.length === 1 ? 'o' : 'i' }} trovati
             </p>
           </div>
           <div class="flex flex-wrap gap-3">
-            <div class="flex h-11 w-full items-center rounded-xl border border-steel-200 bg-steel-50 px-4 text-sm text-steel-700 sm:w-auto sm:min-w-[160px]">
-              Cerca cliente o documento
-            </div>
-            <div class="flex h-11 min-w-[132px] items-center rounded-xl border border-steel-200 bg-steel-50 px-4 text-sm text-steel-700">
-              Tipo documento
-            </div>
-            <div class="flex h-11 min-w-[116px] items-center rounded-xl border border-steel-200 bg-steel-50 px-4 text-sm text-steel-700">
-              Stato
-            </div>
+            <IconField :pt="ptIconField">
+              <InputIcon :pt="ptInputIcon">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </InputIcon>
+              <InputText
+                v-model="filtroTesto"
+                placeholder="Cerca cliente o documento"
+                :pt="ptInputText"
+              />
+            </IconField>
+            <Select
+              v-model="filtroTipo"
+              :options="opzioniTipo"
+              placeholder="Tipo documento"
+              show-clear
+              :pt="ptSelect"
+            />
+            <Select
+              v-model="filtroStato"
+              :options="opzioniStato"
+              placeholder="Stato"
+              show-clear
+              :pt="{ ...ptSelect, root: { class: ptSelect.root.class + ' min-w-[116px]' } }"
+            />
           </div>
         </div>
 
@@ -402,7 +484,7 @@ const righeDocumenti = [
               </thead>
               <tbody class="divide-y divide-steel-100">
                 <tr
-                  v-for="riga in righeDocumenti"
+                  v-for="riga in righeFiltraite"
                   :key="`${riga.numero}-${riga.stato}`"
                   class="transition hover:bg-brand-50/55"
                 >
@@ -413,11 +495,12 @@ const righeDocumenti = [
                   <td class="hidden max-w-[160px] truncate px-4 py-3 text-steel-700 lg:table-cell">{{ riga.causale }}</td>
                   <td class="px-4 py-3 text-steel-700">{{ riga.importo }}</td>
                   <td class="px-4 py-3">
-                    <span
-                      class="inline-flex min-w-[108px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700"
-                    >
-                      {{ riga.stato }}
-                    </span>
+                    <Tag :value="riga.stato" :pt="ptTagStato" />
+                  </td>
+                </tr>
+                <tr v-if="righeFiltraite.length === 0">
+                  <td colspan="7" class="px-4 py-8 text-center text-sm text-steel-400 italic">
+                    Nessun documento corrisponde ai filtri applicati.
                   </td>
                 </tr>
               </tbody>

@@ -58,6 +58,7 @@ File di riferimento: `frontend/.env.example`
 - `Vite`: `8.0.13`
 - `@vitejs/plugin-vue`: `6.0.7`
 - `Tailwind CSS`: `4.3.0`
+- `PrimeVue`: `4.5.5`
 
 ## Riferimento stilistico
 
@@ -140,6 +141,10 @@ La response interceptor:
 - l'header condiviso deve mantenere tre zone stabili: brand, navigazione, profilo/azioni
 - le viste gestionali devono poter usare la larghezza piena della viewport quando serve densita informativa
 - la sidebar ERP deve evolvere tramite componenti condivisi e non con markup duplicato nelle viste
+- ogni nuova view deve essere mobile-first: definire il layout mobile prima dei breakpoint desktop
+- lo stato del drawer mobile e gestito da `useSidebar.js` — non creare altri sistemi di stato per navigazione
+- PrimeVue: usare solo in modalita `unstyled: true` con PT Tailwind — mai importare `primevue/passthrough/tailwind` (Tailwind v3 only) o `@primevue/themes`
+- PT inline per componente se usato in un solo punto; estrarre in `src/plugins/primevue-pt.js` se usato in piu viste
 
 ### Evoluzione futura
 

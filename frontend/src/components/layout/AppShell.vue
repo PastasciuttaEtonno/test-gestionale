@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink } from "vue-router";
+import Avatar from "primevue/avatar";
 
 import BaseButton from "../ui/BaseButton.vue";
 import RoleBadge from "../ui/RoleBadge.vue";
@@ -47,6 +48,7 @@ const { toggleDrawer } = useSidebar();
 
         <!-- Burger menu (mobile only) -->
         <button
+          v-tooltip.right="'Apri menu laterale'"
           type="button"
           class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-steel-200 bg-steel-50 text-steel-700 transition hover:bg-steel-100 xl:hidden"
           @click="toggleDrawer"
@@ -102,11 +104,25 @@ const { toggleDrawer } = useSidebar();
 
         <!-- User area -->
         <div class="flex items-center justify-end gap-3">
-          <div class="hidden h-11 items-center gap-3 rounded-xl border border-steel-200 bg-steel-50 px-4 xl:flex">
+          <div class="hidden h-11 items-center gap-3 rounded-xl border border-steel-200 bg-steel-50 px-3 xl:flex">
+            <Avatar
+              :label="username ? username.charAt(0).toUpperCase() : '?'"
+              :pt="{
+                root: {
+                  class:
+                    'flex h-7 w-7 shrink-0 select-none items-center justify-center rounded-full bg-brand-500 text-xs font-semibold text-white',
+                },
+              }"
+            />
             <p class="truncate text-sm font-medium text-steel-900">{{ username }}</p>
             <RoleBadge :role-code="roleCode" />
           </div>
-          <BaseButton type="button" variant="secondary" @click="$emit('logout')">
+          <BaseButton
+            v-tooltip.bottom="'Esegui logout'"
+            type="button"
+            variant="secondary"
+            @click="$emit('logout')"
+          >
             <span class="xl:hidden">Esci</span>
             <span class="hidden xl:inline">Logout</span>
           </BaseButton>

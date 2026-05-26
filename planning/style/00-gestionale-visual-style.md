@@ -118,7 +118,7 @@ Non usare il rosso come colore dominante di tutta la pagina.
 ## Integrazione PrimeVue
 
 Il progetto usa **PrimeVue v4 in modalità `unstyled: true`** per componenti ad alta complessità
-logica (Password toggle, DataTable, DatePicker, MultiSelect, Dialog).
+logica o con comportamento interattivo non triviale da replicare.
 
 ### Principio
 
@@ -131,34 +131,73 @@ componenti custom.
 - **Non importare** `primevue/passthrough/tailwind` — quel preset è per Tailwind v3 e non
   riconosce i token custom (`brand-500`, `steel-900`).
 - **Non importare** `@primevue/themes` — serve solo per la modalità styled (Aura, Lara, Nora).
-- **Non importare** `primeicons` — usare i slot `#maskicon` / `#unmaskicon` (Password) o SVG
-  inline per le icone dei componenti.
+- **Non importare** `primeicons` — usare SVG inline per le icone dei componenti.
+- **Non usare PrimeVue** per `<input>` semplici, toggle booleani, o elementi che non aggiungono
+  logica reale rispetto a HTML nativo — es. il toggle password usa `ref` locale + `<input :type>`.
 
-### Pattern PT
+### Componenti attivi
 
-```vue
-<ComponentePrimeVue
-  :pt="{
-    root: { class: '...' },
-    pcinput: { root: { class: 'campo-input' } },
-    toggleButton: { class: '...' },
-  }"
-/>
+| Componente | Dove usato | Valore aggiunto |
+|---|---|---|
+| `Tooltip` | AppShell | Tooltip accessibili senza implementazione custom |
+| `Avatar` | AppShell | Label avatar con fallback iniziale |
+| `IconField` + `InputIcon` + `InputText` | DashboardView | Input con icona posizionata correttamente |
+| `Select` | DashboardView | Dropdown con keyboard nav, `show-clear`, opzioni filtrabili |
+| `Tag` | DashboardView, AdminOnlyView, TenantAdminView | Badge semantico con PT status-aware |
+| `ProgressBar` | AdminOnlyView | Barra utilizzo risorse con valore percentuale |
+
+### Componenti candidati futuri
+
+| Componente | Quando introdurlo |
+|---|---|
+| **DataTable** | Quando le tabelle mockup si collegano ad API reali (sorting, filtering, pagination server-side) |
+| **Dialog** | Form di dettaglio, conferme distruttive, modal complessi |
+| **DatePicker** | Filtri data/range su documenti |
+| **MultiSelect** | Assegnazione ruoli e permessi multipli |
+
+### Pattern PT — oggetto statico
+
+```js
+const ptInputText = {
+  root: {
+    class: "h-11 rounded-xl border border-steel-200 bg-steel-50 px-4 text-sm text-steel-900 ...",
+  },
+};
 ```
 
-- `root` — wrapper esterno del componente
-- `pcinput.root` — l'`<input>` sottostante (per componenti che wrappano InputText)
-- Classi Tailwind applicate come stringhe: riutilizzare le classi CSS del progetto (es. `campo-input`)
+```vue
+<InputText v-model="valore" :pt="ptInputText" />
+```
+
+### Pattern PT — funzione status-aware
+
+```js
+function ptTag(stato) {
+  const critico = ["Bloccabile", "Scaduto", "Da osservare"].includes(stato);
+  return {
+    root: {
+      class: critico
+        ? "... bg-brand-500 text-white border-brand-500"
+        : "... bg-brand-50 text-brand-700 border-brand-100",
+    },
+  };
+}
+```
+
+```vue
+<Tag :value="tenant.stato" :pt="ptTag(tenant.stato)" />
+```
 
 ### Confini di responsabilità
 
 | Componente | Approccio |
 |---|---|
-| BaseButton, BaseCard, SectionLabel, KpiTile | Scritto a mano con Tailwind — nessuna dipendenza da PrimeVue |
-| Password, DataTable, DatePicker, MultiSelect, Dialog | PrimeVue unstyled + PT Tailwind |
+| BaseButton, BaseCard, SectionLabel, KpiTile, SidebarSection | Scritto a mano con Tailwind — nessuna dipendenza da PrimeVue |
+| Tooltip, Avatar, InputText, Select, Tag, ProgressBar | PrimeVue unstyled + PT Tailwind |
+| DataTable, Dialog, DatePicker, MultiSelect | PrimeVue unstyled + PT Tailwind — da introdurre nella fase dati reali |
 
 ### PT inline vs condiviso
 
-- **PT inline nel componente** — per uso in un solo punto della codebase
+- **PT inline nel file** — per uso in un solo punto della codebase
 - **`src/plugins/primevue-pt.js`** — estrarre il PT quando lo stesso componente PrimeVue
   viene usato in ≥ 2 view, per evitare duplicazione

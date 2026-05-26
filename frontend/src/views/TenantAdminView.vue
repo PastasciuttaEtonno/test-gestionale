@@ -1,4 +1,5 @@
 <script setup>
+import Tag from "primevue/tag";
 import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
 import KpiTile from "../components/ui/KpiTile.vue";
@@ -89,6 +90,17 @@ const numerazioni = [
     reset: "Annuale",
   },
 ];
+
+function ptTag(stato) {
+  const attenzione = ["Invito inviato"].includes(stato);
+  return {
+    root: {
+      class: attenzione
+        ? "inline-flex min-w-[112px] items-center justify-center rounded-full border border-brand-500 bg-brand-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white"
+        : "inline-flex min-w-[112px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700",
+    },
+  };
+}
 
 const auditLocale = [
   {
@@ -184,11 +196,7 @@ const auditLocale = [
                   <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ utente.ruolo }}</td>
                   <td class="hidden max-w-[160px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ utente.permessi }}</td>
                   <td class="px-4 py-3">
-                    <span
-                      class="inline-flex min-w-[112px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700"
-                    >
-                      {{ utente.stato }}
-                    </span>
+                    <Tag :value="utente.stato" :pt="ptTag(utente.stato)" />
                   </td>
                 </tr>
               </tbody>
