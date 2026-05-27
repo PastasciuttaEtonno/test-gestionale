@@ -1,4 +1,11 @@
-"""Route di amministrazione utenti."""
+"""Route di amministrazione utenti.
+
+Pattern di autorizzazione: role guard + scoping nel service (NON RequirePermission).
+Vedi rationale in ``app/api/deps/rbac.py`` (docstring di modulo). In breve: il super
+admin ha ``tenant_id=None`` e deve poter listare/leggere utenti cross-tenant, quindi
+il branching della query vive in ``UserService`` (es. ``list_users_by_tenant`` vs
+``list_users``), non in una dependency dichiarativa.
+"""
 
 from fastapi import APIRouter, Depends, HTTPException, Path, status
 from sqlalchemy.orm import Session

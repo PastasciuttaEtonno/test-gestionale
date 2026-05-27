@@ -1,0 +1,1057 @@
+{
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\openapi-auth-preview.json": {
+    "mtime": 1778866214.9759486,
+    "ast_hash": "5b543f3c281b4f442f717bc79e5f12b8",
+    "semantic_hash": "5b543f3c281b4f442f717bc79e5f12b8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\env.py": {
+    "mtime": 1779811441.320397,
+    "ast_hash": "e4cbe10a3d32df9d96298b0ea868567d",
+    "semantic_hash": "e4cbe10a3d32df9d96298b0ea868567d"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260515_0001_create_security_schema.py": {
+    "mtime": 1778866214.9537485,
+    "ast_hash": "9538a1fb5595580eaa78261d2ae2895d",
+    "semantic_hash": "9538a1fb5595580eaa78261d2ae2895d"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260515_0002_add_tenant_admin_role.py": {
+    "mtime": 1778866214.9547482,
+    "ast_hash": "38df85dbc5c0b9cf3ac24b24b57790a1",
+    "semantic_hash": "38df85dbc5c0b9cf3ac24b24b57790a1"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260515_0003_add_tenants_and_user_scoping.py": {
+    "mtime": 1778866214.9547482,
+    "ast_hash": "883503f6b8c743e81d59b9b4d093a315",
+    "semantic_hash": "883503f6b8c743e81d59b9b4d093a315"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260515_0004_add_tenant_company_settings.py": {
+    "mtime": 1778866214.9547482,
+    "ast_hash": "27efce43053444654d3e5fbb80c96f80",
+    "semantic_hash": "27efce43053444654d3e5fbb80c96f80"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260515_0005_add_login_protection.py": {
+    "mtime": 1778866214.9547482,
+    "ast_hash": "36d080df751d3ebac96ba3e7135a38f2",
+    "semantic_hash": "36d080df751d3ebac96ba3e7135a38f2"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260518_0006_add_rbac_demo_resources.py": {
+    "mtime": 1779726141.247223,
+    "ast_hash": "deab37081271631e9170cdccccaa2eed",
+    "semantic_hash": "deab37081271631e9170cdccccaa2eed"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260526_0007_add_notifications.py": {
+    "mtime": 1779811454.028115,
+    "ast_hash": "1ffa30f7905b2412ed39e4c2f5ad5c95",
+    "semantic_hash": "1ffa30f7905b2412ed39e4c2f5ad5c95"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260526_0008_migrate_to_native_uuid.py": {
+    "mtime": 1779813588.689054,
+    "ast_hash": "ada20d8f4540a15f2c188d4fe0a76dba",
+    "semantic_hash": "ada20d8f4540a15f2c188d4fe0a76dba"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260526_0009_add_anagrafiche_permissions.py": {
+    "mtime": 1779814922.3295014,
+    "ast_hash": "b2ab25fb08efa81aeeb53d029da7a425",
+    "semantic_hash": "b2ab25fb08efa81aeeb53d029da7a425"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\alembic\\versions\\20260526_0010_add_anagrafiche_tables.py": {
+    "mtime": 1779815010.4186406,
+    "ast_hash": "b9d26724af7eb3ce98872cfe3f1747a1",
+    "semantic_hash": "b9d26724af7eb3ce98872cfe3f1747a1"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\main.py": {
+    "mtime": 1779818780.0264108,
+    "ast_hash": "a393dd534eb9a327fbdff93e88365629",
+    "semantic_hash": "a393dd534eb9a327fbdff93e88365629"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\__init__.py": {
+    "mtime": 1778866214.9557495,
+    "ast_hash": "60958fba5a69100de77f2f860dd0342b",
+    "semantic_hash": "60958fba5a69100de77f2f860dd0342b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\__init__.py": {
+    "mtime": 1778866214.9557495,
+    "ast_hash": "4273e55fb1dc4bfe3fbc6caf9028c161",
+    "semantic_hash": "4273e55fb1dc4bfe3fbc6caf9028c161"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\deps\\auth.py": {
+    "mtime": 1779811302.879732,
+    "ast_hash": "0de5f2d48409b08d2c310046ecbbed8a",
+    "semantic_hash": "0de5f2d48409b08d2c310046ecbbed8a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\deps\\events.py": {
+    "mtime": 1779811310.799409,
+    "ast_hash": "d4c46da7d7aa809a996cc82a4fd91909",
+    "semantic_hash": "d4c46da7d7aa809a996cc82a4fd91909"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\deps\\rbac.py": {
+    "mtime": 1779726141.2482648,
+    "ast_hash": "51dbef9987f5748b564de9efb0316200",
+    "semantic_hash": "51dbef9987f5748b564de9efb0316200"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\deps\\__init__.py": {
+    "mtime": 1778866214.9557495,
+    "ast_hash": "912aa971371ffa9d6caf31b0484436cb",
+    "semantic_hash": "912aa971371ffa9d6caf31b0484436cb"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\router.py": {
+    "mtime": 1779815150.8866599,
+    "ast_hash": "ac3354a13b461fe58a2d50500618c37e",
+    "semantic_hash": "ac3354a13b461fe58a2d50500618c37e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\__init__.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "06a3ce744f4f0b8ff0258a2055110fc2",
+    "semantic_hash": "06a3ce744f4f0b8ff0258a2055110fc2"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\admin\\routes.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "fc7591acbb9f47de92845399286df1b8",
+    "semantic_hash": "fc7591acbb9f47de92845399286df1b8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\admin\\__init__.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "27ec3cd1cd8264049be8b27b0d460252",
+    "semantic_hash": "27ec3cd1cd8264049be8b27b0d460252"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\anagrafiche\\routes.py": {
+    "mtime": 1779815156.1652493,
+    "ast_hash": "c0b7f167a9fe7a8b963ca61998cfa98c",
+    "semantic_hash": "c0b7f167a9fe7a8b963ca61998cfa98c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\anagrafiche\\__init__.py": {
+    "mtime": 1779815030.8411152,
+    "ast_hash": "d124bfbf0fb4c6bf1d0752249c99bc51",
+    "semantic_hash": "d124bfbf0fb4c6bf1d0752249c99bc51"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\auth\\routes.py": {
+    "mtime": 1779726141.2482648,
+    "ast_hash": "8880cc3e5f3977f7ef292b75eae0b69e",
+    "semantic_hash": "8880cc3e5f3977f7ef292b75eae0b69e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\auth\\__init__.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "0a47aebcf359a1e961dc1db354d42a92",
+    "semantic_hash": "0a47aebcf359a1e961dc1db354d42a92"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\bom\\routes.py": {
+    "mtime": 1779726141.2492645,
+    "ast_hash": "ea5f4c1a7e88ee09441841ecdf925e64",
+    "semantic_hash": "ea5f4c1a7e88ee09441841ecdf925e64"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\bom\\__init__.py": {
+    "mtime": 1779726141.2482648,
+    "ast_hash": "dc19d0962bcaf9139f39adee7ed347a2",
+    "semantic_hash": "dc19d0962bcaf9139f39adee7ed347a2"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\dashboard\\routes.py": {
+    "mtime": 1779726141.2492645,
+    "ast_hash": "cd1cad8a26ebac582900c5dbebb6d538",
+    "semantic_hash": "cd1cad8a26ebac582900c5dbebb6d538"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\dashboard\\__init__.py": {
+    "mtime": 1779726141.2492645,
+    "ast_hash": "d867c67f0d1fcf86f9548057225d17d4",
+    "semantic_hash": "d867c67f0d1fcf86f9548057225d17d4"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\events\\routes.py": {
+    "mtime": 1779811324.2661858,
+    "ast_hash": "a1ed45ac9b3cf553b88dbfff557e730b",
+    "semantic_hash": "a1ed45ac9b3cf553b88dbfff557e730b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\events\\__init__.py": {
+    "mtime": 1779811262.705964,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\finance\\routes.py": {
+    "mtime": 1779726141.2492645,
+    "ast_hash": "90570f580f1b7b5b0d342a790fd98620",
+    "semantic_hash": "90570f580f1b7b5b0d342a790fd98620"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\finance\\__init__.py": {
+    "mtime": 1779726141.2492645,
+    "ast_hash": "03204aac4d0adc10d14977a288aaef07",
+    "semantic_hash": "03204aac4d0adc10d14977a288aaef07"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\notifications\\routes.py": {
+    "mtime": 1779811511.3744144,
+    "ast_hash": "de1743b715f8c500f80686f28daf5fb3",
+    "semantic_hash": "de1743b715f8c500f80686f28daf5fb3"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\notifications\\__init__.py": {
+    "mtime": 1779811474.1074643,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\production\\routes.py": {
+    "mtime": 1779811809.7148461,
+    "ast_hash": "5bdcf8e88e095da2e36de0ec33f94614",
+    "semantic_hash": "5bdcf8e88e095da2e36de0ec33f94614"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\production\\__init__.py": {
+    "mtime": 1779726141.250357,
+    "ast_hash": "17c057ff688929dd7abbdb653466d585",
+    "semantic_hash": "17c057ff688929dd7abbdb653466d585"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\reports\\routes.py": {
+    "mtime": 1779726141.250357,
+    "ast_hash": "b32be339d32b09e637d859ab57eb0e03",
+    "semantic_hash": "b32be339d32b09e637d859ab57eb0e03"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\reports\\__init__.py": {
+    "mtime": 1779726141.250357,
+    "ast_hash": "cfa7b6b459161bf6965397cd705cc2e2",
+    "semantic_hash": "cfa7b6b459161bf6965397cd705cc2e2"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\tasks\\routes.py": {
+    "mtime": 1779726141.2513573,
+    "ast_hash": "1596b66351d78b937e7f94c49bdbc5b7",
+    "semantic_hash": "1596b66351d78b937e7f94c49bdbc5b7"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\tasks\\__init__.py": {
+    "mtime": 1779726141.2513573,
+    "ast_hash": "b8d00a115f7af78d97d8d54d4c5e9c01",
+    "semantic_hash": "b8d00a115f7af78d97d8d54d4c5e9c01"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\tenant_admin\\routes.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "c234290f704a56e26532bda585523b67",
+    "semantic_hash": "c234290f704a56e26532bda585523b67"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\tenant_admin\\settings_routes.py": {
+    "mtime": 1779726141.2523577,
+    "ast_hash": "9ac1d908fc26e3143be8a218842c97f3",
+    "semantic_hash": "9ac1d908fc26e3143be8a218842c97f3"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\tenant_admin\\__init__.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "42b3048a91086743dabe76f15a1084e0",
+    "semantic_hash": "42b3048a91086743dabe76f15a1084e0"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\users\\routes.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "bf4603aab650242e968780561b6c344a",
+    "semantic_hash": "bf4603aab650242e968780561b6c344a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\api\\v1\\users\\__init__.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "25dc3d847b6a3bf18e380a0f07e8adee",
+    "semantic_hash": "25dc3d847b6a3bf18e380a0f07e8adee"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\cache.py": {
+    "mtime": 1779726141.2523577,
+    "ast_hash": "2fbf563852340879d8112e8b988f6d64",
+    "semantic_hash": "2fbf563852340879d8112e8b988f6d64"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\celery_app.py": {
+    "mtime": 1779810440.6952498,
+    "ast_hash": "39c4ab339762f39b34307a425bdd3028",
+    "semantic_hash": "39c4ab339762f39b34307a425bdd3028"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\config.py": {
+    "mtime": 1779812031.2400167,
+    "ast_hash": "7144ca82fd0c4460e1666a61c02efacc",
+    "semantic_hash": "7144ca82fd0c4460e1666a61c02efacc"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\db.py": {
+    "mtime": 1779726141.2533555,
+    "ast_hash": "b294e0c9e1b82f7af3fb5f4e3500752f",
+    "semantic_hash": "b294e0c9e1b82f7af3fb5f4e3500752f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\logging.py": {
+    "mtime": 1779726141.2544377,
+    "ast_hash": "4ccf6f08439b4bfd79c3867e6a66e0be",
+    "semantic_hash": "4ccf6f08439b4bfd79c3867e6a66e0be"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\pubsub.py": {
+    "mtime": 1779811257.038044,
+    "ast_hash": "ae4209359b64e4381139cd0bd8629ae3",
+    "semantic_hash": "ae4209359b64e4381139cd0bd8629ae3"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\rate_limit.py": {
+    "mtime": 1779726141.2544377,
+    "ast_hash": "b3164d85ef398b00ef8728d6f9cae23f",
+    "semantic_hash": "b3164d85ef398b00ef8728d6f9cae23f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\redis.py": {
+    "mtime": 1779726141.2544377,
+    "ast_hash": "de1d825ab928fe89a45a2dc7a22bf3b7",
+    "semantic_hash": "de1d825ab928fe89a45a2dc7a22bf3b7"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\request_id.py": {
+    "mtime": 1779726141.2544377,
+    "ast_hash": "2f6868a8136b03c297a13e61382e5db0",
+    "semantic_hash": "2f6868a8136b03c297a13e61382e5db0"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\__init__.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "e0f812650d942d710d4f5ce474a6cb7c",
+    "semantic_hash": "e0f812650d942d710d4f5ce474a6cb7c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\field_encryption.py": {
+    "mtime": 1778866214.9611504,
+    "ast_hash": "1ca1ee3d5198c2c6c8699930ac45c6dd",
+    "semantic_hash": "1ca1ee3d5198c2c6c8699930ac45c6dd"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\hashing.py": {
+    "mtime": 1778866214.9611504,
+    "ast_hash": "77fc46d522aba21da27b5bac24111c52",
+    "semantic_hash": "77fc46d522aba21da27b5bac24111c52"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\jwt.py": {
+    "mtime": 1778866214.9615612,
+    "ast_hash": "48f67dce81c9cea3e31d024203b8d8df",
+    "semantic_hash": "48f67dce81c9cea3e31d024203b8d8df"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\origin_validation.py": {
+    "mtime": 1779726141.2544377,
+    "ast_hash": "fac1eaf97024417b7ec9e3db8dffb91b",
+    "semantic_hash": "fac1eaf97024417b7ec9e3db8dffb91b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\permissions.py": {
+    "mtime": 1778866214.9615612,
+    "ast_hash": "46dc0ad10398e94767626d6bc5983e87",
+    "semantic_hash": "46dc0ad10398e94767626d6bc5983e87"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\policies.py": {
+    "mtime": 1778866214.9615612,
+    "ast_hash": "1eaa7b95529e5a3040cfda5ee9ef95da",
+    "semantic_hash": "1eaa7b95529e5a3040cfda5ee9ef95da"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\request_context.py": {
+    "mtime": 1779726141.2554386,
+    "ast_hash": "f65feb6e40406d87246a7b2aa13260c2",
+    "semantic_hash": "f65feb6e40406d87246a7b2aa13260c2"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\core\\security\\__init__.py": {
+    "mtime": 1778866214.9571328,
+    "ast_hash": "90767e471e5456bfa8c271fc58e5e07d",
+    "semantic_hash": "90767e471e5456bfa8c271fc58e5e07d"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\domain\\__init__.py": {
+    "mtime": 1778866214.962566,
+    "ast_hash": "11fb4783bd4d741370fae07da64345f6",
+    "semantic_hash": "11fb4783bd4d741370fae07da64345f6"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\domain\\security\\constants.py": {
+    "mtime": 1779726141.2554386,
+    "ast_hash": "2621813251ef59f788491f8734f7ba50",
+    "semantic_hash": "2621813251ef59f788491f8734f7ba50"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\domain\\security\\enums.py": {
+    "mtime": 1779726141.2559643,
+    "ast_hash": "05176cacc620df55b1043cafac8a29ad",
+    "semantic_hash": "05176cacc620df55b1043cafac8a29ad"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\domain\\security\\exceptions.py": {
+    "mtime": 1778866214.9635656,
+    "ast_hash": "dffb1da7ba61f570a1e07e4cf32efaa3",
+    "semantic_hash": "dffb1da7ba61f570a1e07e4cf32efaa3"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\domain\\security\\__init__.py": {
+    "mtime": 1778866214.962566,
+    "ast_hash": "002f53930e2254bd76888bda923c6f78",
+    "semantic_hash": "002f53930e2254bd76888bda923c6f78"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\base.py": {
+    "mtime": 1779814448.842589,
+    "ast_hash": "4ecdaedecc7c0ec78b4860f9094b7bf5",
+    "semantic_hash": "4ecdaedecc7c0ec78b4860f9094b7bf5"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\__init__.py": {
+    "mtime": 1778866214.9635656,
+    "ast_hash": "0d6f395a63fca60d1ef27145d035187b",
+    "semantic_hash": "0d6f395a63fca60d1ef27145d035187b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\anagrafica.py": {
+    "mtime": 1779814938.5993176,
+    "ast_hash": "c73b80e187cd929c3949a3f9c4474bde",
+    "semantic_hash": "c73b80e187cd929c3949a3f9c4474bde"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\anagrafica_indirizzo.py": {
+    "mtime": 1779814946.6702573,
+    "ast_hash": "138e0a99b0771c4c32c3d67ab3fb3cd4",
+    "semantic_hash": "138e0a99b0771c4c32c3d67ab3fb3cd4"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\bom.py": {
+    "mtime": 1779814496.4893022,
+    "ast_hash": "9d4bd26ed52729e16fb40189da0cd532",
+    "semantic_hash": "9d4bd26ed52729e16fb40189da0cd532"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\finance_cost_entry.py": {
+    "mtime": 1779814504.0815072,
+    "ast_hash": "5adddf350e07f97f5cc5af94da4d573e",
+    "semantic_hash": "5adddf350e07f97f5cc5af94da4d573e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\notification.py": {
+    "mtime": 1779814533.3181431,
+    "ast_hash": "8a18da33f5891aee1ff7eb2afeb978ae",
+    "semantic_hash": "8a18da33f5891aee1ff7eb2afeb978ae"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\tenant_company_settings.py": {
+    "mtime": 1779814510.57917,
+    "ast_hash": "9a29071d87cb2455c52043edde08ac05",
+    "semantic_hash": "9a29071d87cb2455c52043edde08ac05"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\tenant_document_sequence.py": {
+    "mtime": 1779814524.7325277,
+    "ast_hash": "53588cc3038d59d43fe4a6650d1a4ead",
+    "semantic_hash": "53588cc3038d59d43fe4a6650d1a4ead"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\tenant_smtp_settings.py": {
+    "mtime": 1779814517.1253963,
+    "ast_hash": "c8ff3ff94180dc09cf2bed19ad54a076",
+    "semantic_hash": "c8ff3ff94180dc09cf2bed19ad54a076"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\core\\__init__.py": {
+    "mtime": 1779814957.2368236,
+    "ast_hash": "b6c03e109d68c4aef11561a3bc183bd3",
+    "semantic_hash": "b6c03e109d68c4aef11561a3bc183bd3"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\audit_log.py": {
+    "mtime": 1779814478.7315116,
+    "ast_hash": "e8cb0126d41234c096281087acc1bd88",
+    "semantic_hash": "e8cb0126d41234c096281087acc1bd88"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\login_protection.py": {
+    "mtime": 1779814485.9630406,
+    "ast_hash": "a5b512cff6cb86647a520b8b80b49b3f",
+    "semantic_hash": "a5b512cff6cb86647a520b8b80b49b3f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\permission.py": {
+    "mtime": 1778866214.9655657,
+    "ast_hash": "e0acbe1ddf243641472e71cfcfa1d92f",
+    "semantic_hash": "e0acbe1ddf243641472e71cfcfa1d92f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\role.py": {
+    "mtime": 1778866214.9665656,
+    "ast_hash": "4b5f1ececc1de610bd2c2ffcc102708a",
+    "semantic_hash": "4b5f1ececc1de610bd2c2ffcc102708a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\role_permission.py": {
+    "mtime": 1778866214.9665656,
+    "ast_hash": "3cc97a7f444f2a75b7f828defb8f9779",
+    "semantic_hash": "3cc97a7f444f2a75b7f828defb8f9779"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\tenant.py": {
+    "mtime": 1779814455.7611747,
+    "ast_hash": "18be4e5098f142286150d0d8a325d2c8",
+    "semantic_hash": "18be4e5098f142286150d0d8a325d2c8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\user.py": {
+    "mtime": 1779814465.341942,
+    "ast_hash": "18dc0910ce17c0a1886d53fae72105c3",
+    "semantic_hash": "18dc0910ce17c0a1886d53fae72105c3"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\models\\security\\__init__.py": {
+    "mtime": 1778866214.9645655,
+    "ast_hash": "7e0366186505be11197a5b8e4aa4db60",
+    "semantic_hash": "7e0366186505be11197a5b8e4aa4db60"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\__init__.py": {
+    "mtime": 1778866214.967567,
+    "ast_hash": "b7f6dfb89f2aa4fe19f7a91663b9d963",
+    "semantic_hash": "b7f6dfb89f2aa4fe19f7a91663b9d963"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\core\\anagrafica_repository.py": {
+    "mtime": 1779815076.0043933,
+    "ast_hash": "a0d3e0a760e7a6f75e20e77974f2bfff",
+    "semantic_hash": "a0d3e0a760e7a6f75e20e77974f2bfff"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\core\\bom_repository.py": {
+    "mtime": 1779726141.2559643,
+    "ast_hash": "a617c08792afad6fb42262ce23dfcd79",
+    "semantic_hash": "a617c08792afad6fb42262ce23dfcd79"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\core\\finance_cost_repository.py": {
+    "mtime": 1779726141.2574728,
+    "ast_hash": "fd5d1d3b1b2547d9cd5ffb5452c446c2",
+    "semantic_hash": "fd5d1d3b1b2547d9cd5ffb5452c446c2"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\core\\notification_repository.py": {
+    "mtime": 1779811468.4245179,
+    "ast_hash": "09a25eac73ba755a90fe41f0e9bc9417",
+    "semantic_hash": "09a25eac73ba755a90fe41f0e9bc9417"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\core\\tenant_settings_repository.py": {
+    "mtime": 1778866214.967567,
+    "ast_hash": "099a4bce95d14d6983932e3b65b5f44c",
+    "semantic_hash": "099a4bce95d14d6983932e3b65b5f44c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\core\\__init__.py": {
+    "mtime": 1778866214.967567,
+    "ast_hash": "6995228ec5a022d112e4cb1088b1e794",
+    "semantic_hash": "6995228ec5a022d112e4cb1088b1e794"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\security\\audit_repository.py": {
+    "mtime": 1778866214.9685655,
+    "ast_hash": "c771a4d97db8932319f97b484b0a68fb",
+    "semantic_hash": "c771a4d97db8932319f97b484b0a68fb"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\security\\login_protection_repository.py": {
+    "mtime": 1778866214.9685655,
+    "ast_hash": "9df2945349fb4dd6a55567c211a93e06",
+    "semantic_hash": "9df2945349fb4dd6a55567c211a93e06"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\security\\role_repository.py": {
+    "mtime": 1778866214.9685655,
+    "ast_hash": "b98d25127e458d5879dca688c04e44e9",
+    "semantic_hash": "b98d25127e458d5879dca688c04e44e9"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\security\\tenant_repository.py": {
+    "mtime": 1778866214.9695654,
+    "ast_hash": "52ce128885d18293a824adb840b6a198",
+    "semantic_hash": "52ce128885d18293a824adb840b6a198"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\security\\user_repository.py": {
+    "mtime": 1778866214.9695654,
+    "ast_hash": "f39c859a7b47383c18e004123a9ecf97",
+    "semantic_hash": "f39c859a7b47383c18e004123a9ecf97"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\repositories\\security\\__init__.py": {
+    "mtime": 1778866214.9685655,
+    "ast_hash": "24013eb85d68e8046b61885cb876ce2e",
+    "semantic_hash": "24013eb85d68e8046b61885cb876ce2e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\__init__.py": {
+    "mtime": 1778866214.9695654,
+    "ast_hash": "0ea0545c6fd798664264aeea23a016b0",
+    "semantic_hash": "0ea0545c6fd798664264aeea23a016b0"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\anagrafiche\\requests.py": {
+    "mtime": 1779815051.691262,
+    "ast_hash": "152766a53e4a524f059a974e11e70332",
+    "semantic_hash": "152766a53e4a524f059a974e11e70332"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\anagrafiche\\responses.py": {
+    "mtime": 1779815060.9485261,
+    "ast_hash": "4175224b8c7a036ef05f158179d69e5e",
+    "semantic_hash": "4175224b8c7a036ef05f158179d69e5e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\anagrafiche\\__init__.py": {
+    "mtime": 1779815028.8199253,
+    "ast_hash": "853076924bb2f9114998de6c2d585d2c",
+    "semantic_hash": "853076924bb2f9114998de6c2d585d2c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\audit\\responses.py": {
+    "mtime": 1778866214.9695654,
+    "ast_hash": "4556e6b95ede6582d47a944738cce6dd",
+    "semantic_hash": "4556e6b95ede6582d47a944738cce6dd"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\audit\\__init__.py": {
+    "mtime": 1778866214.9695654,
+    "ast_hash": "ff4c269063910988002a2b5d0333d90b",
+    "semantic_hash": "ff4c269063910988002a2b5d0333d90b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\auth\\requests.py": {
+    "mtime": 1778866214.9705653,
+    "ast_hash": "cbd29587d694e75aff3f41622206d257",
+    "semantic_hash": "cbd29587d694e75aff3f41622206d257"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\auth\\responses.py": {
+    "mtime": 1778866214.9705653,
+    "ast_hash": "61cfc1143ed471167f4f8334f0ccf49a",
+    "semantic_hash": "61cfc1143ed471167f4f8334f0ccf49a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\auth\\__init__.py": {
+    "mtime": 1778866214.9705653,
+    "ast_hash": "2fe2295762edb24b60a781f147c2163e",
+    "semantic_hash": "2fe2295762edb24b60a781f147c2163e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\bom\\responses.py": {
+    "mtime": 1779726141.2574728,
+    "ast_hash": "b53cc8d9f329f8bb04642d7e7f1ed1fd",
+    "semantic_hash": "b53cc8d9f329f8bb04642d7e7f1ed1fd"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\bom\\__init__.py": {
+    "mtime": 1779726141.2574728,
+    "ast_hash": "2a41de226ecfc60a4af3c1bab836b903",
+    "semantic_hash": "2a41de226ecfc60a4af3c1bab836b903"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\dashboard\\responses.py": {
+    "mtime": 1779726141.2585654,
+    "ast_hash": "373b5e0822f28e253700dc56366fc7ed",
+    "semantic_hash": "373b5e0822f28e253700dc56366fc7ed"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\dashboard\\__init__.py": {
+    "mtime": 1779726141.2574728,
+    "ast_hash": "0e9c15ae5a4ee15db42e4709096873cc",
+    "semantic_hash": "0e9c15ae5a4ee15db42e4709096873cc"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\events\\sse.py": {
+    "mtime": 1779811286.4875865,
+    "ast_hash": "234c0f52bea2eac0bd32659f28d0bf54",
+    "semantic_hash": "234c0f52bea2eac0bd32659f28d0bf54"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\events\\__init__.py": {
+    "mtime": 1779811261.6899512,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\finance\\requests.py": {
+    "mtime": 1779726141.2585654,
+    "ast_hash": "7e2e2965c9ff5b6eb7b9e7603a4a8b75",
+    "semantic_hash": "7e2e2965c9ff5b6eb7b9e7603a4a8b75"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\finance\\responses.py": {
+    "mtime": 1779726141.2585654,
+    "ast_hash": "97f657d69ccf4a8b28e4cd9c9c6f555b",
+    "semantic_hash": "97f657d69ccf4a8b28e4cd9c9c6f555b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\finance\\__init__.py": {
+    "mtime": 1779726141.2585654,
+    "ast_hash": "37ad9fe7aa97c119213f188b97051f15",
+    "semantic_hash": "37ad9fe7aa97c119213f188b97051f15"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\notifications\\responses.py": {
+    "mtime": 1779811480.678104,
+    "ast_hash": "23ba17c5a5e487871d949fe46597ee5c",
+    "semantic_hash": "23ba17c5a5e487871d949fe46597ee5c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\notifications\\__init__.py": {
+    "mtime": 1779811473.0893655,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\production\\requests.py": {
+    "mtime": 1779726141.2595644,
+    "ast_hash": "2d195c3667abbd882d06812c5c8998a8",
+    "semantic_hash": "2d195c3667abbd882d06812c5c8998a8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\production\\responses.py": {
+    "mtime": 1779726141.2595644,
+    "ast_hash": "079a493c387cd27ded25f7ba7fe59e04",
+    "semantic_hash": "079a493c387cd27ded25f7ba7fe59e04"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\production\\__init__.py": {
+    "mtime": 1779726141.2595644,
+    "ast_hash": "d196eabbd0628b4336961e033d803134",
+    "semantic_hash": "d196eabbd0628b4336961e033d803134"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\reports\\requests.py": {
+    "mtime": 1779726141.2605667,
+    "ast_hash": "795e01b38561e7c33557b59387d63882",
+    "semantic_hash": "795e01b38561e7c33557b59387d63882"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\reports\\responses.py": {
+    "mtime": 1779726141.2605667,
+    "ast_hash": "9aa675a7fb60625606c3e75627d7476f",
+    "semantic_hash": "9aa675a7fb60625606c3e75627d7476f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\reports\\__init__.py": {
+    "mtime": 1779726141.2595644,
+    "ast_hash": "05622e1f6002de49f1137127bf60160c",
+    "semantic_hash": "05622e1f6002de49f1137127bf60160c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\tasks\\responses.py": {
+    "mtime": 1779726141.2605667,
+    "ast_hash": "d0b8e3e7c266c0824f8413613c8b9a31",
+    "semantic_hash": "d0b8e3e7c266c0824f8413613c8b9a31"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\tasks\\__init__.py": {
+    "mtime": 1779726141.2605667,
+    "ast_hash": "3291e835bc2861c232223c55ce0c7cbb",
+    "semantic_hash": "3291e835bc2861c232223c55ce0c7cbb"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\tenant_admin\\requests.py": {
+    "mtime": 1778866214.9705653,
+    "ast_hash": "3f614029aa216c55a0b63edfe1aacc21",
+    "semantic_hash": "3f614029aa216c55a0b63edfe1aacc21"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\tenant_admin\\responses.py": {
+    "mtime": 1778866214.9715652,
+    "ast_hash": "9494af0fdc254649edb260807e80293b",
+    "semantic_hash": "9494af0fdc254649edb260807e80293b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\tenant_admin\\__init__.py": {
+    "mtime": 1778866214.9705653,
+    "ast_hash": "334cbea79986b8c6436761ca58cc2f3a",
+    "semantic_hash": "334cbea79986b8c6436761ca58cc2f3a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\users\\requests.py": {
+    "mtime": 1778866214.9715652,
+    "ast_hash": "0a7a5e223d573ccb606ed97f626eac4f",
+    "semantic_hash": "0a7a5e223d573ccb606ed97f626eac4f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\users\\responses.py": {
+    "mtime": 1778866214.9715652,
+    "ast_hash": "31b7cc5338f4edd741e33fb0349888da",
+    "semantic_hash": "31b7cc5338f4edd741e33fb0349888da"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\schemas\\users\\__init__.py": {
+    "mtime": 1778866214.9715652,
+    "ast_hash": "dc38f985b4ed342c0793ab1b82b0bb9b",
+    "semantic_hash": "dc38f985b4ed342c0793ab1b82b0bb9b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\__init__.py": {
+    "mtime": 1778866214.9725657,
+    "ast_hash": "2ad12af518deffee4db78ab9f41d3a53",
+    "semantic_hash": "2ad12af518deffee4db78ab9f41d3a53"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\anagrafiche\\anagrafica_service.py": {
+    "mtime": 1779815098.4172835,
+    "ast_hash": "2a3a9d9d4cb9fe6b5cd0adaf3286cd2c",
+    "semantic_hash": "2a3a9d9d4cb9fe6b5cd0adaf3286cd2c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\anagrafiche\\__init__.py": {
+    "mtime": 1779815029.8270185,
+    "ast_hash": "5c1027f386ece8fa9800ca973449761d",
+    "semantic_hash": "5c1027f386ece8fa9800ca973449761d"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\audit\\audit_service.py": {
+    "mtime": 1778866214.9725657,
+    "ast_hash": "bf7a3a953256619fc16d74bc64cac026",
+    "semantic_hash": "bf7a3a953256619fc16d74bc64cac026"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\audit\\__init__.py": {
+    "mtime": 1778866214.9725657,
+    "ast_hash": "099f0d4a1f02eea0ba64559fc143968c",
+    "semantic_hash": "099f0d4a1f02eea0ba64559fc143968c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\auth\\auth_service.py": {
+    "mtime": 1779726141.2615664,
+    "ast_hash": "5b85a60ec0929e925bf69801a4e3c920",
+    "semantic_hash": "5b85a60ec0929e925bf69801a4e3c920"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\auth\\login_protection_service.py": {
+    "mtime": 1779726141.2615664,
+    "ast_hash": "7fb39705642735eb0e9a8627545897b6",
+    "semantic_hash": "7fb39705642735eb0e9a8627545897b6"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\auth\\session_service.py": {
+    "mtime": 1778866214.9735656,
+    "ast_hash": "6f8da63d0e3f63c32adbd49383354bb9",
+    "semantic_hash": "6f8da63d0e3f63c32adbd49383354bb9"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\auth\\__init__.py": {
+    "mtime": 1778866214.9725657,
+    "ast_hash": "492e1d8b41521fe74598703213eeedce",
+    "semantic_hash": "492e1d8b41521fe74598703213eeedce"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\bom\\bom_service.py": {
+    "mtime": 1779726141.262636,
+    "ast_hash": "3c11f4c3931f0ab1fae939e0eb43e3f4",
+    "semantic_hash": "3c11f4c3931f0ab1fae939e0eb43e3f4"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\bom\\__init__.py": {
+    "mtime": 1779726141.2615664,
+    "ast_hash": "0b08090ede10058544e341eb44aa3a80",
+    "semantic_hash": "0b08090ede10058544e341eb44aa3a80"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\dashboard\\dashboard_service.py": {
+    "mtime": 1779726141.262636,
+    "ast_hash": "f0483fc32c8b97b4cecd672215e3dec8",
+    "semantic_hash": "f0483fc32c8b97b4cecd672215e3dec8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\dashboard\\__init__.py": {
+    "mtime": 1779726141.262636,
+    "ast_hash": "63aacafbef47dbdab27527e067350ab5",
+    "semantic_hash": "63aacafbef47dbdab27527e067350ab5"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\events\\channels.py": {
+    "mtime": 1779811269.640354,
+    "ast_hash": "4b826267c720f9d3ed7dcb0be3896d47",
+    "semantic_hash": "4b826267c720f9d3ed7dcb0be3896d47"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\events\\event_publisher.py": {
+    "mtime": 1779811279.8835666,
+    "ast_hash": "8cf7ef78fd3fad3e3e1cd0f9f5d3449a",
+    "semantic_hash": "8cf7ef78fd3fad3e3e1cd0f9f5d3449a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\events\\sync_publisher.py": {
+    "mtime": 1779811668.337878,
+    "ast_hash": "49e4a9f90902b7e051e5db1331570f1a",
+    "semantic_hash": "49e4a9f90902b7e051e5db1331570f1a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\events\\__init__.py": {
+    "mtime": 1779811260.6682498,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\finance\\finance_service.py": {
+    "mtime": 1779726141.262636,
+    "ast_hash": "e3bfc6bbb59a6fd0ff44394ef55290bb",
+    "semantic_hash": "e3bfc6bbb59a6fd0ff44394ef55290bb"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\finance\\__init__.py": {
+    "mtime": 1779726141.262636,
+    "ast_hash": "e8583f98a6c5885bb68d3c00642a5a75",
+    "semantic_hash": "e8583f98a6c5885bb68d3c00642a5a75"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\notifications\\notification_service.py": {
+    "mtime": 1779811497.590905,
+    "ast_hash": "1df63b79807684dbd2a0eefb9e0a5fa8",
+    "semantic_hash": "1df63b79807684dbd2a0eefb9e0a5fa8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\notifications\\__init__.py": {
+    "mtime": 1779811472.058533,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\production\\production_service.py": {
+    "mtime": 1779811795.091322,
+    "ast_hash": "28e396d0cb2424788559aa2994756650",
+    "semantic_hash": "28e396d0cb2424788559aa2994756650"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\production\\__init__.py": {
+    "mtime": 1779726141.2636352,
+    "ast_hash": "9f900e22117b8e1f273873618620f446",
+    "semantic_hash": "9f900e22117b8e1f273873618620f446"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\reports\\report_task_service.py": {
+    "mtime": 1779726141.2636352,
+    "ast_hash": "f15e27a4bf1b1e90353456b7b3a56fd7",
+    "semantic_hash": "f15e27a4bf1b1e90353456b7b3a56fd7"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\reports\\__init__.py": {
+    "mtime": 1779726141.2636352,
+    "ast_hash": "f779c340e62f669c802329c11ef31921",
+    "semantic_hash": "f779c340e62f669c802329c11ef31921"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\tenant_admin\\tenant_settings_service.py": {
+    "mtime": 1779726141.264635,
+    "ast_hash": "df150d04f3551224c023832c33daab6d",
+    "semantic_hash": "df150d04f3551224c023832c33daab6d"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\tenant_admin\\__init__.py": {
+    "mtime": 1778866214.9747062,
+    "ast_hash": "7a5857b09307b2c44609100468002194",
+    "semantic_hash": "7a5857b09307b2c44609100468002194"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\users\\user_service.py": {
+    "mtime": 1778866214.9747062,
+    "ast_hash": "cdd2dfaa61bb95565d032d3d83e2265a",
+    "semantic_hash": "cdd2dfaa61bb95565d032d3d83e2265a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\services\\users\\__init__.py": {
+    "mtime": 1778866214.9747062,
+    "ast_hash": "ec596af748c5d593ba93a09e75886953",
+    "semantic_hash": "ec596af748c5d593ba93a09e75886953"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\tasks\\report_tasks.py": {
+    "mtime": 1779811682.7654567,
+    "ast_hash": "3300ec4e7e62e3fe5cf39abf51fb276c",
+    "semantic_hash": "3300ec4e7e62e3fe5cf39abf51fb276c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\app\\tasks\\__init__.py": {
+    "mtime": 1779726141.2652042,
+    "ast_hash": "68d9d89b9c9631ff116077e47e7b6ecc",
+    "semantic_hash": "68d9d89b9c9631ff116077e47e7b6ecc"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\tests\\conftest.py": {
+    "mtime": 1779726141.2657197,
+    "ast_hash": "bee6a9b7228d098b4687e4cd38a04537",
+    "semantic_hash": "bee6a9b7228d098b4687e4cd38a04537"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\tests\\test_auth_routes.py": {
+    "mtime": 1779810440.7522314,
+    "ast_hash": "e5e3ddb37f940f5dc25f169df866f824",
+    "semantic_hash": "e5e3ddb37f940f5dc25f169df866f824"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\tests\\test_health.py": {
+    "mtime": 1779726141.266185,
+    "ast_hash": "697786b5925ac50875b7d7e345a666a5",
+    "semantic_hash": "697786b5925ac50875b7d7e345a666a5"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\tests\\test_rbac.py": {
+    "mtime": 1779726141.266185,
+    "ast_hash": "3ee21b8b432358bb05cf4814ef118f1c",
+    "semantic_hash": "3ee21b8b432358bb05cf4814ef118f1c"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\eslint.config.js": {
+    "mtime": 1778866214.9779482,
+    "ast_hash": "8346ec11669aac7bba412c3c4cbd9aaf",
+    "semantic_hash": "8346ec11669aac7bba412c3c4cbd9aaf"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\package.json": {
+    "mtime": 1779810440.7665617,
+    "ast_hash": "5f65de91f4e60d3c36043a4a743efb61",
+    "semantic_hash": "5f65de91f4e60d3c36043a4a743efb61"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\vite.config.js": {
+    "mtime": 1779812609.0012805,
+    "ast_hash": "ac80ee05f0afafc076f478e05ad04be8",
+    "semantic_hash": "ac80ee05f0afafc076f478e05ad04be8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\App.vue": {
+    "mtime": 1779811837.1172843,
+    "ast_hash": "f14f201b71a72c5dd55f4be6b78cdd32",
+    "semantic_hash": "f14f201b71a72c5dd55f4be6b78cdd32"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\main.js": {
+    "mtime": 1779730277.5997367,
+    "ast_hash": "bf6a74371c4e78ffd7dd3d615a9b0693",
+    "semantic_hash": "bf6a74371c4e78ffd7dd3d615a9b0693"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\layout\\AppShell.vue": {
+    "mtime": 1779818300.798364,
+    "ast_hash": "93c0c2a6156e615346639617d73b8193",
+    "semantic_hash": "93c0c2a6156e615346639617d73b8193"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\notifications\\NotificationBell.vue": {
+    "mtime": 1779811574.9524999,
+    "ast_hash": "6ed99e13bacaa4a678029f7b3468c1da",
+    "semantic_hash": "6ed99e13bacaa4a678029f7b3468c1da"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\notifications\\NotificationPanel.vue": {
+    "mtime": 1779811563.178491,
+    "ast_hash": "a96381102a3ea4b597a5df60670051ac",
+    "semantic_hash": "a96381102a3ea4b597a5df60670051ac"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\ui\\BaseButton.vue": {
+    "mtime": 1778866214.9799488,
+    "ast_hash": "10642c24b61f36265d840a6a7d5196ac",
+    "semantic_hash": "10642c24b61f36265d840a6a7d5196ac"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\ui\\BaseCard.vue": {
+    "mtime": 1778866214.9799488,
+    "ast_hash": "cca3e364c9971950ef0c2a5236f8ba58",
+    "semantic_hash": "cca3e364c9971950ef0c2a5236f8ba58"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\ui\\KpiTile.vue": {
+    "mtime": 1778869608.9437907,
+    "ast_hash": "3837e22d8f57bace2c09ed73b4450f38",
+    "semantic_hash": "3837e22d8f57bace2c09ed73b4450f38"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\ui\\ModuleCard.vue": {
+    "mtime": 1778866214.9809482,
+    "ast_hash": "ecda97a228fb31f9dcb698fd74255766",
+    "semantic_hash": "ecda97a228fb31f9dcb698fd74255766"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\ui\\RoleBadge.vue": {
+    "mtime": 1778866214.9809482,
+    "ast_hash": "ec1cc87135444e900ced2cd1a3239fa0",
+    "semantic_hash": "ec1cc87135444e900ced2cd1a3239fa0"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\ui\\SectionLabel.vue": {
+    "mtime": 1778866214.9809482,
+    "ast_hash": "f09046d10d0fedf030ba83c59c44f84b",
+    "semantic_hash": "f09046d10d0fedf030ba83c59c44f84b"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\components\\ui\\SidebarSection.vue": {
+    "mtime": 1778866214.9809482,
+    "ast_hash": "d609c77f29ebb1b7f5ed676f004673a6",
+    "semantic_hash": "d609c77f29ebb1b7f5ed676f004673a6"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\composables\\useSidebar.js": {
+    "mtime": 1778869606.2657883,
+    "ast_hash": "d81144b80d5575bdc691eef058c5f0b8",
+    "semantic_hash": "d81144b80d5575bdc691eef058c5f0b8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\directives\\can.js": {
+    "mtime": 1779726141.2764137,
+    "ast_hash": "2201c1c16b679f8bcaccc662cdd57100",
+    "semantic_hash": "2201c1c16b679f8bcaccc662cdd57100"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\lib\\http.js": {
+    "mtime": 1778866214.9819484,
+    "ast_hash": "fc4cf360f56603c87c87dc3c63c4958a",
+    "semantic_hash": "fc4cf360f56603c87c87dc3c63c4958a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\router\\index.js": {
+    "mtime": 1779815871.9539795,
+    "ast_hash": "6e0533476cbe470de6049c0b7439c1c4",
+    "semantic_hash": "6e0533476cbe470de6049c0b7439c1c4"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\services\\anagrafiche.js": {
+    "mtime": 1779815214.5465417,
+    "ast_hash": "047fe94bbf5f1caeba2b4d11598464e8",
+    "semantic_hash": "047fe94bbf5f1caeba2b4d11598464e8"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\services\\auth.js": {
+    "mtime": 1778866214.9819484,
+    "ast_hash": "ba093267c89126e781f9aaec49d4d04f",
+    "semantic_hash": "ba093267c89126e781f9aaec49d4d04f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\services\\dashboard.js": {
+    "mtime": 1779811886.3961616,
+    "ast_hash": "51629b2b3b82b2a62438369e2d8ec669",
+    "semantic_hash": "51629b2b3b82b2a62438369e2d8ec669"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\services\\notifications.js": {
+    "mtime": 1779811881.4817464,
+    "ast_hash": "0511779a5a91eba1b8fb3dce29b56865",
+    "semantic_hash": "0511779a5a91eba1b8fb3dce29b56865"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\services\\reports.js": {
+    "mtime": 1779726141.2779205,
+    "ast_hash": "61f3dc0b15cfa7109a7191fe59bfafe7",
+    "semantic_hash": "61f3dc0b15cfa7109a7191fe59bfafe7"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\stores\\auth.js": {
+    "mtime": 1779726141.278928,
+    "ast_hash": "90431f096d1783d32eff5f01562b8c79",
+    "semantic_hash": "90431f096d1783d32eff5f01562b8c79"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\stores\\dashboard.js": {
+    "mtime": 1779811821.2086365,
+    "ast_hash": "1c87a41c917aa14ad8bc90aa241ee463",
+    "semantic_hash": "1c87a41c917aa14ad8bc90aa241ee463"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\stores\\events.js": {
+    "mtime": 1779811529.0125954,
+    "ast_hash": "29bd331a1952c4ad3ee704f54a740771",
+    "semantic_hash": "29bd331a1952c4ad3ee704f54a740771"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\stores\\notifications.js": {
+    "mtime": 1779811542.1540995,
+    "ast_hash": "7c6225748522b35255bc7c8797524279",
+    "semantic_hash": "7c6225748522b35255bc7c8797524279"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\stores\\tasks.js": {
+    "mtime": 1779811692.6003623,
+    "ast_hash": "e1b3a2d73e40463e7fdd7fb884bed6e7",
+    "semantic_hash": "e1b3a2d73e40463e7fdd7fb884bed6e7"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\views\\AdminOnlyView.vue": {
+    "mtime": 1779810441.149622,
+    "ast_hash": "5abf3e968dfb86795e673bbc1ce9432e",
+    "semantic_hash": "5abf3e968dfb86795e673bbc1ce9432e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\views\\AnagraficaDetailView.vue": {
+    "mtime": 1779816476.6900568,
+    "ast_hash": "7ef9aba6f6d5be4a52857a27034ab28f",
+    "semantic_hash": "7ef9aba6f6d5be4a52857a27034ab28f"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\views\\AnagraficheView.vue": {
+    "mtime": 1779816390.7967722,
+    "ast_hash": "e846a89a4444fed40df3d7ddb3fc71c2",
+    "semantic_hash": "e846a89a4444fed40df3d7ddb3fc71c2"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\views\\DashboardView.vue": {
+    "mtime": 1779817130.965866,
+    "ast_hash": "d11e37750bc6a69de403c3acfbb4d3d6",
+    "semantic_hash": "d11e37750bc6a69de403c3acfbb4d3d6"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\views\\LoginView.vue": {
+    "mtime": 1779810441.151622,
+    "ast_hash": "40faadf6c7ff74256190840a2404abd1",
+    "semantic_hash": "40faadf6c7ff74256190840a2404abd1"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\views\\NotFoundView.vue": {
+    "mtime": 1779726141.278928,
+    "ast_hash": "21f31274ab57cdedf557892e41cc8a22",
+    "semantic_hash": "21f31274ab57cdedf557892e41cc8a22"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\src\\views\\TenantAdminView.vue": {
+    "mtime": 1779726146.6543899,
+    "ast_hash": "136ebdddfac337cfd9ba1e1aaee8e0fd",
+    "semantic_hash": "136ebdddfac337cfd9ba1e1aaee8e0fd"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\README.md": {
+    "mtime": 1779810440.6773453,
+    "ast_hash": "e0f646b850baf9fad275ff469f78b7ef",
+    "semantic_hash": "e0f646b850baf9fad275ff469f78b7ef"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\index.html": {
+    "mtime": 1779810440.7566235,
+    "ast_hash": "4aa4ed421e41cf60f24f495e3d6a3818",
+    "semantic_hash": "4aa4ed421e41cf60f24f495e3d6a3818"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\frontend\\README.md": {
+    "mtime": 1779810440.7682867,
+    "ast_hash": "9397f2bf04357168483d7c13bd7ebaa1",
+    "semantic_hash": "9397f2bf04357168483d7c13bd7ebaa1"
+  }
+}

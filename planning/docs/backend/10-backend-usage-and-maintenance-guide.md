@@ -441,6 +441,36 @@ Flusso:
 - usare `resource_id_param_name` + `tenant_resolver` se il tenant va ricavato dal database
 - il controllo tenant deve avvenire prima dell'accesso ai dati applicativi per ridurre il rischio di IDOR
 
+### Due pattern di autorizzazione — regola decisionale
+
+Nel progetto coesistono due pattern distinti e non intercambiabili:
+
+**Pattern A — `RequirePermission` (`api/deps/rbac.py`)** — risorse di dominio
+
+Usare per: Anagrafiche, BOM, Finance e qualsiasi futuro modulo business.
+
+- controlla `permission_code` contro `current_user.permissions` (RBAC granulare)
+- verifica opzionalmente che la risorsa target appartenga al tenant dell'utente
+- il service riceve `current_user.tenant_id` e filtra sempre entro quel perimetro
+- presuppone che ogni utente abbia un `tenant_id` valorizzato
+
+**Pattern B — Role guard + service scoping (`api/deps/auth.py`)** — risorse identity/security
+
+Usare per: Users, Tenants, Audit e risorse amministrative cross-tenant.
+
+- controlla il `role_code` tramite `require_admin`, `require_tenant_admin`, `require_admin_or_tenant_admin`
+- l'admin ha `tenant_id=None` e necessita di visibilita cross-tenant: la logica di filtraggio sta nel service (es. `_get_scoped_user`, `_list_users_for_actor`) perche cambia la semantica della query, non solo il filtro `WHERE`
+- `RequirePermission` non puo coprire questo caso senza eccezioni speciali per l'admin
+
+**Regola decisionale per nuovi moduli:**
+
+| Domanda | Pattern |
+|---|---|
+| Risorsa sempre appartenente a un tenant? | Pattern A — `RequirePermission` |
+| Risorsa con visibilita cross-tenant per admin? | Pattern B — role guard + service scoping |
+
+Evitare di unificare i due pattern: servono casi d'uso genuinamente diversi. La divergenza e documentata nei moduli stessi (`rbac.py` e `auth.py`).
+
 ## Endpoint cache e rate limiting
 
 Endpoint demo attivi:

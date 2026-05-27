@@ -1,6 +1,10 @@
-"""Dependency di autenticazione e autorizzazione."""
+"""Dependency di autenticazione e autorizzazione.
 
-from collections.abc import Callable
+Le dependency di ruolo (require_admin, require_tenant_admin, require_admin_or_tenant_admin)
+sono destinate a risorse identity/security (Users, Tenants, Audit) dove l'admin necessita
+di visibilità cross-tenant. Per risorse di dominio (Anagrafiche, BOM, Finance…) usare
+RequirePermission in deps/rbac.py — vedi quel modulo per la regola decisionale completa.
+"""
 
 from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -133,17 +137,3 @@ async def get_sse_user(
     return user
 
 
-def require_permission(permission_code: str) -> Callable:
-    """Restituisce una dependency che verifica un permesso specifico."""
-
-    async def dependency(
-        current_user: CurrentUserResponse = Depends(get_active_user),
-    ) -> CurrentUserResponse:
-        if permission_code not in current_user.permissions:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Permesso negato.",
-            )
-        return current_user
-
-    return dependency

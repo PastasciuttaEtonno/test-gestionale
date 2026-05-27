@@ -36,15 +36,17 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    openapi_url=f"{settings.api_v1_prefix}/openapi.json",
+    openapi_url=None if settings.is_production_like else f"{settings.api_v1_prefix}/openapi.json",
+    docs_url=None if settings.is_production_like else "/docs",
+    redoc_url=None if settings.is_production_like else "/redoc",
     lifespan=lifespan,
 )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
 )
 app.include_router(api_router, prefix=settings.api_v1_prefix)
 
@@ -123,15 +125,15 @@ async def readiness_check(request: Request) -> JSONResponse:
 
     try:
         checks["database"] = _check_database()
-    except Exception as exc:
+    except Exception:
         is_ready = False
-        checks["database"] = {"status": "error", "detail": str(exc)}
+        checks["database"] = {"status": "error"}
 
     try:
         checks["redis"] = await _check_redis(request)
-    except Exception as exc:
+    except Exception:
         is_ready = False
-        checks["redis"] = {"status": "error", "detail": str(exc)}
+        checks["redis"] = {"status": "error"}
 
     payload = {
         "status": "ok" if is_ready else "degraded",

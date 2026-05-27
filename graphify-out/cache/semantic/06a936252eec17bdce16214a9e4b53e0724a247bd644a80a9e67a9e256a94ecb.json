@@ -1,0 +1,1 @@
+{"nodes": [{"id": "schema.tasks.TaskStatusResponse", "label": "TaskStatusResponse", "file_type": "code", "source_file": "backend/app/schemas/tasks/responses.py", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

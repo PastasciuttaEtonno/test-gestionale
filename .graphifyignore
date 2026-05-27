@@ -1,0 +1,60 @@
+# .graphifyignore — patterns excluded from /graphify extraction
+# Same gitignore-style syntax. Tune to taste.
+
+# --- Dependencies / build artifacts ---
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.cache/
+coverage/
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# --- Generated / vendored ---
+backend/openapi-auth-preview.json
+**/*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+uv.lock
+poetry.lock
+
+# --- Database migrations (noisy: each adds a singleton community) ---
+backend/alembic/versions/
+
+# --- Sensitive captures (already auto-skipped, listed for clarity) ---
+auth-cookie.txt
+login-headers.txt
+logout-headers.txt
+*.env
+*.env.*
+.env*
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Graphify itself ---
+graphify-out/
+.claude/
+
+# --- Planning docs (uncomment if you want them in the graph) ---
+# planning/
+
+# --- CI / infra (often noise for a code graph) ---
+.github/
+Caddyfile
+docker-compose*.yml

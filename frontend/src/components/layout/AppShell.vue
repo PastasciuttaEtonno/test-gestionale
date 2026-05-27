@@ -126,19 +126,6 @@ const vociMockup = ["Bolle", "Fatture", "Articoli", "Spedizioni", "Scadenze"];
             </button>
           </div>
 
-          <!-- Brand mini (desktop) -->
-          <div class="mb-6 hidden rounded-2xl border border-white/10 bg-white/6 px-4 py-3 xl:block">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-xs font-semibold uppercase tracking-[0.2em] text-white">
-                ES
-              </div>
-              <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-100">Gestionale</p>
-                <p class="text-sm font-medium text-white">{{ username || 'Utente' }}</p>
-              </div>
-            </div>
-          </div>
-
           <!-- Navigazione reale -->
           <nav class="space-y-1">
             <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/38">

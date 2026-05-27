@@ -189,13 +189,112 @@ Se invece la release ha introdotto una migration non backward-compatible:
 
 Per questo motivo la disciplina migration deve restare additive-first.
 
+## Reverse proxy — Caddy
+
+Il reverse proxy scelto per Aruba e **Caddy v2**, non Nginx.
+
+Motivazioni:
+
+- TLS automatico con Let's Encrypt senza configurazione aggiuntiva
+- `flush_interval -1` necessario per SSE (`GET /api/v1/events/stream`) — Caddy supporta questo nativamente
+- setup piu semplice per un singolo sviluppatore rispetto a Nginx + Certbot
+
+### Installazione su Debian/Ubuntu
+
+```bash
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt update && sudo apt install caddy
+```
+
+### Caddyfile
+
+Il file `Caddyfile` e nel repository alla radice del progetto.
+
+Posizionarlo sul server:
+
+```bash
+sudo cp Caddyfile /etc/caddy/Caddyfile
+sudo systemctl reload caddy
+```
+
+Sostituire `tuo-dominio.com` nel file con il dominio reale puntato alla VPS prima del deploy.
+
+### Struttura Caddyfile
+
+```
+tuo-dominio.com {
+    handle /api/* {
+        reverse_proxy 127.0.0.1:8000 {
+            flush_interval -1   # richiesto per SSE
+        }
+    }
+    handle /health* {
+        reverse_proxy 127.0.0.1:8000
+    }
+    handle {
+        root * /var/www/gestionale
+        try_files {path} /index.html
+        file_server
+    }
+    header {
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+}
+```
+
+Il frontend compilato va in `/var/www/gestionale` (output di `npm run build`).
+
+### Verifica TLS
+
+```bash
+curl -I https://tuo-dominio.com/health/live
+```
+
+Caddy ottiene il certificato Let's Encrypt al primo avvio se il dominio e raggiungibile dall'esterno sulla porta 80/443.
+
+## Checklist sicurezza — fix implementati
+
+Questi fix sono gia presenti nel codice. Verificare che siano attivi sul server:
+
+### Docker
+
+- [x] Porta backend bind su `127.0.0.1:8000` — non esposta a internet direttamente (`docker-compose.aruba.yml`)
+- [x] Network bridge interna `backend` per comunicazione inter-container
+- [x] `celery_worker` con `--concurrency=2` esplicito
+
+### Backend FastAPI
+
+- [x] OpenAPI (`/docs`, `/redoc`, `/openapi.json`) disabilitati in `staging` e `production`
+- [x] CORS con `allow_origins` da `settings.cors_allowed_origins`, metodi e header espliciti
+- [x] `/health/ready` non espone dettagli di eccezione — risponde `{"status": "error"}` senza stack trace
+
+### GitHub Actions workflow
+
+- [x] `chmod 600 backend.env` dopo il decode base64 sul server
+
+### File env di produzione
+
+Verificare che `ARUBA_BACKEND_ENV_FILE` contenga:
+
+- `APP_ENV=production`
+- `JWT_SECRET_KEY` reale (non placeholder)
+- `REFRESH_COOKIE_SECURE=true`
+- `AUTH_ENFORCE_ORIGIN_CHECK=true`
+- `AUTH_ALLOWED_ORIGINS` esplicito
+- `CORS_ALLOWED_ORIGINS` esplicito con il dominio reale
+- `TRUSTED_PROXY_IPS` con l'IP di Caddy se Caddy gira sullo stesso host (normalmente `127.0.0.1`)
+
 ## Limiti consapevoli
 
 Questa pipeline non copre ancora:
 
-- deploy frontend
-- reverse proxy `Nginx` o `Traefik`
-- TLS
+- deploy frontend (build e copia manuale in `/var/www/gestionale`)
 - staging dedicato
 - doppia istanza web
 - rollback DB strutturato
@@ -209,5 +308,6 @@ Dopo questa pipeline il passo giusto non e aggiungere altra automazione a caso.
 Il passo giusto e:
 
 1. chiudere la matrice secret
-2. fare un primo deploy controllato su Aruba
-3. poi aggiungere osservabilita production-grade
+2. sostituire `tuo-dominio.com` nel `Caddyfile` con il dominio reale
+3. fare un primo deploy controllato su Aruba
+4. poi aggiungere osservabilita production-grade

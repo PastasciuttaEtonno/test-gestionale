@@ -1,0 +1,1 @@
+{"nodes": [], "edges": [], "hyperedges": [{"nodes": ["backend.core.security.jwt", "backend.core.security.hashing", "backend.core.security.origin_validation"], "relation": "auth_security_stack", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "backend/app/core/security/__init__.py", "weight": 1.0}]}

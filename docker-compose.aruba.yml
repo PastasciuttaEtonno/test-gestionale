@@ -8,12 +8,11 @@ services:
 
   core_service:
     image: ${BACKEND_IMAGE_REPOSITORY}:${BACKEND_IMAGE_TAG}
-    container_name: Gestionale_core_service
     restart: unless-stopped
     env_file:
       - ./backend.env
-    ports:
-      - "${BACKEND_PORT:-8000}:8000"
+    expose:
+      - "8000"
     healthcheck:
       test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready').read()"]
       interval: 15s
@@ -22,8 +21,13 @@ services:
 
   celery_worker:
     image: ${BACKEND_IMAGE_REPOSITORY}:${BACKEND_IMAGE_TAG}
-    container_name: Gestionale_celery_worker
     restart: unless-stopped
     env_file:
       - ./backend.env
-    command: ["/app/.venv/bin/celery", "-A", "app.core.celery_app:celery_app", "worker", "--loglevel=info"]
+    command: [
+      "/app/.venv/bin/celery",
+      "-A", "app.core.celery_app:celery_app",
+      "worker",
+      "--loglevel=info",
+      "--concurrency=2"
+    ]

@@ -1,4 +1,29 @@
-"""Dependency RBAC dichiarative e tenant-aware."""
+"""Dependency RBAC dichiarative e tenant-aware.
+
+Pattern di autorizzazione nel progetto
+---------------------------------------
+Esistono due pattern distinti e non intercambiabili:
+
+1. RequirePermission (questo modulo) — risorse di dominio
+   Usare per: Anagrafiche, BOM, Finance e qualsiasi futuro modulo business.
+   - Controlla il permission_code contro current_user.permissions (RBAC granulare).
+   - Verifica opzionalmente che la risorsa target appartenga al tenant dell'utente.
+   - Il service riceve current_user.tenant_id e filtra sempre entro quel perimetro.
+   - Presuppone che ogni utente abbia un tenant_id valorizzato.
+
+2. Role guard + scoping nel service (deps/auth.py) — risorse identity/security
+   Usare per: Users, Tenants, Audit e risorse amministrative cross-tenant.
+   - Controlla il role_code (require_admin, require_tenant_admin, require_admin_or_tenant_admin).
+   - L'admin ha tenant_id=None e necessita di visibilità cross-tenant: la logica
+     di filtraggio deve stare nel service (es. _get_scoped_user, _list_users_for_actor)
+     perché cambia la semantica della query, non solo il filtro WHERE.
+   - RequirePermission non può coprire questo caso senza eccezioni speciali per l'admin.
+
+Regola decisionale per nuovi moduli
+-------------------------------------
+  Risorsa sempre appartenente a un tenant?  →  RequirePermission
+  Risorsa con visibilità cross-tenant per admin?  →  role guard + service scoping
+"""
 
 from collections.abc import Awaitable, Callable
 from json import JSONDecodeError

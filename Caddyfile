@@ -1,0 +1,44 @@
+# Caddyfile — produzione Aruba
+# Sostituire "tuo-dominio.com" con il dominio reale puntato alla VPS.
+# Caddy ottiene e rinnova il certificato Let's Encrypt automaticamente.
+
+tuo-dominio.com {
+
+    # API backend — FastAPI
+    handle /api/* {
+        reverse_proxy 127.0.0.1:8000 {
+            # Necessario per SSE (GET /api/v1/events/stream)
+            flush_interval -1
+        }
+    }
+
+    # Health check — lasciato accessibile per monitoring esterno
+    handle /health* {
+        reverse_proxy 127.0.0.1:8000
+    }
+
+    # Frontend Vue — file statici buildati
+    handle {
+        root * /var/www/gestionale
+        try_files {path} /index.html
+        file_server
+    }
+
+    # Header di sicurezza
+    header {
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    # Log strutturati
+    log {
+        output file /var/log/caddy/gestionale-access.log {
+            roll_size 10mb
+            roll_keep 5
+        }
+        format json
+    }
+}
