@@ -1,6 +1,6 @@
 """Repository refresh token."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -21,8 +21,23 @@ class RefreshTokenRepository:
         self.session.refresh(refresh_token)
         return refresh_token
 
+    async def get_by_identifier(self, token_identifier: str) -> RefreshToken | None:
+        """Restituisce un refresh token per identificatore, attivo o revocato.
+
+        Utile per la reuse detection: serve trovare anche i token gia' revocati
+        per distinguere "jti sconosciuto" da "jti riusato".
+        """
+        statement = select(RefreshToken).where(
+            RefreshToken.token_identifier == token_identifier,
+        )
+        return self.session.scalar(statement)
+
     async def get_active_by_identifier(self, token_identifier: str) -> RefreshToken | None:
-        """Restituisce un refresh token attivo tramite identificatore."""
+        """Restituisce un refresh token attivo tramite identificatore.
+
+        Conservato per compatibilita' ma sostituito da `get_by_identifier`
+        nel flusso refresh per abilitare la reuse detection.
+        """
         statement = select(RefreshToken).where(
             RefreshToken.token_identifier == token_identifier,
             RefreshToken.revoked_at.is_(None),
@@ -34,10 +49,29 @@ class RefreshTokenRepository:
         token = await self.get_active_by_identifier(token_identifier)
         if token is None:
             return
-        token.revoked_at = datetime.utcnow()
+        token.revoked_at = datetime.now(UTC)
         token.revoked_reason = revoked_reason
         self.session.add(token)
         self.session.flush()
+
+    async def revoke_family(self, family_id: str, revoked_reason: str) -> int:
+        """Revoca tutti i refresh token attivi di una famiglia.
+
+        Usato in caso di reuse detection o absolute timeout della famiglia.
+        Restituisce il numero di token effettivamente revocati.
+        """
+        statement = select(RefreshToken).where(
+            RefreshToken.family_id == family_id,
+            RefreshToken.revoked_at.is_(None),
+        )
+        tokens = list(self.session.scalars(statement).all())
+        now = datetime.now(UTC)
+        for token in tokens:
+            token.revoked_at = now
+            token.revoked_reason = revoked_reason
+            self.session.add(token)
+        self.session.flush()
+        return len(tokens)
 
     async def revoke_all_for_user(self, user_id: str, revoked_reason: str) -> int:
         """Revoca tutti i refresh token attivi di un utente."""
@@ -46,8 +80,9 @@ class RefreshTokenRepository:
             RefreshToken.revoked_at.is_(None),
         )
         tokens = list(self.session.scalars(statement).all())
+        now = datetime.now(UTC)
         for token in tokens:
-            token.revoked_at = datetime.utcnow()
+            token.revoked_at = now
             token.revoked_reason = revoked_reason
             self.session.add(token)
         self.session.flush()

@@ -7,6 +7,20 @@ import {
   eseguiLogout,
 } from "../services/auth";
 
+const SECONDI_BUFFER_FRESHEZZA = 30;
+
+function decodificaScadenzaJwt(token) {
+  if (!token || typeof token !== "string") return null;
+  const parti = token.split(".");
+  if (parti.length !== 3) return null;
+  try {
+    const payload = JSON.parse(atob(parti[1].replace(/-/g, "+").replace(/_/g, "/")));
+    return typeof payload.exp === "number" ? payload.exp : null;
+  } catch {
+    return null;
+  }
+}
+
 export const useAuthStore = defineStore("auth", () => {
   const accessToken = ref(null);
   const user = ref(null);
@@ -14,6 +28,13 @@ export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = computed(() => Boolean(accessToken.value && user.value));
   const roleCode = computed(() => user.value?.role_code || null);
   const permissions = computed(() => user.value?.permissions || []);
+
+  function accessTokenEFresco() {
+    const exp = decodificaScadenzaJwt(accessToken.value);
+    if (exp === null) return false;
+    const adessoSec = Math.floor(Date.now() / 1000);
+    return exp - adessoSec > SECONDI_BUFFER_FRESHEZZA;
+  }
 
   async function initialize() {
     if (isInitialized.value) {
@@ -90,5 +111,6 @@ export const useAuthStore = defineStore("auth", () => {
     hasPermission,
     hasEveryPermission,
     hasAnyPermission,
+    accessTokenEFresco,
   };
 });

@@ -216,19 +216,33 @@ Campi minimi:
 
 ### 6.5 Tabella `security.refresh_tokens`
 
-Scopo: gestione sessioni e revoca token.
+Scopo: gestione sessioni, revoca token e refresh token family per reuse detection.
 
 Campi minimi:
 
 - `id`
 - `user_id`
 - `token_identifier`
+- `family_id` — identificativo della famiglia di rotazioni (UUID, persistito su tutti i token discendenti dallo stesso login)
+- `parent_token_identifier` — `token_identifier` del precedente nella catena, NULL per il primo
+- `family_created_at` — istante di nascita della famiglia, usato per absolute timeout
 - `issued_at`
 - `expires_at`
 - `revoked_at`
 - `revoked_reason`
 - `ip_address`
 - `user_agent`
+
+#### Rotazione, reuse detection e absolute timeout
+
+Allineato a RFC 9700 §4.13 (OAuth 2.0 Security BCP) e al pattern Auth0/Okta:
+
+- ogni `login` crea una nuova famiglia con `family_id` random e `family_created_at = now`
+- ogni `refresh` valido revoca il token corrente e ne emette uno nuovo nella **stessa famiglia**, preservando `family_created_at`
+- se viene presentato un `token_identifier` con `revoked_at IS NOT NULL` → **reuse detected**: revoca dell'intera famiglia + audit `REFRESH_REUSE_DETECTED` e `REFRESH_FAMILY_REVOKED`, risposta `401`
+- se `now - family_created_at > refresh_token_family_max_age_days` (default 14 gg) → famiglia revocata + audit `REFRESH_FAMILY_TIMEOUT`, richiesta re-login
+- nessun grace period lato server: la serializzazione delle richieste parallele di refresh e' demandata al client (single-flight in-memory + `navigator.locks` per cross-tab)
+- `family_id` e' interno al backend: NON viene esposto nel payload JWT per non leakare la chain
 
 ### 6.6 Tabella `security.audit_log`
 
@@ -311,7 +325,10 @@ Quindi il modulo `Auth` deve dipendere da un'astrazione di profilo, non da una s
 `refresh`
 
 - input: cookie `HttpOnly` con refresh token valido
-- output: nuovo access token e refresh token ruotato tramite nuovo cookie se prevista rotazione
+- output: nuovo access token e refresh token ruotato tramite nuovo cookie
+- regola: rotazione obbligatoria a ogni chiamata; il vecchio token viene revocato e il nuovo persistito nella stessa famiglia
+- reuse detection: presentare un refresh gia' ruotato revoca l'intera famiglia (vedi §6.5)
+- absolute timeout: la famiglia non puo' vivere oltre `refresh_token_family_max_age_days` (default 14 gg)
 
 `logout`
 

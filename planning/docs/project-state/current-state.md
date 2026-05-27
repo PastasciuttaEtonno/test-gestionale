@@ -112,9 +112,11 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - update reali tenant admin allineati con invalidazione cache KPI del tenant in best-effort
 - osservabilita minima backend introdotta con `request_id`, logging strutturato e health endpoint `live/ready`
 - baseline test backend introdotta su `health`, `auth` e RBAC tenant-aware, eseguita anche in CI
-- migration discipline iniziale introdotta: `db_migrator` separato da web e worker nel runtime Docker
-- publication discipline iniziale introdotta: workflow GitHub Actions per publish backend image su `GHCR`
-- setup operativo GHCR chiarito: publish via `GITHUB_TOKEN`, futuro pull Aruba via PAT `read:packages`
+- migration discipline via `start.sh`: alembic upgrade head eseguito nel nuovo container a ogni deploy Coolify
+- deploy produzione su Coolify: `core_service`, `celery_worker`, `postgres`, `redis` come risorse separate
+- GitHub Actions: quality gate + Coolify deploy webhook (no GHCR, no SSH)
+- Traefik SSE fix: router ad alta priorita senza gzip middleware per `/api/v1/events/stream`
+- Cloudflare WAF + UFW attivi in produzione
 - dipendenze frontend aggiornate a versioni recenti e prive di vulnerabilita note da `npm audit`
 - immagini Docker principali aggiornate e pin esplicite
 - immagini runtime e build ricontrollate rispetto ai tag ufficiali correnti; aggiornati `uv`, `node`, `postgres` e `redis`, mantenuto `python 3.12.13` e runner CI pin a `ubuntu-24.04`
@@ -148,15 +150,9 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - `useNotificationsStore` con caricamento iniziale + aggiornamento live via SSE
 
 - workflow `.github/workflows/checks.yml` attivo come quality gate minimo
-- workflow `.github/workflows/publish-backend-image.yml` attivo per la publication backend su `GHCR`
-- workflow `.github/workflows/deploy-backend-aruba.yml` preparato per deploy backend manuale via SSH
-- publication backend pensata per partire con `GITHUB_TOKEN`, non con PAT manuale
-- requisito repository GitHub noto: `Settings > Actions > General > Workflow permissions = Read and write permissions`
-- naming immagine backend atteso: `ghcr.io/<owner-lowercase>/<repo-lowercase>-backend`
-- tag backend attesi: `sha-<commit>`, `main`, `latest`
-- pull da Aruba previsto via `PAT classic` con scope minimo `read:packages`
-- compose backend dedicato per Aruba preparato in `docker-compose.aruba.yml`
-- deploy Aruba resta da configurare con secret reali e primo test ambiente
+- workflow `.github/workflows/deploy-backend-aruba.yml` attivo: quality + Coolify deploy webhook
+- deploy produzione via Coolify webhook al push su `main` (nessun GHCR, nessun SSH)
+- `docker-compose.aruba.yml` mantenuto come riferimento locale ma non usato in produzione Coolify
 - frontend completamente responsive mobile-first (375px → 1280px+)
 - **sidebar di navigazione globale** in `AppShell` (refactoring da DashboardView): colonna fissa `248px` su desktop `xl`, drawer off-canvas su mobile via hamburger, overlay scrim, chiusura automatica al cambio route
 - voci reali: Dashboard, Anagrafiche, Tenant Admin (role), Super Admin (role); voci mockup disabilitate: Bolle, Fatture, Articoli, Spedizioni, Scadenze
@@ -172,6 +168,87 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - **`AnagraficaDetailView`**: view dettaglio singola anagrafica — hero, dati fiscali, SDI/PEC, indirizzi, sidebar riepilogo, bottone back con hover + micro-animazione freccia
 - route `/anagrafiche/:id` con `props: true` e guardia `anagrafiche.read` nel router
 - `Dialog` PrimeVue introdotto (unstyled + PT) per i form modali Anagrafiche
+
+## Deployment produzione (aggiunto 2026-05-27)
+
+Il progetto e **deployato e funzionante in produzione** su VPS Aruba con **Coolify** come self-hosted PaaS.
+
+### URL produzione
+
+| Servizio  | URL                                        |
+|-----------|--------------------------------------------|
+| Frontend  | `https://gestionale.vasquezlisciotto.xyz`  |
+| Backend   | `https://api-gestionale.vasquezlisciotto.xyz` |
+
+### Architettura runtime Coolify
+
+```
+Cloudflare (CDN + WAF + SSL)
+        │
+        ▼
+VPS Aruba (UFW: 80/443 solo da IP Cloudflare)
+        │
+     Coolify
+        ├─ Traefik (reverse proxy interno, gestisce TLS e routing)
+        ├─ core_service   (FastAPI, Dockerfile.coolify, porta 8000)
+        ├─ celery_worker  (Celery, Dockerfile.worker)
+        ├─ postgres       (Database Resource Coolify)
+        ├─ redis          (Redis Resource Coolify)
+        └─ frontend       (Nginx Alpine, frontend/Dockerfile)
+```
+
+### Proxy: Traefik (non Caddy)
+
+Coolify usa **Traefik** come proxy interno. Le Caddy label in `docker-compose.aruba.yml` sono irrilevanti per Coolify.
+
+**Fix critico SSE**: Traefik applica il middleware `gzip` di default, che bufferizza l'SSE stream e blocca gli update in tempo reale. La soluzione e aggiungere al servizio `core_service` in Coolify queste label:
+
+```
+traefik.http.routers.sse-stream.rule=Host(`api-gestionale.vasquezlisciotto.xyz`) && PathPrefix(`/api/v1/events/stream`)
+traefik.http.routers.sse-stream.priority=100
+traefik.http.routers.sse-stream.entrypoints=https
+traefik.http.routers.sse-stream.tls=true
+traefik.http.routers.sse-stream.tls.certresolver=letsencrypt
+traefik.http.routers.sse-stream.service=<nome-servizio-generato-da-coolify>
+```
+(nessun `middlewares=gzip` su questo router — priorita 100 batte il router di default)
+
+### Dockerfile separati
+
+| File                      | Uso                                      |
+|---------------------------|------------------------------------------|
+| `backend/Dockerfile`      | Bare metal / locale (uvicorn diretto)    |
+| `backend/Dockerfile.coolify` | Coolify core_service (esegue `start.sh`: alembic + uvicorn) |
+| `backend/Dockerfile.worker`  | Coolify celery_worker                 |
+| `frontend/Dockerfile`     | Multi-stage: node build + nginx alpine   |
+
+`start.sh` esegue `alembic upgrade head` poi `uvicorn` **nello stesso container** — indispensabile perche il pre-deploy command di Coolify gira nel container vecchio, non in quello nuovo.
+
+### GitHub Actions
+
+- `checks.yml`: quality gate (lint, format, compileall, pytest) su ogni push
+- `deploy-backend-aruba.yml`: quality + deploy webhook Coolify al push su `main` che tocca `backend/**`
+- **Non si usa piu GHCR**: build avviene direttamente in Coolify dalla sorgente
+
+Secret GitHub Actions necessario:
+
+| Secret                    | Valore                             |
+|---------------------------|------------------------------------|
+| `COOLIFY_DEPLOY_WEBHOOK`  | URL webhook da Coolify core_service|
+
+### Sicurezza produzione
+
+- **Cloudflare WAF** con 3 regole custom:
+  1. Block: IP non admin su `/api/v1/admin/**`
+  2. Challenge: login threat score > 10
+  3. Block: bot score < 20 su endpoint sensibili
+- **UFW**: porte 80/443 aperte solo a IP Cloudflare, SSH solo da IP fidati
+- **Cloudflare Universal SSL** (free): copre `*.vasquezlisciotto.xyz` — NON copre sottodomini di secondo livello (es. `api.gestionale.*` → usare `api-gestionale.*`)
+
+### Watch Paths Coolify
+
+- `core_service` / `celery_worker`: watch path `backend/**`
+- `frontend`: watch path `frontend/**`
 
 ## Stato delivery e runtime operativo
 

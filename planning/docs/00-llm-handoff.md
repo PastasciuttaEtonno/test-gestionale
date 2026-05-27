@@ -13,7 +13,8 @@ Questo documento serve come punto di ingresso rapido per un altro LLM o per un a
 
 ## Stato reale del progetto
 
-Il progetto ha completato il nucleo tecnico e il **primo modulo business reale** (Anagrafiche).  
+Il progetto ha completato il nucleo tecnico, il **primo modulo business reale** (Anagrafiche) ed e **deployato in produzione** su Coolify (`gestionale.vasquezlisciotto.xyz` / `api-gestionale.vasquezlisciotto.xyz`).
+
 La parte realmente costruita oggi include:
 
 - backend FastAPI reale
@@ -101,6 +102,35 @@ Il frontend oggi e soprattutto:
 - test SMTP reale
 - impersonation reale Gestionale
 
+## Deployment produzione
+
+Il progetto e **live in produzione** su VPS Aruba con **Coolify** come PaaS.
+
+| Servizio  | URL                                           |
+|-----------|-----------------------------------------------|
+| Frontend  | `https://gestionale.vasquezlisciotto.xyz`     |
+| Backend   | `https://api-gestionale.vasquezlisciotto.xyz` |
+
+- **Proxy**: Traefik (gestito da Coolify) — NON Caddy
+- **SSL**: Cloudflare Universal SSL (free) + Traefik Let's Encrypt interno
+- **CDN/WAF**: Cloudflare con 3 regole WAF custom + UFW che blocca tutto tranne IP Cloudflare
+- **Build**: Coolify builda direttamente da Dockerfile (no GHCR, no registry esterno)
+- **Deploy CI**: push su `main` → `checks.yml` quality gate → Coolify webhook trigger
+- **Migrazioni**: `start.sh` esegue `alembic upgrade head` nel container nuovo a ogni deploy
+
+### Dockerfiles
+
+| File                         | Servizio Coolify   |
+|------------------------------|--------------------|
+| `backend/Dockerfile.coolify` | `core_service`     |
+| `backend/Dockerfile.worker`  | `celery_worker`    |
+| `frontend/Dockerfile`        | `frontend`         |
+| `backend/Dockerfile`         | locale/bare-metal  |
+
+### Fix SSE critico (Traefik)
+
+Traefik applica `gzip` di default — bufferizza l'SSE e blocca i real-time update. Il servizio `core_service` ha un router Traefik ad alta priorita (`priority=100`) per `/api/v1/events/stream` **senza** middleware gzip. Vedere `planning/docs/backend/13-coolify-deploy-setup.md` per le label esatte.
+
 ## Architettura corrente
 
 ### Backend
@@ -109,11 +139,11 @@ Il frontend oggi e soprattutto:
 - contratti: `Pydantic`
 - ORM: `SQLAlchemy`
 - DB: `PostgreSQL`
-- migrations: `Alembic`
+- migrations: `Alembic` (auto-run via `start.sh` a ogni deploy)
 - queue worker: `Celery`
 - broker/result backend: `Redis`
 - dipendenze: `uv`
-- containerizzazione: `Docker Compose`
+- containerizzazione: `Docker` (build Coolify) + `docker-compose.aruba.yml` (locale)
 
 ### Frontend
 
@@ -123,6 +153,7 @@ Il frontend oggi e soprattutto:
 - styling: `Tailwind CSS`
 - HTTP client: `Axios`
 - routing: `Vue Router`
+- runtime prod: `nginx:1.27-alpine` con `nginx.conf` custom (SPA routing)
 
 ## Schemi database attivi
 
@@ -221,14 +252,14 @@ Tenant demo:
 
 Ordine consigliato:
 
-1. [planning/struttura.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/struttura.md)
-2. [planning/docs/project-state/current-state.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/project-state/current-state.md)
-3. [planning/docs/architecture/production-readiness-gap-analysis.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-gap-analysis.md)
-4. [planning/docs/architecture/production-readiness-execution-backlog.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/architecture/production-readiness-execution-backlog.md)
-5. [planning/docs/backend/10-backend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
-6. [planning/docs/backend/11-tenant-admin-configuration.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/11-tenant-admin-configuration.md)
-7. [planning/docs/backend/12-aruba-deploy-setup.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/backend/12-aruba-deploy-setup.md)
-8. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](c:/Users/ivan.lisciotto_webra/Desktop/project/planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
+1. [planning/struttura.md](planning/struttura.md)
+2. [planning/docs/project-state/current-state.md](planning/docs/project-state/current-state.md)
+3. [planning/docs/backend/13-coolify-deploy-setup.md](planning/docs/backend/13-coolify-deploy-setup.md) ← setup produzione Coolify attuale
+4. [planning/docs/architecture/production-readiness-gap-analysis.md](planning/docs/architecture/production-readiness-gap-analysis.md)
+5. [planning/docs/architecture/production-readiness-execution-backlog.md](planning/docs/architecture/production-readiness-execution-backlog.md)
+6. [planning/docs/backend/10-backend-usage-and-maintenance-guide.md](planning/docs/backend/10-backend-usage-and-maintenance-guide.md)
+7. [planning/docs/backend/11-tenant-admin-configuration.md](planning/docs/backend/11-tenant-admin-configuration.md)
+8. [planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md](planning/docs/frontend/02-frontend-usage-and-maintenance-guide.md)
 
 ## Prossimi step coerenti
 

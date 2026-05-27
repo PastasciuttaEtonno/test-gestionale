@@ -10,7 +10,28 @@ const apiClient = axios.create({
   },
 });
 
+// Lock single-flight in-memory: blocca refresh paralleli nella stessa tab.
 let refreshInCorso = null;
+
+// Serializza il refresh anche fra tab del browser (Web Locks API).
+// Allineato a Auth0 SPA SDK e altre librerie enterprise: la prima tab che
+// ottiene il lock esegue il refresh, le altre attendono e poi rileggono lo
+// stato auth gia' aggiornato senza rifare un secondo refresh.
+async function refreshConLockCrossTab() {
+  const authStore = useAuthStore();
+
+  if (typeof navigator !== "undefined" && navigator.locks?.request) {
+    return navigator.locks.request("Gestionale-auth-refresh", async () => {
+      // Quando vinciamo il lock potremmo essere la prima tab oppure la seconda
+      // che attendeva: se la sessione e' gia' fresca, non rifacciamo refresh.
+      if (authStore.accessTokenEFresco()) return;
+      await authStore.refreshSessione();
+    });
+  }
+
+  // Fallback per browser legacy senza Web Locks: solo lock in-memory.
+  await authStore.refreshSessione();
+}
 
 apiClient.interceptors.request.use((config) => {
   const authStore = useAuthStore();
@@ -38,7 +59,7 @@ apiClient.interceptors.response.use(
       richiestaOriginale._retry = true;
 
       try {
-        refreshInCorso ??= authStore.refreshSessione();
+        refreshInCorso ??= refreshConLockCrossTab();
         await refreshInCorso;
         richiestaOriginale.headers.Authorization = `Bearer ${authStore.accessToken}`;
         return apiClient(richiestaOriginale);

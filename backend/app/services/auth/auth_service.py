@@ -1,11 +1,13 @@
 """Servizio applicativo del modulo Auth."""
 
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
+from uuid import uuid4
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.security.hashing import PasswordHasher
 from app.core.security.jwt import JwtTokenManager
 from app.core.security.request_context import SecurityRequestContext
@@ -142,7 +144,13 @@ class AuthService:
         refresh_token_value: str,
         request_context: SecurityRequestContext,
     ) -> AuthSessionResult:
-        """Aggiorna le credenziali di accesso usando un refresh token persistito."""
+        """Aggiorna le credenziali di accesso usando un refresh token persistito.
+
+        Implementa reuse detection con revoca della famiglia (RFC 9700 §4.13)
+        e absolute timeout della famiglia (settings.refresh_token_family_max_age_days).
+        Nessun grace period: il client deve serializzare le richieste di refresh
+        con un lock single-flight + cross-tab (navigator.locks lato frontend).
+        """
         try:
             decoded = self.jwt_token_manager.decode_token(refresh_token_value)
         except InvalidTokenError as exc:
@@ -164,13 +172,99 @@ class AuthService:
                 detail="Refresh token non valido.",
             )
 
-        refresh_token = await self.refresh_token_repository.get_active_by_identifier(
-            token_identifier
-        )
-        if refresh_token is None or refresh_token.user_id != user_id:
+        # Lookup SENZA filtro revoked: serve per distinguere "jti sconosciuto"
+        # da "jti gia' usato" (= reuse detection).
+        refresh_token = await self.refresh_token_repository.get_by_identifier(token_identifier)
+
+        if refresh_token is None:
+            # jti firmato dalla nostra chiave ma mai persistito (token vecchio
+            # post-restart o tentativo malevolo). Trattiamo come potenziale
+            # attacco ma non possiamo revocare nessuna famiglia.
+            await self._registra_evento_audit(
+                event_type=AuditEventType.REFRESH_REUSE_DETECTED.value,
+                user_id=user_id,
+                payload_json={"jti": token_identifier, "motivo": "jti_sconosciuto"},
+                request_context=request_context,
+            )
+            self.session.commit()
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Refresh token non valido o revocato.",
+            )
+
+        if refresh_token.user_id != user_id:
+            await self._registra_evento_audit(
+                event_type=AuditEventType.REFRESH_REUSE_DETECTED.value,
+                user_id=user_id,
+                payload_json={
+                    "jti": token_identifier,
+                    "motivo": "user_mismatch",
+                    "family_id": refresh_token.family_id,
+                },
+                request_context=request_context,
+            )
+            self.session.commit()
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Refresh token non valido o revocato.",
+            )
+
+        # Reuse detection: il token e' gia' revocato → revoca tutta la famiglia.
+        if refresh_token.revoked_at is not None:
+            revoked_count = await self.refresh_token_repository.revoke_family(
+                family_id=refresh_token.family_id,
+                revoked_reason="Reuse detected: refresh token gia' ruotato.",
+            )
+            await self._registra_evento_audit(
+                event_type=AuditEventType.REFRESH_REUSE_DETECTED.value,
+                user_id=user_id,
+                payload_json={
+                    "jti": token_identifier,
+                    "family_id": refresh_token.family_id,
+                    "token_originale_revocato_at": refresh_token.revoked_at.isoformat(),
+                    "originale_revoked_reason": refresh_token.revoked_reason,
+                },
+                request_context=request_context,
+            )
+            await self._registra_evento_audit(
+                event_type=AuditEventType.REFRESH_FAMILY_REVOKED.value,
+                user_id=user_id,
+                payload_json={
+                    "family_id": refresh_token.family_id,
+                    "token_revocati": revoked_count,
+                    "motivo": "reuse_detected",
+                },
+                request_context=request_context,
+            )
+            self.session.commit()
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Refresh token non valido o revocato.",
+            )
+
+        # Absolute family timeout: anche con rotazione continua, una famiglia
+        # non puo' vivere oltre N giorni → re-login obbligatorio.
+        family_age = datetime.now(UTC) - refresh_token.family_created_at
+        family_max_age = timedelta(days=settings.refresh_token_family_max_age_days)
+        if family_age > family_max_age:
+            await self.refresh_token_repository.revoke_family(
+                family_id=refresh_token.family_id,
+                revoked_reason="Absolute family timeout.",
+            )
+            await self._registra_evento_audit(
+                event_type=AuditEventType.REFRESH_FAMILY_TIMEOUT.value,
+                user_id=user_id,
+                payload_json={
+                    "family_id": refresh_token.family_id,
+                    "family_created_at": refresh_token.family_created_at.isoformat(),
+                    "max_age_days": settings.refresh_token_family_max_age_days,
+                },
+                request_context=request_context,
+            )
+            self.session.commit()
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Sessione scaduta. E' richiesto un nuovo login.",
             )
 
         user = await self.user_repository.get_user(user_id)
@@ -180,15 +274,25 @@ class AuthService:
                 detail="Utente associato al refresh token non valido.",
             )
 
+        # Tutto ok: ruota il token preservando la famiglia.
         await self.refresh_token_repository.revoke(
             token_identifier=token_identifier,
             revoked_reason="Rotazione refresh token.",
         )
-        token_response = await self._genera_token_response(user, request_context)
+        token_response = await self._genera_token_response(
+            user,
+            request_context,
+            family_id=refresh_token.family_id,
+            parent_token_identifier=token_identifier,
+            family_created_at=refresh_token.family_created_at,
+        )
         await self._registra_evento_audit(
             event_type=AuditEventType.TOKEN_REFRESH.value,
             user_id=user.id,
-            payload_json={"username": user.username},
+            payload_json={
+                "username": user.username,
+                "family_id": refresh_token.family_id,
+            },
             request_context=request_context,
         )
         self.session.commit()
@@ -234,8 +338,19 @@ class AuthService:
         self,
         user: User,
         request_context: SecurityRequestContext,
+        *,
+        family_id: str | None = None,
+        parent_token_identifier: str | None = None,
+        family_created_at: datetime | None = None,
     ) -> AuthSessionResult:
-        """Genera access token, refresh token e profilo utente corrente."""
+        """Genera access token, refresh token e profilo utente corrente.
+
+        Se ``family_id`` non e' passato si tratta di un nuovo login → la famiglia
+        nasce ora. Se e' passato si tratta di una rotazione di refresh token →
+        la famiglia continua e si preserva ``family_created_at`` per il timeout
+        assoluto.
+        """
+        now = datetime.now(UTC)
         current_user = await self._crea_risposta_utente(user)
         access_token = self.jwt_token_manager.create_access_token(
             subject=user.id,
@@ -245,11 +360,16 @@ class AuthService:
             subject=user.id,
             claims={"role_code": user.role_code},
         )
+        effective_family_id = family_id or str(uuid4())
+        effective_family_created_at = family_created_at or now
         await self.refresh_token_repository.persist(
             RefreshToken(
                 user_id=user.id,
                 token_identifier=token_identifier,
-                issued_at=datetime.now(UTC),
+                family_id=effective_family_id,
+                parent_token_identifier=parent_token_identifier,
+                family_created_at=effective_family_created_at,
+                issued_at=now,
                 expires_at=expires_at,
                 ip_address=request_context.ip_address,
                 user_agent=request_context.user_agent,
