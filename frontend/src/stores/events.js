@@ -23,7 +23,9 @@ export const useEventsStore = defineStore("events", () => {
   function connect(token) {
     if (_source) return;
 
-    const url = `/api/v1/events/stream?token=${encodeURIComponent(token)}`;
+    const apiBase =
+      import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ?? "/api/v1";
+    const url = `${apiBase}/events/stream?token=${encodeURIComponent(token)}`;
     _source = new EventSource(url);
 
     _source.onopen = () => {
