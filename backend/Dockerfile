@@ -1,6 +1,6 @@
 FROM python:3.12.13-slim-trixie
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.14 /uv /uvx /bin/
+RUN pip install --no-cache-dir uv==0.11.14
 
 WORKDIR /app
 
