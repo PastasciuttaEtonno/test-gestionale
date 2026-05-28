@@ -7,6 +7,10 @@ WORKDIR /app
 RUN groupadd --system app && useradd --system --create-home --gid app app
 
 COPY pyproject.toml uv.lock ./
+# Limita la concorrenza di uv per contenere il picco di RAM durante il build:
+# su VPS con poca memoria il sync parallelo puo' causare un OOM-kill del build.
+ENV UV_CONCURRENT_DOWNLOADS=2
+ENV UV_CONCURRENT_INSTALLS=2
 RUN uv sync --frozen --no-dev
 
 COPY alembic.ini ./
