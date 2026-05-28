@@ -6,6 +6,8 @@ import AnagraficaDetailView from "../views/AnagraficaDetailView.vue";
 import AnagraficheView from "../views/AnagraficheView.vue";
 import ArticoliView from "../views/ArticoliView.vue";
 import ArticoloDetailView from "../views/ArticoloDetailView.vue";
+import BollaDetailView from "../views/BollaDetailView.vue";
+import BolleView from "../views/BolleView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -71,6 +73,25 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
         requiredPermissions: ["articoli.read"],
+      },
+    },
+    {
+      path: "/bolle",
+      name: "bolle",
+      component: BolleView,
+      meta: {
+        requiresAuth: true,
+        requiredPermissions: ["bolle.read"],
+      },
+    },
+    {
+      path: "/bolle/:id",
+      name: "bolla-detail",
+      component: BollaDetailView,
+      props: true,
+      meta: {
+        requiresAuth: true,
+        requiredPermissions: ["bolle.read"],
       },
     },
     {

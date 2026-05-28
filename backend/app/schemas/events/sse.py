@@ -35,5 +35,10 @@ class EventTypes:
     ARTICOLO_UPDATED = "articolo.updated"
     ARTICOLO_DEACTIVATED = "articolo.deactivated"
 
+    # Bolle / DDT
+    BOLLA_CREATED = "bolla.created"
+    BOLLA_EMESSA = "bolla.emessa"
+    BOLLA_ANNULLATA = "bolla.annullata"
+
     # Sistema
     SYSTEM_ALERT = "system.alert"

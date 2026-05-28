@@ -3,6 +3,8 @@
 from app.models.core.anagrafica import Anagrafica
 from app.models.core.anagrafica_indirizzo import AnagraficaIndirizzo
 from app.models.core.articolo import Articolo
+from app.models.core.bolla import Bolla
+from app.models.core.bolla_riga import BollaRiga
 from app.models.core.bom import Bom
 from app.models.core.categoria_articolo import CategoriaArticolo
 from app.models.core.finance_cost_entry import FinanceCostEntry
@@ -15,6 +17,8 @@ __all__ = [
     "Anagrafica",
     "AnagraficaIndirizzo",
     "Articolo",
+    "Bolla",
+    "BollaRiga",
     "Bom",
     "CategoriaArticolo",
     "FinanceCostEntry",

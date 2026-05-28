@@ -116,10 +116,10 @@ Attualmente lo scoping tenant e applicato a:
 - numerazioni documentali del tenant
 - **anagrafiche** (primo dominio business tenant-aware)
 - **articoli e categorie articolo** (secondo dominio business tenant-aware, con codice/nome univoci per tenant e validazione cross-tenant della categoria)
+- **bolle / DDT** (terzo dominio, primo documento composito: testata + righe con snapshot, ciclo bozza/emessa/annullata, numerazione progressiva per tenant)
 
 Non e ancora applicato a:
 
-- bolle
 - fatture
 - spedizioni
 

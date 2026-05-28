@@ -24,7 +24,7 @@ const { drawerAperto, toggleDrawer, chiudiDrawer } = useSidebar();
 // Chiude il drawer quando cambia route (navigazione da mobile)
 watch(() => props.routeName, chiudiDrawer);
 
-const vociMockup = ["Bolle", "Fatture", "Spedizioni", "Scadenze"];
+const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
 </script>
 
 <template>
@@ -187,6 +187,26 @@ const vociMockup = ["Bolle", "Fatture", "Spedizioni", "Scadenze"];
                 </svg>
               </span>
               <span class="ml-3 truncate">Articoli</span>
+            </RouterLink>
+
+            <!-- Bolle / DDT -->
+            <RouterLink
+              to="/bolle"
+              class="group flex h-12 w-full items-center rounded-xl border border-transparent px-3 text-sm font-medium text-white/76 transition hover:border-white/8 hover:bg-white/8 hover:text-white"
+              :class="{ 'border-brand-300/22 bg-brand-500 text-white shadow-[0_10px_24px_-16px_rgba(198,40,40,0.9)]': routeName === 'bolle' || routeName === 'bolla-detail' }"
+            >
+              <span
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/8 transition group-hover:bg-white/12"
+                :class="{ 'bg-white/14': routeName === 'bolle' || routeName === 'bolla-detail' }"
+              >
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="8" y1="13" x2="16" y2="13"/>
+                  <line x1="8" y1="17" x2="16" y2="17"/>
+                </svg>
+              </span>
+              <span class="ml-3 truncate">Bolle</span>
             </RouterLink>
 
             <!-- Tenant Admin -->

@@ -65,7 +65,13 @@ La parte realmente costruita oggi include:
   - prezzo/IVA/giacenza in Decimal, optimistic locking via campo `version` (409 su conflitto)
   - eventi SSE `articolo.created/updated/deactivated` + KPI dashboard "Articoli a catalogo"
   - permessi RBAC `articoli.read/write/delete`; categoria validata cross-tenant
-- **modalita demo read-only** (`DEMO_READONLY=true`): middleware blocca tutte le scritture business con 403 (`{"demo_readonly": true}`), eccetto `/auth/*`; il frontend legge `GET /api/v1/meta`, mostra un banner persistente e un toast quando una scrittura viene bloccata
+- **Bolle / DDT** — terzo modulo business, primo documento composito (migration 0013):
+  - testata DDT + righe con snapshot articolo immutabile (codice/descrizione/prezzo/IVA congelati)
+  - ciclo bozza -> emessa -> annullata; numero consumato dalla sequence `delivery_note_italy` (prefix BL) solo all'emissione, con lock FOR UPDATE concorrenza-safe
+  - totali calcolati dalle righe, optimistic locking, immutabilita' post-emissione
+  - eventi SSE `bolla.created/emessa/annullata` + KPI "Bolle emesse nel mese"
+  - permessi RBAC `bolle.read/write/delete`; frontend: lista + composizione righe + emetti/annulla
+- **modalita demo read-only** (`DEMO_READONLY=true`): middleware blocca tutte le scritture business con 403 (`{"demo_readonly": true}`), eccetto `/auth/*`; il frontend legge `GET /api/v1/meta`, mostra un banner persistente e un toast quando una scrittura viene bloccata; il `CORSMiddleware` e' registrato per ultimo (piu' esterno) cosi' anche le risposte 403 short-circuit hanno gli header CORS
 
 ### Frontend
 
@@ -99,8 +105,7 @@ Il frontend oggi e soprattutto:
 ## Cosa non esiste ancora
 
 - gestione indirizzi anagrafiche da frontend (CRUD indirizzi disponibile da API, non ancora esposto in UI)
-- bolle reali
-- fatture reali
+- fatture reali (le bolle/DDT esistono; la trasformazione bolla -> fattura no)
 - spedizioni reali
 - reporting reale
 - api gateway reale

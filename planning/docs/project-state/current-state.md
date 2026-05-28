@@ -119,6 +119,7 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - baseline test backend introdotta su `health`, `auth` e RBAC tenant-aware, eseguita anche in CI
 - test unit aggiunti su refresh token family (7) e password breach screening + validator NIST (12)
 - secondo dominio business reale: **Articoli** (catalogo) + **Categorie articolo**, tenant-aware, con optimistic locking (`version`), prezzi/IVA in Decimal, eventi SSE e KPI "Articoli a catalogo"; 11 test unit
+- terzo dominio business: **Bolle / DDT** (migration 0013), primo documento composito testata+righe con snapshot articolo immutabile, ciclo bozza->emessa->annullata, numerazione progressiva concorrenza-safe (`delivery_note_italy`, lock FOR UPDATE), totali calcolati, eventi SSE e KPI "Bolle emesse nel mese"; 14 test unit; frontend completo (lista, composizione righe, emissione/annullamento)
 - **modalita demo read-only** (`DEMO_READONLY`): middleware che blocca ogni scrittura business con 403 esplicito, eccetto gli endpoint `/auth/*`; endpoint pubblico `GET /api/v1/meta` espone il flag al frontend
 - migration discipline via `start.sh`: alembic upgrade head eseguito nel nuovo container a ogni deploy Coolify
 - deploy produzione su Coolify: `core_service`, `celery_worker`, `postgres`, `redis` come risorse separate

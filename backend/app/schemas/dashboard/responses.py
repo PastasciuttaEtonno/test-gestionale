@@ -29,6 +29,11 @@ class DashboardKpisResponse(BaseModel):
         description="Numero di articoli attivi a catalogo per il tenant.",
         examples=[128],
     )
+    bolle_emesse_mese: int = Field(
+        default=0,
+        description="Numero di bolle emesse dal tenant nel mese corrente.",
+        examples=[12],
+    )
     company_profile_configured: bool = Field(
         description="Indica se il tenant ha gia configurato l'anagrafica aziendale.",
         examples=[True],
