@@ -41,13 +41,6 @@ app = FastAPI(
     redoc_url=None if settings.is_production_like else "/redoc",
     lifespan=lifespan,
 )
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_allowed_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
-)
 app.include_router(api_router, prefix=settings.api_v1_prefix)
 
 # Metodi HTTP che mutano lo stato; in modalita demo vengono bloccati salvo /auth.
@@ -115,6 +108,22 @@ async def request_context_middleware(request: Request, call_next):
         return response
     finally:
         reset_request_id(token)
+
+
+# CORS registrato per ultimo = middleware piu' esterno. Indispensabile perche'
+# avvolga anche le risposte short-circuit (es. il 403 della modalita demo):
+# Starlette inserisce ogni middleware in cima allo stack, quindi l'ultimo
+# registrato e' il primo a processare richiesta e risposta. Se CORS fosse piu'
+# interno, una risposta corta non lo attraverserebbe e mancherebbe l'header
+# Access-Control-Allow-Origin (il browser bloccherebbe la risposta come errore
+# CORS invece di consegnarla con il flag demo_readonly al frontend).
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+)
 
 
 def _check_database() -> dict[str, str]:
