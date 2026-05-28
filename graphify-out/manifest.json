@@ -1213,5 +1213,25 @@
     "mtime": 1780009377.9358373,
     "ast_hash": "e1474736e10c1584fda8d6a14905c33a",
     "semantic_hash": "e1474736e10c1584fda8d6a14905c33a"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\start.sh": {
+    "mtime": 1779883287.157878,
+    "ast_hash": "873c7f4a26a7309c3fd17232018c2e9e",
+    "semantic_hash": "873c7f4a26a7309c3fd17232018c2e9e"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\tests\\test_articoli.py": {
+    "mtime": 1779996352.7491283,
+    "ast_hash": "2b01a59001ef88c8cfa1a884ec741f30",
+    "semantic_hash": "2b01a59001ef88c8cfa1a884ec741f30"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\tests\\test_auth_refresh_family.py": {
+    "mtime": 1779892237.7896986,
+    "ast_hash": "f3ccc004b65e88d16163e32fcac0dbb4",
+    "semantic_hash": "f3ccc004b65e88d16163e32fcac0dbb4"
+  },
+  "C:\\Users\\joanl\\Desktop\\projectwork_IFOA\\test-gestionale\\backend\\tests\\test_bolle.py": {
+    "mtime": 1780008796.1191075,
+    "ast_hash": "486e0c5ab76351bc2cbd1bb22f9a63cb",
+    "semantic_hash": "486e0c5ab76351bc2cbd1bb22f9a63cb"
   }
 }
