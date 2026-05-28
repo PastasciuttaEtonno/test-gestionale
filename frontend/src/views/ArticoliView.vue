@@ -414,8 +414,9 @@ async function disattivaCategoria(c) {
     </div>
 
     <!-- Tabella -->
-    <BaseCard v-else-if="items.length" class="overflow-hidden p-0">
-      <div class="overflow-x-auto">
+    <BaseCard v-else-if="items.length">
+      <div class="overflow-hidden rounded-2xl border border-steel-200">
+        <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead class="border-b border-steel-100 bg-steel-50">
             <tr>
@@ -481,6 +482,7 @@ async function disattivaCategoria(c) {
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
     </BaseCard>
 
