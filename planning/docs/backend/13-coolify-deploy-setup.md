@@ -186,6 +186,28 @@ NODE_ENV=production
 
 > Le variabili `VITE_*` vengono embeddate da Vite a build time. Cambiarle in Coolify richiede un rebuild, non solo un restart.
 
+### Routing `/api`: e' compito di Traefik, NON di nginx
+
+In produzione e' il reverse proxy (Traefik su Coolify) a instradare `tuo-dominio.com/api/*` verso `core_service` — vedi l'architettura in cima a questo documento. Il frontend serve **solo** la SPA.
+
+Per questo `frontend/nginx.conf` (usato dall'immagine Docker) deve restare **pristino**, senza blocchi `location /api { proxy_pass http://core_service:8000; }`:
+
+- con un hostname **letterale**, nginx risolve l'upstream all'avvio e va in `[emerg] host not found in upstream` se `core_service` non risolve nella rete di produzione → container in crash loop, sito down
+- il proxy `/api` serve **solo in locale** (docker-compose, dove non c'e' Traefik): e' fornito da `frontend/nginx.local.conf`, montato come volume unicamente dal `docker-compose.yml`. Coolify ignora il `docker-compose.yml`, quindi non vede mai quel config.
+
+> ATTENZIONE: non spostare i blocchi `/api` dentro `frontend/nginx.conf`. Romperebbe il deploy.
+
+### Due ambienti, due reverse proxy
+
+Il routing `/api` ha **due modalita' complementari**, una per ambiente:
+
+| Ambiente | Reverse proxy `/api` | Frontend |
+|---|---|---|
+| **Locale** (docker-compose) | nginx del container client, via `frontend/nginx.local.conf` montato come volume | SPA servita da nginx |
+| **Produzione** (Coolify) | Traefik, gestito da Coolify (routing path `/api` → core_service) | SPA servita da Coolify |
+
+Sono due strade per testare/servire la stessa app: in locale non c'e' Traefik, quindi nginx fa da proxy; in produzione ci pensa Traefik e `frontend/nginx.conf` resta pristino (solo SPA). Per questo i blocchi `/api` vivono **solo** in `nginx.local.conf`.
+
 ---
 
 ## Step 4 — GitHub Actions

@@ -244,6 +244,21 @@ Allineato a RFC 9700 §4.13 (OAuth 2.0 Security BCP) e al pattern Auth0/Okta:
 - nessun grace period lato server: la serializzazione delle richieste parallele di refresh e' demandata al client (single-flight in-memory + `navigator.locks` per cross-tab)
 - `family_id` e' interno al backend: NON viene esposto nel payload JWT per non leakare la chain
 
+### 6.6 Password policy (NIST SP 800-63B + breach screening)
+
+Regole minime applicate dal validator Pydantic in `CreateUserRequest`:
+
+- lunghezza minima 12 caratteri (preferire passphrase a complessita' artificiale)
+- blacklist di valori troppo comuni (es. `password`, `qwerty`, `gestionale`, ecc.)
+- nessuna regola di complessita' forzata (maiuscole/numeri/simboli): NIST 2017+ scoraggia esplicitamente questo pattern
+
+Verifica anti-breach via HIBP Pwned Passwords con k-anonymity (eseguita lato `UserService`):
+
+- nessun invio della password in chiaro al servizio esterno: solo i primi 5 caratteri dello SHA1
+- cache Redis 24h sui prefissi gia' visti
+- soglia configurabile (`password_breach_max_count`, default 10) sopra la quale la password viene rifiutata
+- fail-open in caso di HIBP irraggiungibile, con audit `PASSWORD_BREACH_CHECK_FAILED`
+
 ### 6.6 Tabella `security.audit_log`
 
 Scopo: tracciamento eventi di sicurezza e operazioni sensibili.

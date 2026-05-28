@@ -19,6 +19,8 @@ import {
   updateAnagrafica,
 } from "@/services/anagrafiche";
 import { useAuthStore } from "@/stores/auth";
+import { confirm, notify } from "@/composables/useConfirm";
+import { ptIconField, ptInputIcon, makePtInputText, makePtSelect, makeDialogPt } from "@/lib/prime-pt";
 
 const vTooltip = Tooltip;
 
@@ -48,37 +50,10 @@ const opzioniTipo = [
   { label: "Altro", value: "altro" },
 ];
 
-const ptIconField = { root: { class: "relative" } };
-const ptInputIcon = {
-  root: { class: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-steel-400" },
-};
-const ptInputText = {
-  root: {
-    class:
-      "h-11 w-full rounded-xl border border-steel-200 bg-steel-50 pl-9 pr-4 text-sm text-steel-900 placeholder:text-steel-400 transition focus:border-brand-500 focus:bg-white focus:outline-none",
-  },
-};
-const ptSelect = {
-  root: {
-    class:
-      "relative flex h-11 w-full cursor-pointer select-none items-center rounded-xl border border-steel-200 bg-steel-50 text-sm transition focus:outline-none sm:w-44",
-  },
-  label: { class: "flex-1 truncate px-4 text-steel-700" },
-  dropdown: { class: "flex shrink-0 items-center justify-center pr-3 text-steel-400" },
-  overlay: {
-    class:
-      "absolute left-0 top-full z-50 mt-1 min-w-full overflow-hidden rounded-xl border border-steel-200 bg-white shadow-lg",
-  },
-  listContainer: { class: "max-h-60 overflow-y-auto" },
-  list: { class: "py-1" },
-  option: {
-    class:
-      "cursor-pointer px-4 py-2.5 text-sm text-steel-700 transition hover:bg-brand-50 hover:text-brand-700",
-  },
-  optionLabel: { class: "" },
-  emptyMessage: { class: "px-4 py-2.5 text-sm text-steel-400 italic" },
-  clearIcon: { class: "mr-2 h-3.5 w-3.5 text-steel-400 hover:text-steel-700 transition" },
-};
+const ptInputText = makePtInputText();
+const ptSelect = makePtSelect("w-full sm:w-44");
+const ptFormSelect = makePtSelect("w-full", "bg-white");
+const dialogPt = makeDialogPt("max-w-2xl");
 
 async function caricaAnagrafiche() {
   loading.value = true;
@@ -211,12 +186,18 @@ function azzeraFiltri() {
 // ── Soft delete ───────────────────────────────────────────────────────────
 
 async function disattiva(a) {
-  if (!confirm(`Disattivare "${a.display_name}"?`)) return;
+  const ok = await confirm({
+    title: "Disattivare l'anagrafica",
+    message: `Confermare la disattivazione di "${a.display_name}"? Il record sarà nascosto dall'elenco ma non eliminato.`,
+    confirmLabel: "Disattiva",
+    danger: true,
+  });
+  if (!ok) return;
   try {
     await deleteAnagrafica(a.id);
     await caricaAnagrafiche();
   } catch {
-    alert("Errore durante la disattivazione.");
+    await notify({ message: "Errore durante la disattivazione. Riprovare." });
   }
 }
 
@@ -336,8 +317,8 @@ const opzioniRegime = [
 
         <!-- Contatore + reset -->
         <div class="flex items-center gap-3 sm:ml-auto">
-          <span class="text-xs text-steel-400">
-            <span class="font-semibold text-steel-700">{{ total }}</span> risultati
+          <span class="text-xs text-steel-700">
+            <span class="font-semibold text-steel-900">{{ total }}</span> risultati
           </span>
           <button
             v-if="filtriApplicati"
@@ -475,7 +456,7 @@ const opzioniRegime = [
         </svg>
       </div>
       <p class="text-sm font-medium text-steel-700">Nessuna anagrafica trovata</p>
-      <p class="mt-1 text-xs text-steel-400">
+      <p class="mt-1 text-xs text-steel-700">
         {{ filtroQ || filtroTipo ? "Prova a modificare i filtri di ricerca." : "Crea la prima anagrafica per iniziare." }}
       </p>
       <button
@@ -494,17 +475,11 @@ const opzioniRegime = [
       :modal="true"
       :closable="true"
       :draggable="false"
-      class="w-full max-w-2xl"
-      :pt="{
-        root: { class: 'rounded-2xl shadow-2xl' },
-        header: { class: 'border-b border-steel-100 px-6 py-4 text-base font-semibold text-steel-900' },
-        content: { class: 'px-6 py-5' },
-        footer: { class: 'border-t border-steel-100 px-6 py-4' },
-      }"
+      :pt="dialogPt"
     >
       <form class="space-y-5" @submit.prevent="salva">
         <!-- Tipo + persona fisica -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
               Tipo *
@@ -514,7 +489,7 @@ const opzioniRegime = [
               :options="opzioniTipoForm"
               option-label="label"
               option-value="value"
-              class="w-full rounded-xl border border-steel-200 bg-white text-sm"
+              :pt="ptFormSelect"
             />
           </div>
           <div class="flex items-end pb-1">
@@ -530,7 +505,7 @@ const opzioniRegime = [
         </div>
 
         <!-- Nome / Ragione sociale -->
-        <div v-if="form.is_persona_fisica" class="grid grid-cols-2 gap-4">
+        <div v-if="form.is_persona_fisica" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
               Cognome *
@@ -538,6 +513,7 @@ const opzioniRegime = [
             <InputText
               v-model="form.cognome"
               placeholder="Ferrari"
+              autocomplete="family-name"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
           </div>
@@ -548,6 +524,7 @@ const opzioniRegime = [
             <InputText
               v-model="form.nome"
               placeholder="Marco"
+              autocomplete="given-name"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
           </div>
@@ -559,12 +536,13 @@ const opzioniRegime = [
           <InputText
             v-model="form.ragione_sociale"
             placeholder="Edilceram S.r.l."
+            autocomplete="organization"
             class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
           />
         </div>
 
         <!-- P.IVA + CF -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
               Partita IVA
@@ -572,6 +550,7 @@ const opzioniRegime = [
             <InputText
               v-model="form.partita_iva"
               placeholder="03456789012"
+              inputmode="numeric"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
           </div>
@@ -588,7 +567,7 @@ const opzioniRegime = [
         </div>
 
         <!-- SDI + PEC -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
               Codice SDI
@@ -607,13 +586,15 @@ const opzioniRegime = [
             <InputText
               v-model="form.pec"
               placeholder="azienda@pec.it"
+              type="email"
+              autocomplete="off"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
           </div>
         </div>
 
         <!-- Regime fiscale + Natura giuridica -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
               Regime fiscale
@@ -623,7 +604,7 @@ const opzioniRegime = [
               :options="opzioniRegime"
               option-label="label"
               option-value="value"
-              class="w-full rounded-xl border border-steel-200 bg-white text-sm"
+              :pt="ptFormSelect"
             />
           </div>
           <div>
@@ -639,7 +620,7 @@ const opzioniRegime = [
         </div>
 
         <!-- Email + Telefono -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
               Email
@@ -647,6 +628,8 @@ const opzioniRegime = [
             <InputText
               v-model="form.email"
               placeholder="info@azienda.it"
+              type="email"
+              autocomplete="email"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
           </div>
@@ -657,6 +640,8 @@ const opzioniRegime = [
             <InputText
               v-model="form.telefono"
               placeholder="059 123456"
+              type="tel"
+              autocomplete="tel"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
           </div>

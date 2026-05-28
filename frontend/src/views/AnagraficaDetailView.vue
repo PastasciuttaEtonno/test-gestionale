@@ -8,15 +8,18 @@ import Tag from "primevue/tag";
 import Tooltip from "primevue/tooltip";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
-import SectionLabel from "@/components/ui/SectionLabel.vue";
 import {
   deleteAnagrafica,
   fetchAnagrafica,
   updateAnagrafica,
 } from "@/services/anagrafiche";
 import { useAuthStore } from "@/stores/auth";
+import { confirm, notify } from "@/composables/useConfirm";
+import { makeDialogPt, makePtSelect } from "@/lib/prime-pt";
 
 const vTooltip = Tooltip;
+const dialogPt = makeDialogPt("max-w-2xl");
+const ptFormSelect = makePtSelect("w-full", "bg-white");
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -90,12 +93,18 @@ function ptTipoTag(tipo) {
 // ── Soft delete ───────────────────────────────────────────────────────────
 
 async function disattiva() {
-  if (!confirm(`Disattivare "${anagrafica.value?.display_name}"?`)) return;
+  const ok = await confirm({
+    title: "Disattivare l'anagrafica",
+    message: `Confermare la disattivazione di "${anagrafica.value?.display_name}"? Il record sarà nascosto dall'elenco ma non eliminato.`,
+    confirmLabel: "Disattiva",
+    danger: true,
+  });
+  if (!ok) return;
   try {
     await deleteAnagrafica(props.id);
     router.push({ name: "anagrafiche" });
   } catch {
-    alert("Errore durante la disattivazione.");
+    await notify({ message: "Errore durante la disattivazione. Riprovare." });
   }
 }
 
@@ -348,32 +357,32 @@ const opzioniRegime = [
             </h3>
             <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
               <div v-if="!anagrafica.is_persona_fisica && anagrafica.ragione_sociale">
-                <dt class="text-xs text-steel-400">Ragione sociale</dt>
+                <dt class="text-xs text-steel-600">Ragione sociale</dt>
                 <dd class="mt-0.5 text-sm font-medium text-steel-900">{{ anagrafica.ragione_sociale }}</dd>
               </div>
               <div v-if="anagrafica.is_persona_fisica && (anagrafica.cognome || anagrafica.nome)">
-                <dt class="text-xs text-steel-400">Nome e cognome</dt>
+                <dt class="text-xs text-steel-600">Nome e cognome</dt>
                 <dd class="mt-0.5 text-sm font-medium text-steel-900">
                   {{ [anagrafica.cognome, anagrafica.nome].filter(Boolean).join(" ") }}
                 </dd>
               </div>
               <div>
-                <dt class="text-xs text-steel-400">Tipo soggetto</dt>
+                <dt class="text-xs text-steel-600">Tipo soggetto</dt>
                 <dd class="mt-0.5 text-sm text-steel-700">
                   {{ anagrafica.is_persona_fisica ? "Persona fisica" : "Persona giuridica" }}
                   <span v-if="anagrafica.natura_giuridica"> · {{ anagrafica.natura_giuridica }}</span>
                 </dd>
               </div>
               <div v-if="anagrafica.partita_iva">
-                <dt class="text-xs text-steel-400">Partita IVA</dt>
+                <dt class="text-xs text-steel-600">Partita IVA</dt>
                 <dd class="mt-0.5 font-mono text-sm text-steel-900">{{ anagrafica.partita_iva }}</dd>
               </div>
               <div v-if="anagrafica.codice_fiscale">
-                <dt class="text-xs text-steel-400">Codice fiscale</dt>
+                <dt class="text-xs text-steel-600">Codice fiscale</dt>
                 <dd class="mt-0.5 font-mono text-sm text-steel-900">{{ anagrafica.codice_fiscale }}</dd>
               </div>
               <div v-if="anagrafica.regime_fiscale">
-                <dt class="text-xs text-steel-400">Regime fiscale</dt>
+                <dt class="text-xs text-steel-600">Regime fiscale</dt>
                 <dd class="mt-0.5 text-sm text-steel-700">
                   {{ REGIME_LABEL[anagrafica.regime_fiscale] ?? anagrafica.regime_fiscale }}
                 </dd>
@@ -388,7 +397,7 @@ const opzioniRegime = [
             </h3>
             <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
               <div>
-                <dt class="text-xs text-steel-400">Codice SDI</dt>
+                <dt class="text-xs text-steel-600">Codice SDI</dt>
                 <dd class="mt-0.5 font-mono text-sm text-steel-900">
                   {{ anagrafica.codice_sdi ?? "—" }}
                   <span
@@ -400,7 +409,7 @@ const opzioniRegime = [
                 </dd>
               </div>
               <div>
-                <dt class="text-xs text-steel-400">PEC</dt>
+                <dt class="text-xs text-steel-600">PEC</dt>
                 <dd class="mt-0.5 text-sm">
                   <a
                     v-if="anagrafica.pec"
@@ -455,7 +464,7 @@ const opzioniRegime = [
                 </div>
               </div>
             </div>
-            <p v-else class="text-sm text-steel-400">Nessun indirizzo registrato.</p>
+            <p v-else class="text-sm text-steel-700">Nessun indirizzo registrato.</p>
           </BaseCard>
 
           <!-- Note -->
@@ -548,20 +557,14 @@ const opzioniRegime = [
       :modal="true"
       :closable="true"
       :draggable="false"
-      class="w-full max-w-2xl"
-      :pt="{
-        root: { class: 'rounded-2xl shadow-2xl' },
-        header: { class: 'border-b border-steel-100 px-6 py-4 text-base font-semibold text-steel-900' },
-        content: { class: 'px-6 py-5' },
-        footer: { class: 'border-t border-steel-100 px-6 py-4' },
-      }"
+      :pt="dialogPt"
     >
       <form class="space-y-5" @submit.prevent="salva">
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Tipo *</label>
             <Select v-model="form.tipo" :options="opzioniTipoForm" option-label="label" option-value="value"
-              class="w-full rounded-xl border border-steel-200 bg-white text-sm" />
+              :pt="ptFormSelect" />
           </div>
           <div class="flex items-end pb-1">
             <label class="flex cursor-pointer items-center gap-2 text-sm text-steel-700">
@@ -570,64 +573,64 @@ const opzioniRegime = [
             </label>
           </div>
         </div>
-        <div v-if="form.is_persona_fisica" class="grid grid-cols-2 gap-4">
+        <div v-if="form.is_persona_fisica" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Cognome *</label>
-            <InputText v-model="form.cognome" placeholder="Ferrari" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+            <InputText v-model="form.cognome" placeholder="Ferrari" autocomplete="family-name" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Nome</label>
-            <InputText v-model="form.nome" placeholder="Marco" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+            <InputText v-model="form.nome" placeholder="Marco" autocomplete="given-name" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
         </div>
         <div v-else>
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Ragione sociale *</label>
-          <InputText v-model="form.ragione_sociale" placeholder="Edilceram S.r.l." class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          <InputText v-model="form.ragione_sociale" placeholder="Edilceram S.r.l." autocomplete="organization" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Partita IVA</label>
-            <InputText v-model="form.partita_iva" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+            <InputText v-model="form.partita_iva" inputmode="numeric" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice fiscale</label>
             <InputText v-model="form.codice_fiscale" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice SDI</label>
             <InputText v-model="form.codice_sdi" maxlength="7" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">PEC</label>
-            <InputText v-model="form.pec" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+            <InputText v-model="form.pec" type="email" autocomplete="off" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Regime fiscale</label>
             <Select v-model="form.regime_fiscale" :options="opzioniRegime" option-label="label" option-value="value"
-              class="w-full rounded-xl border border-steel-200 bg-white text-sm" />
+              :pt="ptFormSelect" />
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Natura giuridica</label>
             <InputText v-model="form.natura_giuridica" placeholder="SRL / SPA" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Email</label>
-            <InputText v-model="form.email" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+            <InputText v-model="form.email" type="email" autocomplete="email" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Telefono</label>
-            <InputText v-model="form.telefono" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+            <InputText v-model="form.telefono" type="tel" autocomplete="tel" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
           </div>
         </div>
         <div>
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Website</label>
-          <InputText v-model="form.website" placeholder="www.azienda.it" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          <InputText v-model="form.website" placeholder="www.azienda.it" type="url" autocomplete="url" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
         </div>
         <div>
           <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Note</label>

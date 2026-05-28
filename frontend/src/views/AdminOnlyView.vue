@@ -169,7 +169,7 @@ const auditGlobale = [
           </h2>
           <p class="mt-3 max-w-4xl text-sm leading-6 text-steel-700">
             Mockup enterprise per il personale Gestionale: gestione tenant,
-            controllo licenze, osservabilita piattaforma e audit globale in ottica NIS2.
+            controllo licenze, osservabilità piattaforma e audit globale in ottica NIS2.
           </p>
         </div>
 

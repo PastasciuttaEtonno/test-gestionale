@@ -1,6 +1,44 @@
 """Schemi di richiesta per la gestione utenti."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+# Allineato a NIST SP 800-63B: lunghezza minima + blacklist di valori troppo
+# deboli. La complessita' forzata (maiuscole + numeri + simboli) e' stata
+# rimossa dalle linee guida moderne: produce password tipo "Password1!" che
+# sono tra le piu' compromesse nei breach. Meglio passphrase lunghe.
+PASSWORD_MIN_LENGTH = 12
+PASSWORD_BLACKLIST = frozenset(
+    {
+        "password",
+        "passw0rd",
+        "password1",
+        "password123",
+        "admin",
+        "administrator",
+        "qwerty",
+        "qwerty123",
+        "letmein",
+        "welcome",
+        "gestionale",
+        "ceramica",
+        "12345678",
+        "123456789",
+        "1234567890",
+    }
+)
+
+
+def _valida_robustezza_password(password: str) -> str:
+    """Applica le regole minime NIST 800-63B sulla password.
+
+    Non sostituisce la verifica HIBP (eseguita lato service), ma blocca
+    immediatamente i casi piu' banali senza nemmeno chiamare il servizio.
+    """
+    if len(password) < PASSWORD_MIN_LENGTH:
+        raise ValueError(f"La password deve avere almeno {PASSWORD_MIN_LENGTH} caratteri.")
+    if password.lower() in PASSWORD_BLACKLIST:
+        raise ValueError("La password e' troppo comune. Scegliere un valore meno prevedibile.")
+    return password
 
 
 class CreateUserRequest(BaseModel):
@@ -19,11 +57,22 @@ class CreateUserRequest(BaseModel):
         examples=["warehouse.operator@example.local"],
     )
     password: str = Field(
-        min_length=8,
+        min_length=PASSWORD_MIN_LENGTH,
         max_length=255,
-        description="Password iniziale assegnata all'utente.",
-        examples=["StrongPass123!"],
+        description=(
+            "Password iniziale assegnata all'utente. Minimo "
+            f"{PASSWORD_MIN_LENGTH} caratteri, non in blacklist. "
+            "La verifica anti-breach (HIBP) viene eseguita lato service."
+        ),
+        examples=["pizza-cane-otto-mare"],
     )
+
+    @field_validator("password")
+    @classmethod
+    def _validate_password(cls, v: str) -> str:
+        """Valida la robustezza della password secondo NIST 800-63B."""
+        return _valida_robustezza_password(v)
+
     role_code: str = Field(
         min_length=1,
         max_length=50,

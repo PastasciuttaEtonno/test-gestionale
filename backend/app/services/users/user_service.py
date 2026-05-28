@@ -1,8 +1,10 @@
 """Servizio utenti persistito su PostgreSQL."""
 
 from fastapi import HTTPException, status
+from redis.asyncio import Redis
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.security.hashing import PasswordHasher
 from app.domain.security.constants import ADMIN_ROLE, TENANT_ADMIN_ROLE
 from app.domain.security.enums import AuditEventType
@@ -20,6 +22,7 @@ from app.schemas.users.requests import (
     UpdateUserRequest,
 )
 from app.schemas.users.responses import UserListResponse, UserResponse
+from app.services.auth.password_breach_service import PasswordBreachService
 
 
 class UserNotFoundError(Exception):
@@ -29,13 +32,14 @@ class UserNotFoundError(Exception):
 class UserService:
     """Servizio applicativo per la gestione utenti."""
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session: Session, redis_client: Redis | None = None) -> None:
         self.session = session
         self.user_repository = UserRepository(session)
         self.role_repository = RoleRepository(session)
         self.tenant_repository = TenantRepository(session)
         self.audit_repository = AuditRepository(session)
         self.password_hasher = PasswordHasher()
+        self.password_breach_service = PasswordBreachService(redis_client=redis_client)
 
     async def list_users(self, actor_user: CurrentUserResponse) -> UserListResponse:
         """Restituisce l'elenco utenti visibile all'attore corrente."""
@@ -78,6 +82,12 @@ class UserService:
             )
 
         tenant_id = await self._resolve_target_tenant_id(payload=payload, actor_user=actor_user)
+
+        await self._verifica_password_non_compromessa(
+            password=payload.password,
+            actor_user=actor_user,
+            username_target=payload.username,
+        )
 
         user = await self.user_repository.create_user(
             User(
@@ -321,3 +331,64 @@ class UserService:
                 user_agent=None,
             )
         )
+
+    async def _verifica_password_non_compromessa(
+        self,
+        password: str,
+        actor_user: CurrentUserResponse,
+        username_target: str,
+    ) -> None:
+        """Blocca password apparse nei breach pubblici sopra la soglia configurata.
+
+        Politica fail-open: se HIBP e' irraggiungibile la verifica restituisce 0
+        e l'operazione prosegue. Viene loggato l'evento PASSWORD_BREACH_CHECK_FAILED
+        per intercettare anomalie sistemiche.
+        """
+        if not settings.password_breach_check_enabled:
+            return
+
+        try:
+            count = await self.password_breach_service.get_breach_count(password)
+        except Exception:
+            await self.audit_repository.log_event(
+                AuditLog(
+                    user_id=actor_user.id,
+                    event_type=AuditEventType.PASSWORD_BREACH_CHECK_FAILED.value,
+                    resource_type="user",
+                    resource_id=None,
+                    payload_json={
+                        "attore": actor_user.username,
+                        "username_target": username_target,
+                        "motivo": "Eccezione imprevista dal servizio breach.",
+                    },
+                    ip_address=None,
+                    user_agent=None,
+                )
+            )
+            return
+
+        if count > settings.password_breach_max_count:
+            await self.audit_repository.log_event(
+                AuditLog(
+                    user_id=actor_user.id,
+                    event_type=AuditEventType.PASSWORD_BREACH_REJECTED.value,
+                    resource_type="user",
+                    resource_id=None,
+                    payload_json={
+                        "attore": actor_user.username,
+                        "username_target": username_target,
+                        "breach_count": count,
+                        "soglia": settings.password_breach_max_count,
+                    },
+                    ip_address=None,
+                    user_agent=None,
+                )
+            )
+            self.session.commit()
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    "La password scelta e' presente in liste pubbliche di credenziali "
+                    "compromesse. Sceglierne una diversa."
+                ),
+            )

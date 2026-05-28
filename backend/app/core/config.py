@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
     refresh_token_family_max_age_days: int = 14
+    password_breach_check_enabled: bool = True
+    password_breach_max_count: int = 10
+    password_breach_api_timeout_seconds: int = 3
+    password_breach_cache_ttl_seconds: int = 86400
     login_rate_limit_max_attempts: int = 5
     login_rate_limit_window_minutes: int = 15
     login_rate_limit_lockout_minutes: int = 15

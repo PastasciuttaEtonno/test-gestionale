@@ -3,6 +3,7 @@ import { computed, watch } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 
 import AppShell from "./components/layout/AppShell.vue";
+import ConfirmDialog from "./components/ui/ConfirmDialog.vue";
 import { useAuthStore } from "./stores/auth";
 import { useDashboardStore } from "./stores/dashboard";
 import { useEventsStore } from "./stores/events";
@@ -58,4 +59,6 @@ async function eseguiLogout() {
   >
     <RouterView />
   </AppShell>
+
+  <ConfirmDialog />
 </template>

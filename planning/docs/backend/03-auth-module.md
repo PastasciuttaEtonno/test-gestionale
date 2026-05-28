@@ -29,6 +29,10 @@ Il modulo `Auth`:
 - nessun grace period server-side: la sicurezza vince sempre, il client si occupa di non duplicare le richieste
 - audit login, refresh, logout, reuse-detected, family-revoked e family-timeout persistiti su DB
 - audit auth persistito con `ip_address` e `user_agent` reali
+- **password breach screening** via HIBP Pwned Passwords con k-anonymity: SHA1 della password troncato a 5 caratteri, suffisso cercato localmente, password non lascia mai il backend in chiaro
+- regole password aggiornate a NIST SP 800-63B: minimo 12 caratteri + blacklist valori comuni, niente complessita' forzata
+- cache Redis (TTL 24h) sui prefissi HIBP per ridurre le chiamate al servizio esterno
+- policy fail-open: se HIBP e' irraggiungibile la creazione utente non si blocca ma viene auditata `PASSWORD_BREACH_CHECK_FAILED`
 - audit esteso a creazione utente, aggiornamento utente, cambio stato e cambio ruolo
 - `users` e `audit-log` letti dal database reale
 - ruolo reale `tenant_admin` introdotto nel dominio sicurezza
@@ -52,7 +56,7 @@ Il modulo `Auth`:
 - non esiste ancora una gestione completa dei tenant lato backoffice Gestionale
 - il rate limiting e oggi basato su PostgreSQL e non ancora su Redis o infrastruttura distribuita
 - manca ancora un motore dedicato anti-abuso distribuito basato su Redis o edge gateway
-- manca ancora una policy password moderna completa per cambio/reset password con controllo password compromesse
+- l'endpoint self-service di cambio/reset password non esiste ancora (lo screening HIBP e' gia' integrato in `POST /users` e sara' riutilizzabile)
 - MFA / TOTP non ancora implementato
 - impersonation controllata per assistenza Gestionale non ancora implementata
 
@@ -80,6 +84,31 @@ Settings:
 
 - `refresh_token_expire_days` — TTL del singolo token (default 7)
 - `refresh_token_family_max_age_days` — TTL assoluto della famiglia (default 14)
+
+## Password breach screening (dettaglio implementativo)
+
+Servizio: `app/services/auth/password_breach_service.py`. Pattern k-anonymity:
+
+1. calcola `sha1 = SHA1(password).upper()`
+2. invia solo `prefix = sha1[:5]` a `https://api.pwnedpasswords.com/range/{prefix}` (header `Add-Padding: true` per non leakare la lunghezza esatta del payload via traffic analysis)
+3. cerca `suffix = sha1[5:]` localmente nella risposta (~600-900 righe)
+4. se trovato → `count` = quante volte la password e' apparsa nei breach noti
+
+Politica: rifiuto se `count > password_breach_max_count` (default 10). Tutto al di sopra di 10 e' gia' nelle wordlist standard usate dagli attaccanti.
+
+Audit event types nuovi:
+
+- `PASSWORD_BREACH_REJECTED` — password rifiutata, contiene `breach_count` e `soglia`
+- `PASSWORD_BREACH_CHECK_FAILED` — HIBP irraggiungibile, operazione proseguita (fail-open)
+
+Validatore Pydantic (`CreateUserRequest.password`): blocca prima ancora di chiamare HIBP i casi banali (minimo 12 caratteri, blacklist).
+
+Settings:
+
+- `password_breach_check_enabled` (default `True`) — kill-switch globale
+- `password_breach_max_count` (default `10`) — soglia di rifiuto
+- `password_breach_api_timeout_seconds` (default `3`) — timeout HTTP
+- `password_breach_cache_ttl_seconds` (default `86400`) — TTL cache Redis su prefisso
 
 ## Step successivo naturale
 

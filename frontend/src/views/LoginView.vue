@@ -40,7 +40,7 @@ async function onSubmit() {
         error.response?.data?.detail ||
         "Autenticazione non riuscita. Verificare le credenziali.";
     } else {
-      errore.value = "Si e verificato un errore inatteso durante il login.";
+      errore.value = "Si è verificato un errore inatteso durante il login.";
     }
   } finally {
     loading.value = false;
@@ -98,14 +98,14 @@ async function onSubmit() {
           </div>
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-brand-700">Gestionale</p>
-            <p class="text-xs text-steel-400">Gestionale aziendale</p>
+            <p class="text-xs text-steel-700">Gestionale aziendale</p>
           </div>
         </div>
 
         <h2 class="mt-8 text-2xl font-semibold text-steel-900">
           Accedi al tuo account
         </h2>
-        <p class="mt-1.5 text-sm text-steel-400">
+        <p class="mt-1.5 text-sm text-steel-700">
           Inserire le credenziali aziendali per continuare.
         </p>
 
@@ -124,12 +124,9 @@ async function onSubmit() {
           <div class="block">
             <label
               for="password"
-              class="mb-1.5 flex items-center justify-between text-sm font-medium text-steel-700"
+              class="mb-1.5 block text-sm font-medium text-steel-700"
             >
               Password
-              <span class="cursor-not-allowed select-none font-normal text-steel-400 transition hover:text-steel-600">
-                Password dimenticata?
-              </span>
             </label>
             <div class="relative">
               <input
@@ -169,7 +166,7 @@ async function onSubmit() {
           </BaseButton>
         </form>
 
-        <p class="mt-6 text-center text-xs text-steel-400">
+        <p class="mt-6 text-center text-xs text-steel-700">
           Per assistenza contattare il proprio amministratore di sistema.
         </p>
       </BaseCard>

@@ -46,14 +46,14 @@ function labelFor(type) {
     <div class="max-h-96 overflow-y-auto">
       <div
         v-if="notificationsStore.isLoading"
-        class="flex items-center justify-center py-8 text-sm text-steel-400"
+        class="flex items-center justify-center py-8 text-sm text-steel-700"
       >
         Caricamento…
       </div>
 
       <div
         v-else-if="notificationsStore.items.length === 0"
-        class="flex flex-col items-center gap-2 py-10 text-sm text-steel-400"
+        class="flex flex-col items-center gap-2 py-10 text-sm text-steel-700"
       >
         <svg class="h-8 w-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -78,7 +78,7 @@ function labelFor(type) {
           <div class="min-w-0 flex-1">
             <div class="flex items-start justify-between gap-2">
               <p class="text-sm font-medium text-steel-900 leading-tight">{{ n.title }}</p>
-              <span class="shrink-0 text-[10px] text-steel-400">{{ formatDate(n.created_at) }}</span>
+              <span class="shrink-0 text-[10px] text-steel-600">{{ formatDate(n.created_at) }}</span>
             </div>
             <p class="mt-0.5 text-xs text-steel-500 leading-snug">{{ n.body }}</p>
             <span class="mt-1 inline-block rounded-md bg-steel-100 px-1.5 py-0.5 text-[10px] font-medium text-steel-500">

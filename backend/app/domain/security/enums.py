@@ -21,6 +21,8 @@ class AuditEventType(StrEnum):
     REFRESH_FAMILY_REVOKED = "refresh_family_revoked"
     REFRESH_FAMILY_TIMEOUT = "refresh_family_timeout"
     LOGOUT = "logout"
+    PASSWORD_BREACH_REJECTED = "password_breach_rejected"
+    PASSWORD_BREACH_CHECK_FAILED = "password_breach_check_failed"
     USER_CREATED = "user_created"
     USER_UPDATED = "user_updated"
     USER_STATUS_CHANGED = "user_status_changed"

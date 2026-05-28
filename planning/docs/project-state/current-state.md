@@ -107,11 +107,17 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - cooldown e rate limiting auth attivi su tre scope: `identifier + ip_address`, solo `identifier`, solo `ip_address`
 - audit auth con `ip_address` e `user_agent` reali
 - hardening produzione introdotto su auth: fail-fast configurazione sensibile, trusted proxy espliciti e controllo `Origin` / `Referer` sugli endpoint cookie-based
+- refresh token family con reuse detection (RFC 9700 §4.13): riusare un refresh ruotato revoca l'intera famiglia, con audit dedicato
+- absolute family timeout (`refresh_token_family_max_age_days`, default 14gg): re-login forzato oltre la soglia
+- frontend con lock single-flight + `navigator.locks` cross-tab per serializzare i refresh paralleli (no grace period server-side)
+- password breach screening via HIBP Pwned Passwords con k-anonymity + cache Redis, fail-open con audit `PASSWORD_BREACH_CHECK_FAILED`
+- policy password aggiornata a NIST SP 800-63B: minimo 12 caratteri + blacklist, niente complessita' forzata
 - endpoint dashboard KPI tenant-aware protetto con cache Redis e rate limiting
 - endpoint demo di mutazione produzione con invalidazione mirata della cache tenant
 - update reali tenant admin allineati con invalidazione cache KPI del tenant in best-effort
 - osservabilita minima backend introdotta con `request_id`, logging strutturato e health endpoint `live/ready`
 - baseline test backend introdotta su `health`, `auth` e RBAC tenant-aware, eseguita anche in CI
+- test unit aggiunti su refresh token family (7) e password breach screening + validator NIST (12)
 - migration discipline via `start.sh`: alembic upgrade head eseguito nel nuovo container a ogni deploy Coolify
 - deploy produzione su Coolify: `core_service`, `celery_worker`, `postgres`, `redis` come risorse separate
 - GitHub Actions: quality gate + Coolify deploy webhook (no GHCR, no SSH)
@@ -223,6 +229,14 @@ traefik.http.routers.sse-stream.service=<nome-servizio-generato-da-coolify>
 | `frontend/Dockerfile`     | Multi-stage: node build + nginx alpine   |
 
 `start.sh` esegue `alembic upgrade head` poi `uvicorn` **nello stesso container** — indispensabile perche il pre-deploy command di Coolify gira nel container vecchio, non in quello nuovo.
+
+### Nginx frontend: split locale / produzione
+
+`frontend/nginx.conf` (incluso nell'immagine Docker) serve **solo la SPA** e deve restare tale: in produzione e' il reverse proxy (Traefik su Coolify) a instradare `/api` e `/health` verso `core_service`. Un `proxy_pass http://core_service:8000` con hostname letterale farebbe **fallire l'avvio di nginx** se quel nome non risolve nella rete di produzione.
+
+Per lo sviluppo locale (docker-compose, nessun Traefik) il proxy `/api` serve: viene fornito da `frontend/nginx.local.conf`, montato come volume **solo** dal `docker-compose.yml` su `/etc/nginx/conf.d/default.conf`. Coolify ignora il `docker-compose.yml`, quindi la produzione non vede mai questa configurazione.
+
+> Nota: `docker-compose.yml` mappa la porta frontend come `5173:80` (nginx ascolta sulla 80 dentro il container).
 
 ### GitHub Actions
 

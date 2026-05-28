@@ -8,10 +8,12 @@ il branching della query vive in ``UserService`` (es. ``list_users_by_tenant`` v
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Path, status
+from redis.asyncio import Redis
 from sqlalchemy.orm import Session
 
 from app.api.deps.auth import require_admin_or_tenant_admin
 from app.core.db import get_db_session
+from app.core.redis import get_redis_client
 from app.schemas.auth.responses import CurrentUserResponse
 from app.schemas.users.requests import (
     ChangeUserRoleRequest,
@@ -25,9 +27,16 @@ from app.services.users.user_service import UserNotFoundError, UserService
 router = APIRouter(tags=["Users"])
 
 
-def get_user_service(session: Session = Depends(get_db_session)) -> UserService:
-    """Restituisce la dependency del servizio utenti."""
-    return UserService(session)
+def get_user_service(
+    session: Session = Depends(get_db_session),
+    redis_client: Redis = Depends(get_redis_client),
+) -> UserService:
+    """Restituisce la dependency del servizio utenti.
+
+    Il client Redis viene passato per abilitare la cache del breach screening
+    HIBP (verifica password contro liste pubbliche di credenziali compromesse).
+    """
+    return UserService(session, redis_client=redis_client)
 
 
 @router.get(

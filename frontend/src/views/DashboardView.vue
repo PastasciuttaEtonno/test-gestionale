@@ -13,6 +13,7 @@ import { useAuthStore } from "../stores/auth";
 import { useDashboardStore } from "../stores/dashboard";
 import { useTasksStore } from "../stores/tasks";
 import { avviaGenerazioneReport } from "../services/reports";
+import { ptIconField, ptInputIcon, makePtInputText, makePtSelect } from "../lib/prime-pt";
 const authStore = useAuthStore();
 const tasksStore = useTasksStore();
 const dashboardStore = useDashboardStore();
@@ -24,39 +25,8 @@ const filtroStato = ref(null);
 const opzioniTipo = ["Fattura", "Bolla"];
 const opzioniStato = ["Aperta", "Bozza", "Confermata", "Da chiudere", "Da inviare", "Emessa"];
 
-const ptInputText = {
-  root: {
-    class:
-      "h-11 w-full rounded-xl border border-steel-200 bg-steel-50 pl-9 pr-4 text-sm text-steel-900 placeholder:text-steel-400 transition focus:border-brand-500 focus:bg-white focus:outline-none sm:w-auto sm:min-w-[200px]",
-  },
-};
-
-const ptIconField = { root: { class: "relative" } };
-const ptInputIcon = {
-  root: { class: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-steel-400" },
-};
-
-const ptSelect = {
-  root: {
-    class:
-      "relative flex h-11 min-w-[132px] cursor-pointer select-none items-center rounded-xl border border-steel-200 bg-steel-50 text-sm transition focus:outline-none",
-  },
-  label: { class: "flex-1 truncate px-4 text-steel-700" },
-  dropdown: { class: "flex shrink-0 items-center justify-center pr-3 text-steel-400" },
-  overlay: {
-    class:
-      "absolute left-0 top-full z-50 mt-1 min-w-full overflow-hidden rounded-xl border border-steel-200 bg-white shadow-lg",
-  },
-  listContainer: { class: "max-h-60 overflow-y-auto" },
-  list: { class: "py-1" },
-  option: {
-    class:
-      "cursor-pointer px-4 py-2.5 text-sm text-steel-700 transition hover:bg-brand-50 hover:text-brand-700",
-  },
-  optionLabel: { class: "" },
-  emptyMessage: { class: "px-4 py-2.5 text-sm text-steel-400 italic" },
-  clearIcon: { class: "mr-2 h-3.5 w-3.5 text-steel-400 hover:text-steel-700 transition" },
-};
+const ptInputText = makePtInputText("sm:w-auto sm:min-w-[200px]");
+const ptSelect = makePtSelect("min-w-[132px]");
 
 const ptTagStato = {
   root: {
@@ -216,7 +186,7 @@ const righeFiltraite = computed(() => {
             </h2>
             <p class="mt-3 max-w-3xl text-sm leading-6 text-steel-700">
               Mockup statico di una home ERP enterprise con sidebar, toolbar e griglia
-              dati densa. Serve solo a validare ingombri, gerarchia visiva e leggibilita.
+              dati densa. Serve solo a validare ingombri, gerarchia visiva e leggibilità.
             </p>
           </div>
 

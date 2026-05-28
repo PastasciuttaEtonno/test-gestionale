@@ -14,7 +14,7 @@ const indicatoriTenantAdmin = [
   {
     label: "Ruoli configurati",
     value: "6",
-    note: "Template interni tra magazzino, contabilita e back office.",
+    note: "Template interni tra magazzino, contabilità e back office.",
   },
   {
     label: "Sezionali attivi",

@@ -153,7 +153,7 @@ Traefik applica `gzip` di default — bufferizza l'SSE e blocca i real-time upda
 - styling: `Tailwind CSS`
 - HTTP client: `Axios`
 - routing: `Vue Router`
-- runtime prod: `nginx:1.27-alpine` con `nginx.conf` custom (SPA routing)
+- runtime: `nginx:1.27-alpine` con `nginx.conf` custom per il **solo SPA routing**; il routing `/api` e' di Traefik in produzione (Coolify) e di `nginx.local.conf` in locale (docker-compose). Vedi "Due ambienti, due reverse proxy" in `13-coolify-deploy-setup.md`.
 
 ## Schemi database attivi
 
@@ -221,7 +221,12 @@ Questo e gia vero nei service tenant-aware implementati.
 - JWT reali
 - refresh token persistiti e revocabili
 - refresh token non leggibili da JavaScript nel frontend
-- audit log reale
+- refresh token family con reuse detection (RFC 9700 §4.13): riuso di un token ruotato revoca l'intera famiglia
+- absolute family timeout configurabile (default 14 giorni)
+- frontend con lock single-flight + `navigator.locks` cross-tab per i refresh paralleli (no grace period server-side, standard Auth0/Okta)
+- password breach screening HIBP (k-anonymity) con cache Redis, policy fail-open
+- policy password NIST SP 800-63B: minimo 12 caratteri + blacklist, niente complessita' forzata
+- audit log reale (incluso `refresh_reuse_detected`, `refresh_family_revoked`, `refresh_family_timeout`, `password_breach_rejected`, `password_breach_check_failed`)
 - password SMTP cifrata lato backend
 - OpenAPI curata endpoint per endpoint
 - commenti, docstring e messaggi descrittivi in italiano
@@ -263,14 +268,18 @@ Ordine consigliato:
 
 ## Prossimi step coerenti
 
-Le direzioni piu sensate da qui sono:
+Asse sicurezza (in corso): refresh family reuse detection e password breach screening sono **fatti**. Restano:
 
-1. collegare il frontend `Tenant Admin` alle API reali appena introdotte
-2. introdurre `Anagrafiche` come primo dominio business tenant-aware
-3. aggiungere test automatici API per scoping `admin` vs `tenant_admin`
-4. aggiungere test automatici sul flusso `memory access token + HttpOnly refresh cookie`
-5. introdurre reuse detection e family revocation dei refresh token
-6. sostituire il task demo report con un caso reale come PDF massivo o invio mail bulk
+1. MFA opzionale TOTP per `admin` e `tenant_admin` (con backup codes)
+2. impersonation controllata super-admin → tenant per assistenza, con audit forte
+3. endpoint self-service di cambio/reset password (riusa lo screening HIBP gia' integrato)
+
+Altre direzioni:
+
+4. collegare le console frontend `Super Admin` / `Tenant Admin` alle API reali
+5. estendere lo scoping tenant ai primi domini business (Articoli come ponte verso Bolle/Fatture)
+6. audit business unificato con `before_json`/`after_json` sui domini reali
+7. sostituire il task demo report con un caso reale come PDF massivo o invio mail bulk
 
 ## Rischi o limiti da tenere presenti
 

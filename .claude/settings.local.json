@@ -9,7 +9,21 @@
       "Bash(Get-ChildItem \"c:\\\\Users\\\\joanl\\\\Desktop\\\\projectwork_IFOA\\\\test-gestionale\" -File)",
       "Bash(Select-Object Name)",
       "Bash(python -m pytest tests/test_auth_refresh_family.py -v)",
-      "Bash(uv run *)"
+      "Bash(uv run *)",
+      "PowerShell(uv run ruff format app/schemas/users/requests.py app/services/auth/password_breach_service.py 2>&1)",
+      "Bash(node .agents/skills/impeccable/scripts/detect.mjs --json frontend/src)",
+      "Bash(node .agents/skills/impeccable/scripts/detect.mjs --help)",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__fill_form",
+      "mcp__chrome-devtools__select_page",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"identifier\":\"tenant.admin\",\"password\":\"tenant123\"}')",
+      "Bash(python -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\('after delete is_active=',d.get\\('is_active'\\)\\)\")",
+      "PowerShell(docker compose up *)"
     ]
   }
 }
