@@ -114,13 +114,14 @@ Attualmente lo scoping tenant e applicato a:
 - configurazione aziendale del tenant
 - configurazione SMTP del tenant
 - numerazioni documentali del tenant
+- **anagrafiche** (primo dominio business tenant-aware)
+- **articoli e categorie articolo** (secondo dominio business tenant-aware, con codice/nome univoci per tenant e validazione cross-tenant della categoria)
 
 Non e ancora applicato a:
 
-- anagrafiche
 - bolle
 - fatture
-- domini business principali
+- spedizioni
 
 ## 7. Frontend
 

@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     """Configurazione runtime caricata da variabili d'ambiente."""
 
     app_env: Literal["development", "test", "staging", "production"] = "development"
+    demo_readonly: bool = False
     app_name: str = "Gestionale Core Service"
     app_version: str = "0.1.0"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"

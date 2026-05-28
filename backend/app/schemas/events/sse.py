@@ -30,5 +30,10 @@ class EventTypes:
     # KPI dashboard
     KPI_UPDATED = "kpi.updated"
 
+    # Articoli (catalogo)
+    ARTICOLO_CREATED = "articolo.created"
+    ARTICOLO_UPDATED = "articolo.updated"
+    ARTICOLO_DEACTIVATED = "articolo.deactivated"
+
     # Sistema
     SYSTEM_ALERT = "system.alert"

@@ -37,6 +37,38 @@
     outline: 2px solid var(--color-brand-500);
     outline-offset: 2px;
   }
+
+  /* L'outline segue il border-radius dell'elemento: gli elementi interattivi
+     senza una classe di raggio esplicita mostrano un focus ring squadrato.
+     Qui arrotondiamo il focus solo su quelli, senza toccare gli elementi che
+     dichiarano gia' un rounded-* (che mantengono il loro raggio). */
+  a:not([class*="rounded"]):focus-visible,
+  button:not([class*="rounded"]):focus-visible,
+  [role="button"]:not([class*="rounded"]):focus-visible,
+  summary:not([class*="rounded"]):focus-visible,
+  [tabindex]:not([class*="rounded"]):focus-visible {
+    border-radius: 0.5rem;
+  }
+
+  /* PrimeVue Select / MultiSelect / DatePicker (unstyled): l'elemento
+     focusabile e' interno al controllo, quindi l'outline avvolgerebbe solo il
+     testo. Spostiamo l'anello sull'intero root (che ha gia' il rounded-xl del
+     PT) via :focus-within e azzeriamo l'outline sull'elemento interno. */
+  [data-pc-name="select"]:focus-within,
+  [data-pc-name="multiselect"]:focus-within,
+  [data-pc-name="datepicker"]:focus-within {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+
+  [data-pc-name="select"] :focus,
+  [data-pc-name="select"] :focus-visible,
+  [data-pc-name="multiselect"] :focus,
+  [data-pc-name="multiselect"] :focus-visible,
+  [data-pc-name="datepicker"] :focus,
+  [data-pc-name="datepicker"] :focus-visible {
+    outline: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

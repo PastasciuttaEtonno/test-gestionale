@@ -24,6 +24,11 @@ class DashboardKpisResponse(BaseModel):
         description="Numero di eventi audit tenant-aware registrati nelle ultime 24 ore.",
         examples=[84],
     )
+    total_articoli: int = Field(
+        default=0,
+        description="Numero di articoli attivi a catalogo per il tenant.",
+        examples=[128],
+    )
     company_profile_configured: bool = Field(
         description="Indica se il tenant ha gia configurato l'anagrafica aziendale.",
         examples=[True],

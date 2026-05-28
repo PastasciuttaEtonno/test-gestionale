@@ -23,7 +23,8 @@
       "mcp__chrome-devtools__list_console_messages",
       "Bash(curl -s -X POST http://localhost:8000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"identifier\":\"tenant.admin\",\"password\":\"tenant123\"}')",
       "Bash(python -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\('after delete is_active=',d.get\\('is_active'\\)\\)\")",
-      "PowerShell(docker compose up *)"
+      "PowerShell(docker compose up *)",
+      "PowerShell(docker compose ps 2>&1)"
     ]
   }
 }

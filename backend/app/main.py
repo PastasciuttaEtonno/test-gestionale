@@ -50,6 +50,31 @@ app.add_middleware(
 )
 app.include_router(api_router, prefix=settings.api_v1_prefix)
 
+# Metodi HTTP che mutano lo stato; in modalita demo vengono bloccati salvo /auth.
+_DEMO_WRITE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
+
+
+@app.middleware("http")
+async def demo_readonly_middleware(request: Request, call_next):
+    """In modalita demo blocca tutte le scritture business con un avviso esplicito.
+
+    Gli endpoint di autenticazione (/auth/*) restano scrivibili: login, refresh e
+    logout devono funzionare (aggiornano last_login, ruotano i refresh token e
+    registrano audit), altrimenti la demo non sarebbe nemmeno navigabile.
+    """
+    if settings.demo_readonly and request.method in _DEMO_WRITE_METHODS:
+        path = request.url.path
+        auth_prefix = f"{settings.api_v1_prefix}/auth/"
+        if not path.startswith(auth_prefix):
+            return JSONResponse(
+                status_code=status.HTTP_403_FORBIDDEN,
+                content={
+                    "detail": "Modalita demo: le modifiche non vengono salvate.",
+                    "demo_readonly": True,
+                },
+            )
+    return await call_next(request)
+
 
 @app.middleware("http")
 async def request_context_middleware(request: Request, call_next):
@@ -103,6 +128,16 @@ async def _check_redis(request: Request) -> dict[str, str]:
     """Verifica minima della connettivita a Redis."""
     await request.app.state.redis.ping()
     return {"status": "ok"}
+
+
+@app.get(f"{settings.api_v1_prefix}/meta", tags=["meta"])
+async def app_meta() -> dict[str, str | bool]:
+    """Metadati pubblici dell'applicazione per il frontend (es. modalita demo)."""
+    return {
+        "app_name": settings.app_name,
+        "app_version": settings.app_version,
+        "demo_readonly": settings.demo_readonly,
+    }
 
 
 @app.get("/health", tags=["health"])

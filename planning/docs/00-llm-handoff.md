@@ -60,6 +60,12 @@ La parte realmente costruita oggi include:
   - Permessi RBAC: `anagrafiche.read/write/delete`
   - Seed demo 6 soggetti realistici (ceramica/logistica)
 - **UUID nativo PostgreSQL** su tutte le colonne id/FK (migration 0008)
+- **Articoli** — secondo modulo business reale tenant-aware (migration 0012):
+  - catalogo articoli + categorie lookup, codice/nome univoci per tenant
+  - prezzo/IVA/giacenza in Decimal, optimistic locking via campo `version` (409 su conflitto)
+  - eventi SSE `articolo.created/updated/deactivated` + KPI dashboard "Articoli a catalogo"
+  - permessi RBAC `articoli.read/write/delete`; categoria validata cross-tenant
+- **modalita demo read-only** (`DEMO_READONLY=true`): middleware blocca tutte le scritture business con 403 (`{"demo_readonly": true}`), eccetto `/auth/*`; il frontend legge `GET /api/v1/meta`, mostra un banner persistente e un toast quando una scrittura viene bloccata
 
 ### Frontend
 

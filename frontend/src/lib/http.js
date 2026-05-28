@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { useDemo } from "../composables/useDemo";
 import { useAuthStore } from "../stores/auth";
 
 const apiClient = axios.create({
@@ -49,6 +50,12 @@ apiClient.interceptors.response.use(
     const authStore = useAuthStore();
     const richiestaOriginale = error.config;
     const statusCode = error.response?.status;
+
+    // Modalita demo: scrittura bloccata dal backend con 403 + flag demo_readonly.
+    if (statusCode === 403 && error.response?.data?.demo_readonly) {
+      useDemo().segnalaBlocco(error.response.data.detail);
+      return Promise.reject(error);
+    }
 
     if (
       statusCode === 401 &&

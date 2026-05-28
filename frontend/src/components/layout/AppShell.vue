@@ -24,7 +24,7 @@ const { drawerAperto, toggleDrawer, chiudiDrawer } = useSidebar();
 // Chiude il drawer quando cambia route (navigazione da mobile)
 watch(() => props.routeName, chiudiDrawer);
 
-const vociMockup = ["Bolle", "Fatture", "Articoli", "Spedizioni", "Scadenze"];
+const vociMockup = ["Bolle", "Fatture", "Spedizioni", "Scadenze"];
 </script>
 
 <template>
@@ -170,6 +170,23 @@ const vociMockup = ["Bolle", "Fatture", "Articoli", "Spedizioni", "Scadenze"];
                 </svg>
               </span>
               <span class="ml-3 truncate">Anagrafiche</span>
+            </RouterLink>
+
+            <!-- Articoli -->
+            <RouterLink
+              to="/articoli"
+              class="group flex h-12 w-full items-center rounded-xl border border-transparent px-3 text-sm font-medium text-white/76 transition hover:border-white/8 hover:bg-white/8 hover:text-white"
+              :class="{ 'border-brand-300/22 bg-brand-500 text-white shadow-[0_10px_24px_-16px_rgba(198,40,40,0.9)]': routeName === 'articoli' || routeName === 'articolo-detail' }"
+            >
+              <span
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/8 transition group-hover:bg-white/12"
+                :class="{ 'bg-white/14': routeName === 'articoli' || routeName === 'articolo-detail' }"
+              >
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10m0 0l-8-4V7"/>
+                </svg>
+              </span>
+              <span class="ml-3 truncate">Articoli</span>
             </RouterLink>
 
             <!-- Tenant Admin -->

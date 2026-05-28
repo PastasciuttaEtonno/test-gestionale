@@ -118,6 +118,8 @@ Redis Pub/Sub ──► FastAPI SSE endpoint ──► EventSource (Vue frontend
 - osservabilita minima backend introdotta con `request_id`, logging strutturato e health endpoint `live/ready`
 - baseline test backend introdotta su `health`, `auth` e RBAC tenant-aware, eseguita anche in CI
 - test unit aggiunti su refresh token family (7) e password breach screening + validator NIST (12)
+- secondo dominio business reale: **Articoli** (catalogo) + **Categorie articolo**, tenant-aware, con optimistic locking (`version`), prezzi/IVA in Decimal, eventi SSE e KPI "Articoli a catalogo"; 11 test unit
+- **modalita demo read-only** (`DEMO_READONLY`): middleware che blocca ogni scrittura business con 403 esplicito, eccetto gli endpoint `/auth/*`; endpoint pubblico `GET /api/v1/meta` espone il flag al frontend
 - migration discipline via `start.sh`: alembic upgrade head eseguito nel nuovo container a ogni deploy Coolify
 - deploy produzione su Coolify: `core_service`, `celery_worker`, `postgres`, `redis` come risorse separate
 - GitHub Actions: quality gate + Coolify deploy webhook (no GHCR, no SSH)

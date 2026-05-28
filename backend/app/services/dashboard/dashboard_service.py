@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.core.cache import build_tenant_dashboard_kpis_cache_key, get_or_set_model_cache
 from app.core.config import settings
+from app.models.core.articolo import Articolo
 from app.models.core.tenant_company_settings import TenantCompanySettings
 from app.models.core.tenant_smtp_settings import TenantSmtpSettings
 from app.models.security.audit_log import AuditLog
@@ -69,12 +70,19 @@ class DashboardService:
                 TenantSmtpSettings.tenant_id == tenant_id
             )
         )
+        total_articoli = self.session.scalar(
+            select(func.count(Articolo.id)).where(
+                Articolo.tenant_id == tenant_id,
+                Articolo.is_active.is_(True),
+            )
+        )
 
         return DashboardKpisResponse(
             tenant_id=tenant_id,
             total_users=int(total_users or 0),
             active_users=int(active_users or 0),
             audit_events_last_24h=int(audit_events_last_24h or 0),
+            total_articoli=int(total_articoli or 0),
             company_profile_configured=bool(company_profile_configured),
             smtp_configured=bool(smtp_configured),
             generated_at=datetime.now(UTC),

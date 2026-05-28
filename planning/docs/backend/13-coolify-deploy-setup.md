@@ -97,6 +97,7 @@ Vai su **Environment Variables** di ciascuna Application e inserisci:
 
 ```
 APP_ENV=production
+DEMO_READONLY=true
 APP_NAME=Gestionale Core Service
 APP_VERSION=0.1.0
 LOG_LEVEL=INFO
@@ -183,6 +184,11 @@ NODE_ENV=production
 ```
 
 `VITE_API_BASE_URL` **non serve**: il client HTTP usa il default `/api/v1` (path relativo) che funziona sullo stesso dominio.
+
+> **Modalita demo**: per una demo pubblica navigabile ma non modificabile, impostare
+> `DEMO_READONLY=true` sull'Application `core_service`. Il backend bloccha con 403 ogni
+> scrittura business (mantiene funzionanti login/refresh/logout) e il frontend mostra un
+> banner + toast leggendo `GET /api/v1/meta`. Per un ambiente realmente operativo, `false`.
 
 > Le variabili `VITE_*` vengono embeddate da Vite a build time. Cambiarle in Coolify richiede un rebuild, non solo un restart.
 
