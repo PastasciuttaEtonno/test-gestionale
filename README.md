@@ -1,4 +1,4 @@
-# Gestionale Gestionale
+# Gestionale 
 
 Stack: FastAPI · PostgreSQL · Redis · Celery · Vue 3 · Vite · Tailwind CSS v4 · PrimeVue v4
 
