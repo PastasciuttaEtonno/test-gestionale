@@ -102,6 +102,7 @@ Il progetto è pensato per partire in modalità demo locale e crescere verso amb
 - Aruba o altri provider: usa container prebuilt e un file `backend.env` separato per tenere i segreti fuori dal repository.
 - Evoluzioni future: la stessa architettura containerizzata può essere spostata su servizi cloud gestiti, come container registry, managed Kubernetes, servizi di database e cache gestite.
 - Hosting non limitato a VPS private: l’obiettivo è supportare anche deployment su cloud provider con servizi gestiti, evitando di dipendere esclusivamente da VPS tradizionali.
+- Workflow CI/CD: il repository include GitHub Actions in `.github/workflows/` per build, test e deploy.
 
 ---
 
