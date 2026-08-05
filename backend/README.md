@@ -44,6 +44,21 @@ uv run python -m compileall app alembic
 
 ## Avvio con Docker Compose
 
+Prima di avviare, copia i file di esempio nelle posizioni usate da Docker Compose e dall'app:
+
+```bash
+cp backend/.env.example backend/.env
+cp .env.example .env
+```
+
+I valori di esempio usati per l'app e per Docker Compose sono:
+
+- `POSTGRES_USER=app`
+- `POSTGRES_PASSWORD=app`
+- `DATABASE_URL=postgresql+psycopg://app:app@db_service:5432/gestionale`
+- `JWT_SECRET_KEY=change-this-jwt-secret-key-minimum-32-chars`
+- `FIELD_ENCRYPTION_KEY=5hS0d52CvtQdjq6V2N4xZfJ6S0bFFH4hD4Xf7wYmQx0=`
+
 ```bash
 docker compose up --build
 ```
