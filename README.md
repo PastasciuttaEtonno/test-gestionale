@@ -94,6 +94,16 @@ docker compose -f docker-compose.aruba.yml up -d
 docker compose -f docker-compose.aruba.yml down
 ```
 
+## Visione futura e hosting
+
+Il progetto è pensato per partire in modalità demo locale e crescere verso ambienti di produzione più robusti.
+
+- Locale/demo: `docker compose up --build` con i file di esempio `.env` e `backend/.env` fornisce un ambiente di test rapido e riproducibile.
+- Aruba produzione: usa container prebuilt e un file `backend.env` separato per tenere i segreti fuori dal repository.
+- Evoluzioni future: la stessa architettura containerizzata può essere spostata su servizi cloud gestiti, come container registry, managed Kubernetes, servizi di database e cache gestite.
+- Hosting non limitato a VPS private: l’obiettivo è supportare anche deployment su cloud provider con servizi gestiti, evitando di dipendere esclusivamente da VPS tradizionali.
+- Segreti e configurazione: in produzione è consigliabile usare variabili d’ambiente, secret manager o file `.env` gestiti in modo sicuro, anziché lasciare segreti hardcoded nel repository.
+
 ---
 
 ## Documentazione interna
