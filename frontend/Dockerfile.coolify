@@ -1,15 +1,21 @@
 # Immagine frontend per il deploy su Coolify.
 #
-# Identica a Dockerfile, tranne per la config nginx: qui va nginx.proxy.conf,
-# che oltre a servire la SPA inoltra /api e /health a core_service sulla rete
-# interna del compose. L'immagine di sviluppo usa invece nginx.conf (solo SPA)
-# e riceve il proxy da un volume montato.
+# Due differenze rispetto a Dockerfile:
+#
+#   1. VITE_API_BASE_URL come build arg. Vite risolve import.meta.env in fase
+#      di build e lo scrive dentro il bundle: con backend su un dominio
+#      separato il default relativo "/api/v1" punterebbe al dominio del
+#      frontend, dove non c'e' nessuna API. Va passato al build, non al run.
+#   2. nginx.coolify.conf al posto di nginx.conf, per gli header di sicurezza.
 FROM node:24.15.0-alpine3.23 AS builder
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
+
+ARG VITE_API_BASE_URL=/api/v1
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
 COPY . .
 RUN npm run build
@@ -18,7 +24,7 @@ FROM nginx:1.31.1-alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY nginx.proxy.conf /etc/nginx/conf.d/default.conf
+COPY nginx.coolify.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

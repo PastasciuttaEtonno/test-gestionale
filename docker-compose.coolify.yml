@@ -1,34 +1,38 @@
-# Deploy su Coolify — gestionale.vasquezlisciotto.xyz
+# Deploy su Coolify — due domini, come da planning/docs/backend/13-coolify-deploy-setup.md
+#
+#   gestionale.vasquezlisciotto.xyz      -> client        (SPA, nginx :80)
+#   api-gestionale.vasquezlisciotto.xyz  -> core_service  (FastAPI :8000)
+#
+# Il trattino in "api-gestionale" non e' estetico: Cloudflare Universal SSL
+# copre solo i sottodomini di primo livello, quindi api.gestionale.* resterebbe
+# senza certificato (planning/docs/project-state/current-state.md:263).
 #
 # Differenze rispetto a docker-compose.yml (sviluppo):
 #
-#   - nessun servizio pubblica porte. Solo `client` riceve un dominio da
-#     Traefik; db_service e redis_service restano raggiungibili unicamente
-#     sulla rete interna del progetto.
-#   - il routing /api e /health lo fa nginx dentro `client`, non Traefik.
-#     Vedi frontend/nginx.proxy.conf per il perche'.
+#   - nessun servizio pubblica porte sull'host. db_service e redis_service
+#     restano raggiungibili solo sulla rete interna del progetto.
 #   - core_service usa Dockerfile.coolify, che lancia `alembic upgrade head`
 #     prima di uvicorn: non serve un servizio db_migrator separato.
-#   - `client` ha un IP statico perche' TRUSTED_PROXY_IPS confronta per
-#     uguaglianza esatta e non supporta CIDR (app/core/security/request_context.py).
-#     Senza IP fisso il backend non si fida di X-Forwarded-For e conta il rate
-#     limit dei login su un unico bucket condiviso da tutti i client.
+#   - il frontend builda con VITE_API_BASE_URL assoluto: con l'API su un
+#     dominio diverso il default relativo non troverebbe nulla.
 #
-# Le variabili qui sotto vanno impostate nella UI di Coolify. Quelle non
-# elencate usano i default di app/core/config.py, che gia' puntano agli
-# hostname interni corretti (redis_service, ecc.).
+# I domini vanno assegnati ai due servizi dal pannello Coolify. Le variabili
+# senza default vanno impostate nella UI: senza POSTGRES_PASSWORD il container
+# Postgres non parte, e core_service resta unhealthy a catena.
+#
+# Le variabili non elencate qui usano i default di app/core/config.py, che gia'
+# puntano agli hostname interni corretti (redis_service e simili).
 
 services:
   client:
     build:
       context: ./frontend
       dockerfile: Dockerfile.coolify
+      args:
+        VITE_API_BASE_URL: https://api-gestionale.vasquezlisciotto.xyz/api/v1
     restart: unless-stopped
     environment:
       - SERVICE_FQDN_CLIENT=/
-    networks:
-      gestionale:
-        ipv4_address: 172.30.0.10
     depends_on:
       core_service:
         condition: service_healthy
@@ -39,6 +43,7 @@ services:
       dockerfile: Dockerfile.coolify
     restart: unless-stopped
     environment:
+      SERVICE_FQDN_CORESERVICE: /
       APP_ENV: production
       DEMO_READONLY: ${DEMO_READONLY:-true}
       LOG_JSON: "true"
@@ -49,8 +54,19 @@ services:
       AUTH_ALLOWED_ORIGINS: '["https://gestionale.vasquezlisciotto.xyz"]'
       AUTH_ENFORCE_ORIGIN_CHECK: "true"
       REFRESH_COOKIE_SECURE: "true"
-      TRUSTED_PROXY_IPS: '["172.30.0.10"]'
-    networks: [gestionale]
+      # I due host condividono il dominio registrabile vasquezlisciotto.xyz,
+      # quindi per il browser sono same-site: lax basta perche' il cookie di
+      # refresh viaggi da gestionale.* verso api-gestionale.*.
+      REFRESH_COOKIE_SAMESITE: lax
+      # Volutamente vuoto. build_security_request_context() si fida di
+      # X-Forwarded-For solo se il peer diretto e' in questa lista, e confronta
+      # per uguaglianza esatta: non gestisce le CIDR. Dietro Traefik il peer e'
+      # un IP di container che cambia a ogni deploy, quindi nessun valore qui
+      # e' stabile e i range Cloudflare non verrebbero comunque mai confrontati.
+      # Finche' il codice non legge CF-Connecting-IP (punto M2 dell'audit) il
+      # lockout per-IP resta di fatto globale: accettabile per una demo, ma
+      # meglio saperlo che avere una lista che sembra funzionare e non lo fa.
+      TRUSTED_PROXY_IPS: "[]"
     healthcheck:
       test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready').read()"]
       interval: 15s
@@ -76,7 +92,6 @@ services:
       FIELD_ENCRYPTION_KEY: ${FIELD_ENCRYPTION_KEY}
       AUTH_ENFORCE_ORIGIN_CHECK: "true"
       REFRESH_COOKIE_SECURE: "true"
-    networks: [gestionale]
     depends_on:
       db_service:
         condition: service_healthy
@@ -92,7 +107,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks: [gestionale]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -105,18 +119,11 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis_data:/data
-    networks: [gestionale]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-networks:
-  gestionale:
-    ipam:
-      config:
-        - subnet: 172.30.0.0/24
 
 volumes:
   postgres_data:
