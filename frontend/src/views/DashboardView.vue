@@ -67,6 +67,7 @@ const azioniRapide = [
 
 const tenantIdInput = ref(authStore.user?.tenant_id || "");
 const taskId = ref("");
+const erroreTask = ref("");
 const loadingTask = ref(false);
 
 const taskState = computed(() =>
@@ -86,7 +87,14 @@ watch(taskStatus, (status) => {
 });
 
 async function avviaTaskReport() {
+  erroreTask.value = "";
+
+  // Senza questo messaggio il click su campo vuoto usciva in silenzio: l'utente
+  // admin non ha un tenant associato, quindi il campo resta vuoto proprio per
+  // chi ha i permessi per avviare il report.
   if (!tenantIdInput.value) {
+    erroreTask.value =
+      "Serve un Tenant ID. L'utente collegato non ne ha uno associato: accedi come tenant.admin oppure incollane uno.";
     return;
   }
 
@@ -101,7 +109,9 @@ async function avviaTaskReport() {
   } catch (error) {
     loadingTask.value = false;
     taskId.value = "";
-    console.error("Avvio report fallito:", error?.response?.data?.detail);
+    erroreTask.value =
+      error?.response?.data?.detail ||
+      "Avvio del report non riuscito. Riprova fra qualche istante.";
   }
 }
 
@@ -245,7 +255,11 @@ const righeFiltraite = computed(() => {
               <p class="mt-3 text-sm leading-6 text-steel-700">
                 Il task Celery pubblica gli aggiornamenti su Redis Pub/Sub.
                 Il frontend riceve i progressi in tempo reale via Server-Sent Events,
-                senza polling.
+                senza polling. L'elaborazione dura circa dieci secondi.
+              </p>
+              <p class="mt-2 text-sm leading-6 text-steel-600">
+                Funziona anche in modalità demo: il task legge soltanto, quindi
+                resta attivo mentre il resto dell'applicazione è in sola lettura.
               </p>
             </div>
 
@@ -264,6 +278,13 @@ const righeFiltraite = computed(() => {
               >
                 {{ loadingTask ? "Report in esecuzione..." : "Avvia report asincrono" }}
               </BaseButton>
+              <p
+                v-if="erroreTask"
+                class="text-sm font-medium text-red-700 xl:text-right"
+                role="alert"
+              >
+                {{ erroreTask }}
+              </p>
             </div>
           </div>
 
@@ -298,7 +319,12 @@ const righeFiltraite = computed(() => {
             </div>
 
             <p v-if="resultUrl" class="mt-4 text-sm text-steel-700">
-              File pronto: <span class="font-medium text-steel-900">{{ resultUrl }}</span>
+              Percorso restituito dal task:
+              <span class="font-medium text-steel-900">{{ resultUrl }}</span>
+              <span class="mt-1 block text-xs text-steel-500">
+                Simulato: il task dimostra la pipeline asincrona e non produce un
+                file scaricabile.
+              </span>
             </p>
           </div>
         </div>

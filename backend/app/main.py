@@ -43,22 +43,36 @@ app = FastAPI(
 )
 app.include_router(api_router, prefix=settings.api_v1_prefix)
 
-# Metodi HTTP che mutano lo stato; in modalita demo vengono bloccati salvo /auth.
+# Metodi HTTP che mutano lo stato; in modalita demo vengono bloccati, salvo
+# sui prefissi esentati qui sotto.
 _DEMO_WRITE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
+
+# Prefissi che restano scrivibili anche in modalita demo.
+#
+#   auth     login, refresh e logout: senza, la demo non sarebbe navigabile.
+#   reports  la generazione report non tocca dati business. Il task valida il
+#            tenant con una SELECT, simula cinque batch e pubblica i progressi
+#            via SSE (app/tasks/report_tasks.py): e' POST solo perche' accoda
+#            un job. Bloccarlo toglieva al visitatore l'unico modo di vedere
+#            che la coda Celery funziona davvero.
+_DEMO_EXEMPT_PREFIXES = ("auth", "reports")
 
 
 @app.middleware("http")
 async def demo_readonly_middleware(request: Request, call_next):
-    """In modalita demo blocca tutte le scritture business con un avviso esplicito.
+    """In modalita demo blocca le scritture business con un avviso esplicito.
 
-    Gli endpoint di autenticazione (/auth/*) restano scrivibili: login, refresh e
-    logout devono funzionare (aggiornano last_login, ruotano i refresh token e
-    registrano audit), altrimenti la demo non sarebbe nemmeno navigabile.
+    Restano scrivibili i prefissi in _DEMO_EXEMPT_PREFIXES: /auth/* perche'
+    login, refresh e logout aggiornano last_login, ruotano i refresh token e
+    registrano audit, e /reports/* perche' il task non persiste nulla.
     """
     if settings.demo_readonly and request.method in _DEMO_WRITE_METHODS:
         path = request.url.path
-        auth_prefix = f"{settings.api_v1_prefix}/auth/"
-        if not path.startswith(auth_prefix):
+        esente = any(
+            path.startswith(f"{settings.api_v1_prefix}/{prefisso}/")
+            for prefisso in _DEMO_EXEMPT_PREFIXES
+        )
+        if not esente:
             return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
                 content={
