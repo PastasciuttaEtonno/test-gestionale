@@ -1,0 +1,123 @@
+# Deploy su Coolify — gestionale.vasquezlisciotto.xyz
+#
+# Differenze rispetto a docker-compose.yml (sviluppo):
+#
+#   - nessun servizio pubblica porte. Solo `client` riceve un dominio da
+#     Traefik; db_service e redis_service restano raggiungibili unicamente
+#     sulla rete interna del progetto.
+#   - il routing /api e /health lo fa nginx dentro `client`, non Traefik.
+#     Vedi frontend/nginx.proxy.conf per il perche'.
+#   - core_service usa Dockerfile.coolify, che lancia `alembic upgrade head`
+#     prima di uvicorn: non serve un servizio db_migrator separato.
+#   - `client` ha un IP statico perche' TRUSTED_PROXY_IPS confronta per
+#     uguaglianza esatta e non supporta CIDR (app/core/security/request_context.py).
+#     Senza IP fisso il backend non si fida di X-Forwarded-For e conta il rate
+#     limit dei login su un unico bucket condiviso da tutti i client.
+#
+# Le variabili qui sotto vanno impostate nella UI di Coolify. Quelle non
+# elencate usano i default di app/core/config.py, che gia' puntano agli
+# hostname interni corretti (redis_service, ecc.).
+
+services:
+  client:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.coolify
+    restart: unless-stopped
+    environment:
+      - SERVICE_FQDN_CLIENT=/
+    networks:
+      gestionale:
+        ipv4_address: 172.30.0.10
+    depends_on:
+      core_service:
+        condition: service_healthy
+
+  core_service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.coolify
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      DEMO_READONLY: ${DEMO_READONLY:-true}
+      LOG_JSON: "true"
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service:5432/${POSTGRES_DB}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      FIELD_ENCRYPTION_KEY: ${FIELD_ENCRYPTION_KEY}
+      CORS_ALLOWED_ORIGINS: '["https://gestionale.vasquezlisciotto.xyz"]'
+      AUTH_ALLOWED_ORIGINS: '["https://gestionale.vasquezlisciotto.xyz"]'
+      AUTH_ENFORCE_ORIGIN_CHECK: "true"
+      REFRESH_COOKIE_SECURE: "true"
+      TRUSTED_PROXY_IPS: '["172.30.0.10"]'
+    networks: [gestionale]
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready').read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      db_service:
+        condition: service_healthy
+      redis_service:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      DEMO_READONLY: ${DEMO_READONLY:-true}
+      LOG_JSON: "true"
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service:5432/${POSTGRES_DB}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      FIELD_ENCRYPTION_KEY: ${FIELD_ENCRYPTION_KEY}
+      AUTH_ENFORCE_ORIGIN_CHECK: "true"
+      REFRESH_COOKIE_SECURE: "true"
+    networks: [gestionale]
+    depends_on:
+      db_service:
+        condition: service_healthy
+      redis_service:
+        condition: service_healthy
+
+  db_service:
+    image: postgres:17.10-alpine3.23
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [gestionale]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis_service:
+    image: redis:8.2.6-alpine3.22
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks: [gestionale]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  gestionale:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+
+volumes:
+  postgres_data:
+  redis_data:
