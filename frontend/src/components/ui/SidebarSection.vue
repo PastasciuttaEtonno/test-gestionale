@@ -17,7 +17,7 @@ defineProps({
 
 <template>
   <section class="space-y-2">
-    <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/38">
+    <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/55">
       {{ title }}
     </p>
     <div class="space-y-1.5">

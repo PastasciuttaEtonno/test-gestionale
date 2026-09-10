@@ -25,6 +25,7 @@ const router = createRouter({
       name: "login",
       component: LoginView,
       meta: {
+        titolo: "Accesso",
         guestOnly: true,
         hideShell: true,
       },
@@ -34,6 +35,7 @@ const router = createRouter({
       name: "dashboard",
       component: DashboardView,
       meta: {
+        titolo: "Dashboard",
         requiresAuth: true,
       },
     },
@@ -42,6 +44,7 @@ const router = createRouter({
       name: "anagrafiche",
       component: AnagraficheView,
       meta: {
+        titolo: "Anagrafiche",
         requiresAuth: true,
         requiredPermissions: ["anagrafiche.read"],
       },
@@ -52,6 +55,7 @@ const router = createRouter({
       component: AnagraficaDetailView,
       props: true,
       meta: {
+        titolo: "Scheda anagrafica",
         requiresAuth: true,
         requiredPermissions: ["anagrafiche.read"],
       },
@@ -61,6 +65,7 @@ const router = createRouter({
       name: "articoli",
       component: ArticoliView,
       meta: {
+        titolo: "Articoli",
         requiresAuth: true,
         requiredPermissions: ["articoli.read"],
       },
@@ -71,6 +76,7 @@ const router = createRouter({
       component: ArticoloDetailView,
       props: true,
       meta: {
+        titolo: "Scheda articolo",
         requiresAuth: true,
         requiredPermissions: ["articoli.read"],
       },
@@ -80,6 +86,7 @@ const router = createRouter({
       name: "bolle",
       component: BolleView,
       meta: {
+        titolo: "Bolle",
         requiresAuth: true,
         requiredPermissions: ["bolle.read"],
       },
@@ -90,6 +97,7 @@ const router = createRouter({
       component: BollaDetailView,
       props: true,
       meta: {
+        titolo: "Bolla",
         requiresAuth: true,
         requiredPermissions: ["bolle.read"],
       },
@@ -99,6 +107,7 @@ const router = createRouter({
       name: "admin-only",
       component: AdminOnlyView,
       meta: {
+        titolo: "Area amministratore",
         requiresAuth: true,
         requiredRoles: ["admin"],
       },
@@ -108,6 +117,7 @@ const router = createRouter({
       name: "tenant-admin",
       component: TenantAdminView,
       meta: {
+        titolo: "Amministrazione tenant",
         requiresAuth: true,
         requiredRoles: ["tenant_admin"],
       },
@@ -117,6 +127,7 @@ const router = createRouter({
       name: "not-found",
       component: NotFoundView,
       meta: {
+        titolo: "Pagina non trovata",
         hideShell: true,
       },
     },
@@ -155,6 +166,15 @@ router.beforeEach(async (to) => {
   }
 
   return true;
+});
+
+// Il titolo del documento era "Gestionale Auth Client" su ogni rotta: nella
+// cronologia e fra le schede le pagine erano indistinguibili, e chi naviga con
+// uno screen reader non riceveva nessun segnale di cambio pagina.
+router.afterEach((to) => {
+  document.title = to.meta.titolo
+    ? `${to.meta.titolo} · Gestionale`
+    : "Gestionale";
 });
 
 export default router;

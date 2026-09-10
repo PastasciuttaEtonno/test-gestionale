@@ -9,10 +9,12 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
+import CampoForm from "@/components/ui/CampoForm.vue";
 import SectionLabel from "@/components/ui/SectionLabel.vue";
 import { createBolla, fetchBolle } from "@/services/bolle";
 import { fetchAnagrafiche } from "@/services/anagrafiche";
 import { useAuthStore } from "@/stores/auth";
+import { stileStato } from "@/lib/stato";
 import {
   ptIconField,
   ptInputIcon,
@@ -105,15 +107,7 @@ caricaBolle();
 
 // ── Stato badge ────────────────────────────────────────────────────────────
 
-function badgeStato(stato) {
-  return (
-    {
-      bozza: "border-amber-300 bg-amber-50 text-amber-800",
-      emessa: "border-emerald-300 bg-emerald-50 text-emerald-800",
-      annullata: "border-steel-300 bg-steel-50 text-steel-500",
-    }[stato] ?? "border-steel-300 bg-steel-50 text-steel-600"
-  );
-}
+
 
 // ── Modale crea bozza ────────────────────────────────────────────────────
 
@@ -194,7 +188,7 @@ async function salva() {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </InputIcon>
-          <InputText v-model="filtroQ" placeholder="Cerca per numero (es. BL4441)…" :pt="ptInputText" />
+          <InputText v-model="filtroQ" placeholder="Cerca per numero (es. BL4441)…" aria-label="Cerca bolla per numero" :pt="ptInputText" />
         </IconField>
         <Select
           v-model="filtroStato"
@@ -202,6 +196,7 @@ async function salva() {
           option-label="label"
           option-value="value"
           placeholder="Tutti gli stati"
+          aria-label="Filtra per stato"
           show-clear
           :pt="ptSelect"
         />
@@ -225,13 +220,14 @@ async function salva() {
       <div class="overflow-hidden rounded-2xl border border-steel-200">
         <div class="overflow-x-auto">
         <table class="w-full text-sm">
+          <caption class="sr-only">Elenco bolle: numero, stato, destinatario, data e totale.</caption>
           <thead class="border-b border-steel-100 bg-steel-50">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500">Numero</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500">Stato</th>
-              <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500 sm:table-cell">Destinatario</th>
-              <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500 md:table-cell">Data</th>
-              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-widest text-steel-500">Totale</th>
+              <th scope="col" class="px-4 py-3 text-left intestazione-tabella">Numero</th>
+              <th scope="col" class="px-4 py-3 text-left intestazione-tabella">Stato</th>
+              <th scope="col" class="hidden px-4 py-3 text-left intestazione-tabella sm:table-cell">Destinatario</th>
+              <th scope="col" class="hidden px-4 py-3 text-left intestazione-tabella md:table-cell">Data</th>
+              <th scope="col" class="px-4 py-3 text-right intestazione-tabella">Totale</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-steel-100">
@@ -241,9 +237,17 @@ async function salva() {
               class="cursor-pointer transition-colors hover:bg-steel-50"
               @click="router.push({ name: 'bolla-detail', params: { id: b.id } })"
             >
-              <td class="px-4 py-3 font-mono text-steel-900">{{ b.numero ?? "— bozza" }}</td>
+              <td class="px-4 py-3 font-mono text-steel-900">
+                <RouterLink
+                  :to="{ name: 'bolla-detail', params: { id: b.id } }"
+                  class="link-riga"
+                  :aria-label="`Apri la bolla ${b.numero ?? 'ancora in bozza'}`"
+                  @click.stop
+                >{{ b.numero ?? "— bozza" }}</RouterLink>
+              </td>
               <td class="px-4 py-3">
-                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em]" :class="badgeStato(b.stato)">
+                <span :class="stileStato(b.stato).classe">
+                  <span aria-hidden="true">{{ stileStato(b.stato).glifo }}</span>
                   {{ b.stato }}
                 </span>
               </td>
@@ -251,7 +255,7 @@ async function salva() {
               <td class="hidden px-4 py-3 text-steel-600 md:table-cell">
                 {{ new Date(b.data_documento).toLocaleDateString("it-IT") }}
               </td>
-              <td class="px-4 py-3 text-right font-medium text-steel-900">{{ fmtPrezzo.format(Number(b.totale)) }}</td>
+              <td class="px-4 py-3 text-right cifre font-medium text-steel-900">{{ fmtPrezzo.format(Number(b.totale)) }}</td>
             </tr>
           </tbody>
         </table>
@@ -291,10 +295,12 @@ async function salva() {
       :pt="dialogPt"
     >
       <form class="space-y-5" @submit.prevent="salva">
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Destinatario *</label>
-          <Select
+        <p class="text-xs text-steel-600">I campi contrassegnati con * sono obbligatori.</p>
+
+        <CampoForm v-slot="{ combo }" label="Destinatario" obbligatorio>
+          <Select v-bind="combo"
             v-model="form.anagrafica_id"
+            
             :options="opzioniAnagrafiche"
             option-label="label"
             option-value="value"
@@ -302,44 +308,40 @@ async function salva() {
             filter
             :pt="ptFormSelect"
           />
-        </div>
+        </CampoForm>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Data documento</label>
+          <CampoForm v-slot="{ campo }" label="Data documento">
             <input
               v-model="form.data_documento"
+              v-bind="campo"
               type="date"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Causale trasporto</label>
-            <Select v-model="form.causale_trasporto" :options="opzioniCausale" option-label="label" option-value="value" :pt="ptFormSelect" />
-          </div>
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Causale trasporto">
+            <Select v-bind="combo" v-model="form.causale_trasporto"  :options="opzioniCausale" option-label="label" option-value="value" :pt="ptFormSelect" />
+          </CampoForm>
         </div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Aspetto dei beni</label>
-            <InputText v-model="form.aspetto_beni" placeholder="Pallet / Scatole / A vista" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Trasporto a cura di</label>
-            <Select v-model="form.trasporto_a_cura" :options="opzioniTrasporto" option-label="label" option-value="value" :pt="ptFormSelect" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Aspetto dei beni">
+            <InputText v-model="form.aspetto_beni" v-bind="campo" placeholder="Pallet / Scatole / A vista" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Trasporto a cura di">
+            <Select v-bind="combo" v-model="form.trasporto_a_cura"  :options="opzioniTrasporto" option-label="label" option-value="value" :pt="ptFormSelect" />
+          </CampoForm>
         </div>
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Vettore</label>
-          <InputText v-model="form.vettore" placeholder="Nome del vettore (opzionale)" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Note</label>
+        <CampoForm v-slot="{ campo }" label="Vettore" aiuto="Facoltativo.">
+          <InputText v-model="form.vettore" v-bind="campo" placeholder="Nome del vettore" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+        </CampoForm>
+        <CampoForm v-slot="{ campo }" label="Note">
           <textarea
             v-model="form.note"
+            v-bind="campo"
             rows="2"
             class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 placeholder-steel-400 focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
-        </div>
-        <p v-if="erroreForm" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+        </CampoForm>
+        <p v-if="erroreForm" role="alert" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ erroreForm }}
         </p>
       </form>

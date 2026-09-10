@@ -4,7 +4,6 @@ import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
-import Tag from "primevue/tag";
 import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
 import KpiTile from "../components/ui/KpiTile.vue";
@@ -14,6 +13,7 @@ import { useDashboardStore } from "../stores/dashboard";
 import { useTasksStore } from "../stores/tasks";
 import { avviaGenerazioneReport } from "../services/reports";
 import { ptIconField, ptInputIcon, makePtInputText, makePtSelect } from "../lib/prime-pt";
+import { stileStato } from "../lib/stato";
 const authStore = useAuthStore();
 const tasksStore = useTasksStore();
 const dashboardStore = useDashboardStore();
@@ -28,36 +28,6 @@ const opzioniStato = ["Aperta", "Bozza", "Confermata", "Da chiudere", "Da inviar
 const ptInputText = makePtInputText("sm:w-auto sm:min-w-[200px]");
 const ptSelect = makePtSelect("min-w-[132px]");
 
-const ptTagStato = {
-  root: {
-    class:
-      "inline-flex min-w-[108px] items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700",
-  },
-};
-
-const indicatori = [
-  {
-    label: "Documenti aperti",
-    value: "84",
-    note: "Bolle, ordini e fatture in lavorazione.",
-  },
-  {
-    label: "Da evadere oggi",
-    value: "16",
-    note: "Pratiche in coda per il team operativo.",
-  },
-  {
-    label: "Clienti attivi",
-    value: "264",
-    note: "Anagrafiche abilitate a ordini e fatturazione.",
-  },
-  {
-    label: "Alert anagrafici",
-    value: "4",
-    note: "Record con dati incompleti o da validare.",
-  },
-];
-
 const azioniRapide = [
   "Nuova fattura",
   "Nuova bolla",
@@ -65,18 +35,51 @@ const azioniRapide = [
   "Cerca documento",
 ];
 
-const tenantIdInput = ref(authStore.user?.tenant_id || "");
+// Il report gira sempre sull'azienda dell'utente collegato.
+const tenantId = computed(() => authStore.user?.tenant_id || "");
 const taskId = ref("");
 const erroreTask = ref("");
 const loadingTask = ref(false);
 
+// I codici permesso ("anagrafiche.write") sono nomi interni. A schermo
+// serve l'area di lavoro, non la stringa con cui il backend la identifica.
+const AREE = {
+  anagrafiche: "Anagrafiche",
+  articoli: "Articoli",
+  bolle: "Bolle",
+  bom: "Distinte base",
+  finance: "Costi",
+};
+
+const areeConsentite = computed(() => {
+  const viste = new Map();
+  for (const permesso of authStore.permissions) {
+    const [area, azione] = permesso.split(".");
+    const nome = AREE[area];
+    if (!nome) continue;
+    viste.set(nome, viste.get(nome) || azione === "write");
+  }
+  return [...viste].map(([nome, scrittura]) =>
+    scrittura ? nome : `${nome} (sola lettura)`,
+  );
+});
+
 const taskState = computed(() =>
   taskId.value ? tasksStore.getTask(taskId.value) : null,
 );
+// Gli stati che arrivano da Celery sono nomi tecnici.
+const ETICHETTA_TASK = {
+  idle: "Non avviato",
+  pending: "In coda",
+  progress: "In corso",
+  success: "Completato",
+  failure: "Non riuscito",
+};
+
 const taskStatus = computed(() => taskState.value?.status || "idle");
 const taskProgress = computed(() => taskState.value?.progress || 0);
 const taskMessage = computed(
-  () => taskState.value?.message || "Nessun report asincrono avviato.",
+  () => taskState.value?.message || "Nessun report avviato.",
 );
 const resultUrl = computed(() => taskState.value?.resultUrl || "");
 
@@ -89,12 +92,11 @@ watch(taskStatus, (status) => {
 async function avviaTaskReport() {
   erroreTask.value = "";
 
-  // Senza questo messaggio il click su campo vuoto usciva in silenzio: l'utente
-  // admin non ha un tenant associato, quindi il campo resta vuoto proprio per
-  // chi ha i permessi per avviare il report.
-  if (!tenantIdInput.value) {
+  // Un utente admin non e' legato a nessuna azienda: senza questo messaggio
+  // il click uscirebbe in silenzio proprio per chi ha i permessi per avviarlo.
+  if (!tenantId.value) {
     erroreTask.value =
-      "Serve un Tenant ID. L'utente collegato non ne ha uno associato: accedi come tenant.admin oppure incollane uno.";
+      "Questo utente non è associato a nessuna azienda, quindi il report non può partire. Accedi con un utente aziendale.";
     return;
   }
 
@@ -102,7 +104,7 @@ async function avviaTaskReport() {
 
   try {
     const response = await avviaGenerazioneReport({
-      tenant_id: tenantIdInput.value,
+      tenant_id: tenantId.value,
     });
     taskId.value = response.task_id;
     tasksStore.initTask(response.task_id);
@@ -190,14 +192,10 @@ const righeFiltraite = computed(() => {
       <BaseCard :highlight="true">
         <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div>
-            <SectionLabel>Workspace standard</SectionLabel>
+            <SectionLabel>Documenti</SectionLabel>
             <h2 class="mt-3 text-2xl font-semibold text-steel-900 sm:text-3xl">
               Vista elenco documenti
             </h2>
-            <p class="mt-3 max-w-3xl text-sm leading-6 text-steel-700">
-              Mockup statico di una home ERP enterprise con sidebar, toolbar e griglia
-              dati densa. Serve solo a validare ingombri, gerarchia visiva e leggibilità.
-            </p>
           </div>
 
           <div class="flex flex-wrap gap-3">
@@ -212,34 +210,24 @@ const righeFiltraite = computed(() => {
           </div>
         </div>
 
-        <div class="mt-6 grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <KpiTile
-            v-for="indicatore in indicatori"
-            :key="indicatore.label"
-            :label="indicatore.label"
-            :value="indicatore.value"
-            :note="indicatore.note"
-          />
-        </div>
-
         <!-- KPI reali tenant-aware (aggiornati via SSE) -->
         <div
           v-if="dashboardStore.kpis"
-          class="mt-6 rounded-[1.5rem] border border-brand-100 bg-brand-50/40 p-5"
+          class="mt-6 rounded-[1.5rem] border border-steel-200 bg-white p-5"
         >
           <div class="mb-4 flex items-center justify-between">
-            <SectionLabel>KPI Tenant Live</SectionLabel>
+            <SectionLabel>La tua azienda</SectionLabel>
             <span
               v-if="dashboardStore.lastUpdated"
-              class="text-[11px] text-steel-400"
+              class="text-[11px] text-steel-600"
             >
               Aggiornato {{ dashboardStore.lastUpdated.toLocaleTimeString("it-IT") }}
             </span>
           </div>
           <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-            <KpiTile label="Utenti totali" :value="String(dashboardStore.kpis.total_users)" note="Utenti nel tenant." />
+            <KpiTile label="Utenti totali" :value="String(dashboardStore.kpis.total_users)" note="Utenti dell'azienda." />
             <KpiTile label="Utenti attivi" :value="String(dashboardStore.kpis.active_users)" note="Account attivi." />
-            <KpiTile label="Audit 24h" :value="String(dashboardStore.kpis.audit_events_last_24h)" note="Operazioni nelle ultime 24 ore." />
+            <KpiTile label="Operazioni 24h" :value="String(dashboardStore.kpis.audit_events_last_24h)" note="Operazioni nelle ultime 24 ore." />
             <KpiTile label="Profilo azienda" :value="dashboardStore.kpis.company_profile_configured ? 'Configurato' : 'Mancante'" note="Dati aziendali." />
             <KpiTile label="SMTP" :value="dashboardStore.kpis.smtp_configured ? 'Configurato' : 'Non configurato'" note="Impostazioni email." />
           </div>
@@ -248,35 +236,29 @@ const righeFiltraite = computed(() => {
         <div class="mt-8 rounded-[1.5rem] border border-steel-200 bg-steel-50/80 p-5">
           <div class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div class="max-w-2xl">
-              <SectionLabel>Async Queue Demo</SectionLabel>
+              <SectionLabel>Report periodico</SectionLabel>
               <h3 class="mt-3 text-2xl font-semibold text-steel-900">
-                Generazione report con Celery e SSE
+                Generazione report in background
               </h3>
               <p class="mt-3 text-sm leading-6 text-steel-700">
-                Il task Celery pubblica gli aggiornamenti su Redis Pub/Sub.
-                Il frontend riceve i progressi in tempo reale via Server-Sent Events,
-                senza polling. L'elaborazione dura circa dieci secondi.
+                Il report viene elaborato dal server: puoi continuare a lavorare
+                mentre procede, e l'avanzamento si aggiorna da solo. Richiede
+                circa dieci secondi.
               </p>
               <p class="mt-2 text-sm leading-6 text-steel-600">
-                Funziona anche in modalità demo: il task legge soltanto, quindi
-                resta attivo mentre il resto dell'applicazione è in sola lettura.
+                Funziona anche in modalità demo, perché il report si limita a
+                leggere i dati.
               </p>
             </div>
 
             <div class="flex w-full max-w-xl flex-col gap-3 xl:items-end">
-              <input
-                v-model="tenantIdInput"
-                class="campo-input w-full"
-                type="text"
-                placeholder="Tenant ID da elaborare"
-              />
               <BaseButton
                 type="button"
                 variant="secondary"
                 :disabled="loadingTask"
                 @click="avviaTaskReport"
               >
-                {{ loadingTask ? "Report in esecuzione..." : "Avvia report asincrono" }}
+                {{ loadingTask ? "Report in corso…" : "Avvia il report" }}
               </BaseButton>
               <p
                 v-if="erroreTask"
@@ -293,18 +275,20 @@ const righeFiltraite = computed(() => {
               <span class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-steel-700">
                 Ruolo: {{ authStore.user?.role_code || "guest" }}
               </span>
-              <span class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-steel-700">
-                Permessi: {{ authStore.permissions.join(", ") || "nessuno" }}
+              <span
+                v-for="area in areeConsentite"
+                :key="area"
+                class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-steel-700"
+              >
+                {{ area }}
               </span>
             </div>
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-steel-400">
-                  Stato task
-                </p>
+                <p class="etichetta-dato">Stato</p>
                 <p class="mt-2 text-sm font-medium text-steel-900">
-                  {{ taskStatus }}
-                  <span v-if="taskId" class="text-steel-500">· {{ taskId }}</span>
+                  {{ ETICHETTA_TASK[taskStatus] ?? taskStatus }}
+                  
                 </p>
                 <p class="mt-2 text-sm text-steel-700">{{ taskMessage }}</p>
               </div>
@@ -313,17 +297,17 @@ const righeFiltraite = computed(() => {
 
             <div class="mt-4 h-3 overflow-hidden rounded-full bg-steel-100">
               <div
-                class="h-full rounded-full bg-[linear-gradient(90deg,#8c1d18_0%,#d2412e_100%)] transition-all duration-500"
+                class="h-full rounded-full bg-brand-500 transition-all duration-500"
                 :style="{ width: `${taskProgress}%` }"
               />
             </div>
 
             <p v-if="resultUrl" class="mt-4 text-sm text-steel-700">
-              Percorso restituito dal task:
+              File generato:
               <span class="font-medium text-steel-900">{{ resultUrl }}</span>
-              <span class="mt-1 block text-xs text-steel-500">
-                Simulato: il task dimostra la pipeline asincrona e non produce un
-                file scaricabile.
+              <span class="mt-1 block text-xs text-steel-600">
+                In questa demo il file non è scaricabile: l'elaborazione arriva
+                fino in fondo, ma non produce un allegato.
               </span>
             </p>
           </div>
@@ -349,6 +333,7 @@ const righeFiltraite = computed(() => {
               <InputText
                 v-model="filtroTesto"
                 placeholder="Cerca cliente o documento"
+                aria-label="Cerca per cliente o numero documento"
                 :pt="ptInputText"
               />
             </IconField>
@@ -356,6 +341,7 @@ const righeFiltraite = computed(() => {
               v-model="filtroTipo"
               :options="opzioniTipo"
               placeholder="Tipo documento"
+              aria-label="Filtra per tipo documento"
               show-clear
               :pt="ptSelect"
             />
@@ -363,6 +349,7 @@ const righeFiltraite = computed(() => {
               v-model="filtroStato"
               :options="opzioniStato"
               placeholder="Stato"
+              aria-label="Filtra per stato"
               show-clear
               :pt="{ ...ptSelect, root: { class: ptSelect.root.class + ' min-w-[116px]' } }"
             />
@@ -372,15 +359,16 @@ const righeFiltraite = computed(() => {
         <div class="mt-5 overflow-hidden rounded-2xl border border-steel-200">
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
+                <caption class="sr-only">Documenti recenti: data, tipo, numero, cliente, causale, importo e stato.</caption>
               <thead class="bg-steel-100">
-                <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
-                  <th class="hidden px-4 py-3 md:table-cell">Data</th>
-                  <th class="hidden px-4 py-3 sm:table-cell">Tipo</th>
-                  <th class="px-4 py-3">Numero</th>
-                  <th class="hidden px-4 py-3 md:table-cell">Cliente</th>
-                  <th class="hidden px-4 py-3 lg:table-cell">Causale</th>
-                  <th class="px-4 py-3">Importo</th>
-                  <th class="px-4 py-3">Stato</th>
+                <tr class="text-left intestazione-tabella">
+                  <th scope="col" class="hidden px-4 py-3 md:table-cell">Data</th>
+                  <th scope="col" class="hidden px-4 py-3 sm:table-cell">Tipo</th>
+                  <th scope="col" class="px-4 py-3">Numero</th>
+                  <th scope="col" class="hidden px-4 py-3 md:table-cell">Cliente</th>
+                  <th scope="col" class="hidden px-4 py-3 lg:table-cell">Causale</th>
+                  <th scope="col" class="px-4 py-3">Importo</th>
+                  <th scope="col" class="px-4 py-3">Stato</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-steel-100">
@@ -394,13 +382,16 @@ const righeFiltraite = computed(() => {
                   <td class="px-4 py-3 font-medium text-steel-900">{{ riga.numero }}</td>
                   <td class="hidden max-w-[160px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ riga.cliente }}</td>
                   <td class="hidden max-w-[160px] truncate px-4 py-3 text-steel-700 lg:table-cell">{{ riga.causale }}</td>
-                  <td class="px-4 py-3 text-steel-700">{{ riga.importo }}</td>
+                  <td class="px-4 py-3 cifre text-steel-700">{{ riga.importo }}</td>
                   <td class="px-4 py-3">
-                    <Tag :value="riga.stato" :pt="ptTagStato" />
+                    <span class="min-w-[120px]" :class="stileStato(riga.stato).classe">
+                      <span aria-hidden="true">{{ stileStato(riga.stato).glifo }}</span>
+                      {{ riga.stato }}
+                    </span>
                   </td>
                 </tr>
                 <tr v-if="righeFiltraite.length === 0">
-                  <td colspan="7" class="px-4 py-8 text-center text-sm text-steel-400 italic">
+                  <td colspan="7" class="px-4 py-8 text-center text-sm text-steel-600 italic">
                     Nessun documento corrisponde ai filtri applicati.
                   </td>
                 </tr>

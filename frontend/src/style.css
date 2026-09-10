@@ -21,6 +21,17 @@
   --color-steel-700: #39424d;
   --color-steel-800: #2a323b;
   --color-steel-900: #1e252c;
+
+  /* Scala di stato. Sono gli unici colori oltre a brand e steel, ed esistono
+     solo per dire a che punto e' un documento. Non usarli come decorazione,
+     ne' per distinguere categorie: la categoria si distingue per forma. */
+  --color-stato-corso-50: #fdf6e8;
+  --color-stato-corso-200: #eddcae;
+  --color-stato-corso-700: #7a5312;
+  --color-stato-chiuso-50: #edf6f0;
+  --color-stato-chiuso-200: #bcdcc7;
+  --color-stato-chiuso-700: #1f5c38;
+
   --shadow-panel: 0 26px 56px -30px rgba(30, 37, 44, 0.25);
 }
 
@@ -112,8 +123,70 @@
   @apply opacity-0;
 }
 
+/* Etichetta di sezione: e' l'unico posto dove resta il maiuscoletto
+   spaziato, una per pannello. Ovunque altro si legge lettera per lettera e
+   rallenta la scansione. */
 .etichetta-sezione {
-  @apply text-xs font-semibold uppercase tracking-[0.28em] text-brand-700;
+  @apply text-xs font-semibold uppercase tracking-[0.22em] text-steel-700;
+}
+
+/* Intestazione di colonna: sentence case. Viene riscandita a ogni riga, ed e'
+   il posto in cui il maiuscoletto costava di piu'. */
+.intestazione-tabella {
+  @apply text-xs font-semibold text-steel-700;
+}
+
+/* Nome del campo in un form di inserimento. */
+.etichetta-campo {
+  @apply mb-1.5 block text-[13px] font-medium text-steel-700;
+}
+
+/* Etichetta di un dato singolo (KPI, riepilogo, metrica). */
+.etichetta-dato {
+  @apply text-xs font-medium text-steel-600;
+}
+
+/* Cifre incolonnate: importi e quantita' si confrontano solo se le cifre
+   hanno tutte la stessa larghezza. */
+.cifre {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Riga di tabella che apre un documento. Il link sta nella cella che
+   identifica la riga: cosi' la riga si raggiunge da tastiera e uno screen
+   reader annuncia "link, <nome del documento>", senza dover rendere
+   focusabile il <tr>. Il click sull'intera riga resta una comodita' col
+   mouse. */
+.link-riga {
+  @apply rounded text-inherit no-underline hover:underline;
+}
+
+/* Stato del documento: pillola + glifo. La forma tonda e' riservata allo
+   stato, cosi' un tag rettangolare si legge subito come "categoria". */
+.tag-stato {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em];
+}
+
+.tag-stato-attesa {
+  @apply border-steel-200 bg-steel-50 text-steel-600;
+}
+
+.tag-stato-corso {
+  @apply border-stato-corso-200 bg-stato-corso-50 text-stato-corso-700;
+}
+
+.tag-stato-chiuso {
+  @apply border-stato-chiuso-200 bg-stato-chiuso-50 text-stato-chiuso-700;
+}
+
+.tag-stato-azione {
+  @apply border-brand-100 bg-brand-50 text-brand-700;
+}
+
+/* Categoria / tipo soggetto: neutro e squadrato. Il colore qui non aggiunge
+   informazione, la parola la porta gia' tutta. */
+.tag-categoria {
+  @apply inline-flex items-center rounded-md border border-steel-200 bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-steel-700;
 }
 
 .badge-ruolo {

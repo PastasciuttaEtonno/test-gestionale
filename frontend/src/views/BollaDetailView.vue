@@ -5,6 +5,7 @@ import Select from "primevue/select";
 import Tooltip from "primevue/tooltip";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
+import CampoForm from "@/components/ui/CampoForm.vue";
 import {
   addRiga,
   annullaBolla,
@@ -18,6 +19,7 @@ import { fetchAnagrafiche } from "@/services/anagrafiche";
 import { useAuthStore } from "@/stores/auth";
 import { confirm, notify } from "@/composables/useConfirm";
 import { makePtSelect } from "@/lib/prime-pt";
+import { stileStato } from "@/lib/stato";
 
 const vTooltip = Tooltip;
 const ptFormSelect = makePtSelect("w-full", "bg-white");
@@ -60,15 +62,7 @@ const TRASPORTO_LABEL = {
   vettore: "A cura del vettore",
 };
 
-function badgeStato(stato) {
-  return (
-    {
-      bozza: "border-amber-300 bg-amber-50 text-amber-800",
-      emessa: "border-emerald-300 bg-emerald-50 text-emerald-800",
-      annullata: "border-steel-300 bg-steel-50 text-steel-500",
-    }[stato] ?? "border-steel-300 bg-steel-50 text-steel-600"
-  );
-}
+
 
 async function carica() {
   loading.value = true;
@@ -216,7 +210,8 @@ async function eliminaBozza() {
         </div>
 
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em]" :class="badgeStato(bolla.stato)">
+          <span :class="stileStato(bolla.stato).classe">
+            <span aria-hidden="true">{{ stileStato(bolla.stato).glifo }}</span>
             {{ bolla.stato }}
           </span>
           <button
@@ -240,6 +235,7 @@ async function eliminaBozza() {
           <button
             v-if="isBozza && puoEliminare"
             v-tooltip.bottom="'Elimina bozza'"
+            aria-label="Elimina bozza"
             class="flex h-9 w-9 items-center justify-center rounded-xl border border-steel-200 bg-white text-steel-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
             @click="eliminaBozza"
           >
@@ -250,7 +246,7 @@ async function eliminaBozza() {
 
       <!-- Testata -->
       <BaseCard class="p-6">
-        <h3 class="mb-4 text-xs font-semibold uppercase tracking-widest text-steel-400">Documento di trasporto</h3>
+        <h3 class="mb-4 etichetta-sezione">Documento di trasporto</h3>
         <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <dt class="text-xs text-steel-600">Numero</dt>
@@ -290,7 +286,7 @@ async function eliminaBozza() {
       <!-- Righe -->
       <BaseCard class="overflow-hidden p-0">
         <div class="flex items-center justify-between border-b border-steel-100 px-6 py-4">
-          <h3 class="text-xs font-semibold uppercase tracking-widest text-steel-400">
+          <h3 class="etichetta-sezione">
             Righe ({{ bolla.righe.length }})
           </h3>
         </div>
@@ -299,29 +295,30 @@ async function eliminaBozza() {
           <table class="w-full text-sm">
             <thead class="border-b border-steel-100 bg-steel-50">
               <tr>
-                <th class="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-widest text-steel-500">Articolo</th>
-                <th class="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-widest text-steel-500">Qta</th>
-                <th class="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-widest text-steel-500">Prezzo</th>
-                <th class="hidden px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-widest text-steel-500 sm:table-cell">IVA</th>
-                <th class="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-widest text-steel-500">Importo</th>
-                <th v-if="isBozza && puoScrivere" class="px-4 py-2.5"></th>
+                <th scope="col" class="px-4 py-2.5 text-left intestazione-tabella">Articolo</th>
+                <th scope="col" class="px-4 py-2.5 text-right intestazione-tabella">Qta</th>
+                <th scope="col" class="px-4 py-2.5 text-right intestazione-tabella">Prezzo</th>
+                <th scope="col" class="hidden px-4 py-2.5 text-right intestazione-tabella sm:table-cell">IVA</th>
+                <th scope="col" class="px-4 py-2.5 text-right intestazione-tabella">Importo</th>
+                <th scope="col" v-if="isBozza && puoScrivere" class="px-4 py-2.5"></th>
               </tr>
             </thead>
             <tbody class="divide-y divide-steel-100">
               <tr v-for="riga in bolla.righe" :key="riga.id">
                 <td class="px-4 py-3">
-                  <p class="font-mono text-xs text-steel-400">{{ riga.codice_articolo }}</p>
+                  <p class="font-mono text-xs text-steel-600">{{ riga.codice_articolo }}</p>
                   <p class="text-steel-900">{{ riga.descrizione }}</p>
                 </td>
-                <td class="px-4 py-3 text-right text-steel-700">
+                <td class="px-4 py-3 text-right cifre text-steel-700">
                   {{ Number(riga.quantita).toLocaleString("it-IT") }} {{ riga.unita_misura }}
                 </td>
-                <td class="px-4 py-3 text-right text-steel-700">{{ fmtPrezzo.format(Number(riga.prezzo_unitario)) }}</td>
-                <td class="hidden px-4 py-3 text-right text-steel-600 sm:table-cell">{{ Number(riga.aliquota_iva) }}%</td>
-                <td class="px-4 py-3 text-right font-medium text-steel-900">{{ fmtPrezzo.format(Number(riga.importo_riga)) }}</td>
+                <td class="px-4 py-3 text-right cifre text-steel-700">{{ fmtPrezzo.format(Number(riga.prezzo_unitario)) }}</td>
+                <td class="hidden px-4 py-3 text-right cifre text-steel-600 sm:table-cell">{{ Number(riga.aliquota_iva) }}%</td>
+                <td class="px-4 py-3 text-right cifre font-medium text-steel-900">{{ fmtPrezzo.format(Number(riga.importo_riga)) }}</td>
                 <td v-if="isBozza && puoScrivere" class="px-4 py-3 text-right">
                   <button
                     v-tooltip.left="'Rimuovi riga'"
+                    aria-label="Rimuovi riga"
                     class="flex h-8 w-8 items-center justify-center rounded-lg border border-steel-200 bg-white text-steel-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     @click="rimuoviRiga(riga)"
                   >
@@ -338,9 +335,8 @@ async function eliminaBozza() {
 
         <!-- Aggiunta riga (solo bozza) -->
         <div v-if="isBozza && puoScrivere" class="flex flex-col gap-3 border-t border-steel-100 bg-steel-50 px-6 py-4 sm:flex-row sm:items-end">
-          <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Articolo</label>
-            <Select
+          <CampoForm v-slot="{ combo }" label="Articolo">
+            <Select v-bind="combo"
               v-model="nuovoArticolo"
               :options="opzioniArticoli"
               option-label="label"
@@ -349,17 +345,16 @@ async function eliminaBozza() {
               filter
               :pt="ptFormSelect"
             />
-          </div>
-          <div class="w-full sm:w-32">
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Quantità</label>
-            <input
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Quantità">
+            <input v-bind="campo"
               v-model.number="nuovaQuantita"
               type="number"
               min="0"
               step="0.001"
               class="w-full rounded-xl border border-steel-200 bg-white px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
-          </div>
+          </CampoForm>
           <button
             type="button"
             :disabled="aggiungendo || !nuovoArticolo"

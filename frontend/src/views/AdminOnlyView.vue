@@ -207,14 +207,14 @@ const auditGlobale = [
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
               <thead class="bg-steel-100">
-                <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
-                  <th class="px-4 py-3">Azienda</th>
-                  <th class="hidden px-4 py-3 sm:table-cell">Settore</th>
-                  <th class="hidden px-4 py-3 sm:table-cell">Piano</th>
-                  <th class="hidden px-4 py-3 md:table-cell">Utenti</th>
-                  <th class="hidden px-4 py-3 md:table-cell">DB</th>
-                  <th class="hidden px-4 py-3 lg:table-cell">Scadenza</th>
-                  <th class="px-4 py-3">Stato</th>
+                <tr class="text-left intestazione-tabella">
+                  <th scope="col" class="px-4 py-3">Azienda</th>
+                  <th scope="col" class="hidden px-4 py-3 sm:table-cell">Settore</th>
+                  <th scope="col" class="hidden px-4 py-3 sm:table-cell">Piano</th>
+                  <th scope="col" class="hidden px-4 py-3 md:table-cell">Utenti</th>
+                  <th scope="col" class="hidden px-4 py-3 md:table-cell">DB</th>
+                  <th scope="col" class="hidden px-4 py-3 lg:table-cell">Scadenza</th>
+                  <th scope="col" class="px-4 py-3">Stato</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-steel-100">
@@ -310,12 +310,12 @@ const auditGlobale = [
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
             <thead class="bg-steel-100">
-              <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-400">
-                <th class="hidden px-4 py-3 sm:table-cell">Timestamp</th>
-                <th class="px-4 py-3">Operatore</th>
-                <th class="hidden px-4 py-3 md:table-cell">Tenant</th>
-                <th class="px-4 py-3">Evento</th>
-                <th class="hidden px-4 py-3 lg:table-cell">Dettaglio</th>
+              <tr class="text-left intestazione-tabella">
+                <th scope="col" class="hidden px-4 py-3 sm:table-cell">Timestamp</th>
+                <th scope="col" class="px-4 py-3">Operatore</th>
+                <th scope="col" class="hidden px-4 py-3 md:table-cell">Tenant</th>
+                <th scope="col" class="px-4 py-3">Evento</th>
+                <th scope="col" class="hidden px-4 py-3 lg:table-cell">Dettaglio</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-steel-100">

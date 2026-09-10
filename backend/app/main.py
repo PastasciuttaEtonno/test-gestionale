@@ -76,7 +76,7 @@ async def demo_readonly_middleware(request: Request, call_next):
             return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
                 content={
-                    "detail": "Modalita demo: le modifiche non vengono salvate.",
+                    "detail": "Modalità demo: le modifiche non vengono salvate.",
                     "demo_readonly": True,
                 },
             )

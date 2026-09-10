@@ -38,7 +38,7 @@ defineProps({
         :key="metric.label"
         class="rounded-2xl border border-steel-200 bg-steel-50 px-4 py-3"
       >
-        <p class="text-xs uppercase tracking-[0.18em] text-steel-400">{{ metric.label }}</p>
+        <p class="etichetta-dato">{{ metric.label }}</p>
         <p class="mt-2 text-lg font-semibold text-steel-900">{{ metric.value }}</p>
       </div>
     </div>

@@ -8,6 +8,7 @@ import Tag from "primevue/tag";
 import Tooltip from "primevue/tooltip";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
+import CampoForm from "@/components/ui/CampoForm.vue";
 import {
   deleteAnagrafica,
   fetchAnagrafica,
@@ -16,6 +17,7 @@ import {
 import { useAuthStore } from "@/stores/auth";
 import { confirm, notify } from "@/composables/useConfirm";
 import { makeDialogPt, makePtSelect } from "@/lib/prime-pt";
+import { stileStato } from "@/lib/stato";
 
 const vTooltip = Tooltip;
 const dialogPt = makeDialogPt("max-w-2xl");
@@ -75,19 +77,11 @@ const TIPO_INDIRIZZO_LABEL = {
   fatturazione: "Fatturazione",
 };
 
-function ptTipoTag(tipo) {
-  const palette = {
-    cliente: "border-emerald-300 bg-emerald-50 text-emerald-800",
-    fornitore: "border-blue-300 bg-blue-50 text-blue-800",
-    cliente_fornitore: "border-violet-300 bg-violet-50 text-violet-800",
-    agente: "border-amber-300 bg-amber-50 text-amber-800",
-    altro: "border-steel-300 bg-steel-50 text-steel-600",
-  };
-  return {
-    root: {
-      class: `inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${palette[tipo] ?? palette.altro}`,
-    },
-  };
+function ptTipoTag() {
+  // Il tipo soggetto e' una categoria, non uno stato: la parola la porta gia'
+  // tutta. Restano neutri e squadrati, cosi' il colore e la pillola tonda
+  // continuano a significare soltanto "stato del documento".
+  return { root: { class: "tag-categoria" } };
 }
 
 // ── Soft delete ───────────────────────────────────────────────────────────
@@ -241,7 +235,7 @@ const opzioniRegime = [
         <div class="flex items-center gap-2">
           <span
             v-if="!anagrafica.is_active"
-            class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-steel-400"
+            class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 etichetta-sezione"
           >
             Disattivato
           </span>
@@ -259,6 +253,7 @@ const opzioniRegime = [
           <button
             v-if="puoEliminare && anagrafica.is_active"
             v-tooltip.bottom="'Disattiva anagrafica'"
+            aria-label="Disattiva anagrafica"
             class="flex items-center gap-2 rounded-xl border border-steel-200 bg-white px-4 py-2 text-sm font-medium text-steel-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
             @click="disattiva"
           >
@@ -281,7 +276,7 @@ const opzioniRegime = [
           <div class="flex-1 space-y-2">
             <div class="flex flex-wrap items-center gap-3">
               <h2 class="text-xl font-semibold text-steel-900">{{ anagrafica.display_name }}</h2>
-              <Tag :pt="ptTipoTag(anagrafica.tipo)" :value="TIPO_LABEL[anagrafica.tipo] ?? anagrafica.tipo" />
+              <Tag :pt="ptTipoTag()" :value="TIPO_LABEL[anagrafica.tipo] ?? anagrafica.tipo" />
             </div>
             <div class="flex flex-wrap gap-4 text-sm text-steel-500">
               <span v-if="anagrafica.natura_giuridica" class="flex items-center gap-1">
@@ -352,7 +347,7 @@ const opzioniRegime = [
 
           <!-- Dati anagrafici -->
           <BaseCard class="p-6">
-            <h3 class="mb-4 text-xs font-semibold uppercase tracking-widest text-steel-400">
+            <h3 class="mb-4 etichetta-sezione">
               Dati anagrafici e fiscali
             </h3>
             <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
@@ -392,7 +387,7 @@ const opzioniRegime = [
 
           <!-- Fatturazione elettronica -->
           <BaseCard class="p-6">
-            <h3 class="mb-4 text-xs font-semibold uppercase tracking-widest text-steel-400">
+            <h3 class="mb-4 etichetta-sezione">
               Fatturazione elettronica (SDI)
             </h3>
             <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
@@ -402,7 +397,7 @@ const opzioniRegime = [
                   {{ anagrafica.codice_sdi ?? "—" }}
                   <span
                     v-if="anagrafica.codice_sdi === '0000000'"
-                    class="ml-2 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-600"
+                    class="ml-2 rounded-md border border-steel-200 bg-steel-50 px-2 py-0.5 text-[10px] font-semibold text-steel-600"
                   >
                     Usa PEC
                   </span>
@@ -426,7 +421,7 @@ const opzioniRegime = [
 
           <!-- Indirizzi -->
           <BaseCard class="p-6">
-            <h3 class="mb-4 text-xs font-semibold uppercase tracking-widest text-steel-400">
+            <h3 class="mb-4 etichetta-sezione">
               Indirizzi ({{ anagrafica.indirizzi.length }})
             </h3>
             <div v-if="anagrafica.indirizzi.length" class="space-y-4">
@@ -443,7 +438,7 @@ const opzioniRegime = [
                 </div>
                 <div class="flex-1">
                   <div class="flex items-center gap-2">
-                    <span class="text-xs font-semibold uppercase tracking-widest text-steel-400">
+                    <span class="etichetta-sezione">
                       {{ TIPO_INDIRIZZO_LABEL[addr.tipo] ?? addr.tipo }}
                     </span>
                     <span
@@ -469,7 +464,7 @@ const opzioniRegime = [
 
           <!-- Note -->
           <BaseCard v-if="anagrafica.note" class="p-6">
-            <h3 class="mb-3 text-xs font-semibold uppercase tracking-widest text-steel-400">Note</h3>
+            <h3 class="mb-3 etichetta-sezione">Note</h3>
             <p class="text-sm leading-relaxed text-steel-700">{{ anagrafica.note }}</p>
           </BaseCard>
         </div>
@@ -479,17 +474,13 @@ const opzioniRegime = [
 
           <!-- Riepilogo scheda -->
           <BaseCard class="p-6">
-            <h3 class="mb-4 text-xs font-semibold uppercase tracking-widest text-steel-400">Riepilogo</h3>
+            <h3 class="mb-4 etichetta-sezione">Riepilogo</h3>
             <dl class="space-y-3">
               <div class="flex justify-between text-sm">
                 <dt class="text-steel-500">Stato</dt>
                 <dd>
-                  <span
-                    :class="anagrafica.is_active
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-steel-50 text-steel-500 border-steel-200'"
-                    class="rounded-full border px-2.5 py-0.5 text-xs font-semibold"
-                  >
+                  <span :class="stileStato(anagrafica.is_active ? 'attivo' : 'disattivato').classe">
+                    <span aria-hidden="true">{{ stileStato(anagrafica.is_active ? "attivo" : "disattivato").glifo }}</span>
                     {{ anagrafica.is_active ? "Attivo" : "Disattivato" }}
                   </span>
                 </dd>
@@ -515,10 +506,10 @@ const opzioniRegime = [
 
           <!-- Prossime funzionalità (roadmap v2) -->
           <BaseCard class="p-6">
-            <h3 class="mb-3 text-xs font-semibold uppercase tracking-widest text-steel-400">
+            <h3 class="mb-3 etichetta-sezione">
               In arrivo (v2)
             </h3>
-            <ul class="space-y-2 text-xs text-steel-400">
+            <ul class="space-y-2 text-xs text-steel-600">
               <li class="flex items-center gap-2">
                 <svg class="h-3.5 w-3.5 shrink-0 text-steel-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                 Condizioni di pagamento (RIBA, bonifico, ecc.)
@@ -561,11 +552,10 @@ const opzioniRegime = [
     >
       <form class="space-y-5" @submit.prevent="salva">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Tipo *</label>
-            <Select v-model="form.tipo" :options="opzioniTipoForm" option-label="label" option-value="value"
+          <CampoForm v-slot="{ combo }" label="Tipo" obbligatorio>
+            <Select v-bind="combo" v-model="form.tipo" :options="opzioniTipoForm" option-label="label" option-value="value"
               :pt="ptFormSelect" />
-          </div>
+          </CampoForm>
           <div class="flex items-end pb-1">
             <label class="flex cursor-pointer items-center gap-2 text-sm text-steel-700">
               <input v-model="form.is_persona_fisica" type="checkbox" class="h-4 w-4 rounded border-steel-300 text-brand-500" />
@@ -574,69 +564,56 @@ const opzioniRegime = [
           </div>
         </div>
         <div v-if="form.is_persona_fisica" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Cognome *</label>
-            <InputText v-model="form.cognome" placeholder="Ferrari" autocomplete="family-name" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Nome</label>
-            <InputText v-model="form.nome" placeholder="Marco" autocomplete="given-name" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Cognome" obbligatorio>
+            <InputText v-bind="campo" v-model="form.cognome" placeholder="Ferrari" autocomplete="family-name" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Nome">
+            <InputText v-bind="campo" v-model="form.nome" placeholder="Marco" autocomplete="given-name" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
         </div>
-        <div v-else>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Ragione sociale *</label>
-          <InputText v-model="form.ragione_sociale" placeholder="Edilceram S.r.l." autocomplete="organization" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+        <CampoForm v-slot="{ campo }" label="Ragione sociale" obbligatorio v-else>
+          <InputText v-bind="campo" v-model="form.ragione_sociale" placeholder="Edilceram S.r.l." autocomplete="organization" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+        </CampoForm>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <CampoForm v-slot="{ campo }" label="Partita IVA">
+            <InputText v-bind="campo" v-model="form.partita_iva" inputmode="numeric" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Codice fiscale">
+            <InputText v-bind="campo" v-model="form.codice_fiscale" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
         </div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Partita IVA</label>
-            <InputText v-model="form.partita_iva" inputmode="numeric" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice fiscale</label>
-            <InputText v-model="form.codice_fiscale" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Codice SDI">
+            <InputText v-bind="campo" v-model="form.codice_sdi" maxlength="7" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="PEC">
+            <InputText v-bind="campo" v-model="form.pec" type="email" autocomplete="off" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
         </div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice SDI</label>
-            <InputText v-model="form.codice_sdi" maxlength="7" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">PEC</label>
-            <InputText v-model="form.pec" type="email" autocomplete="off" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Regime fiscale</label>
-            <Select v-model="form.regime_fiscale" :options="opzioniRegime" option-label="label" option-value="value"
+          <CampoForm v-slot="{ combo }" label="Regime fiscale">
+            <Select v-bind="combo" v-model="form.regime_fiscale" :options="opzioniRegime" option-label="label" option-value="value"
               :pt="ptFormSelect" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Natura giuridica</label>
-            <InputText v-model="form.natura_giuridica" placeholder="SRL / SPA" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Natura giuridica">
+            <InputText v-bind="campo" v-model="form.natura_giuridica" placeholder="SRL / SPA" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
         </div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Email</label>
-            <InputText v-model="form.email" type="email" autocomplete="email" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Telefono</label>
-            <InputText v-model="form.telefono" type="tel" autocomplete="tel" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Email">
+            <InputText v-bind="campo" v-model="form.email" type="email" autocomplete="email" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Telefono">
+            <InputText v-bind="campo" v-model="form.telefono" type="tel" autocomplete="tel" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
         </div>
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Website</label>
-          <InputText v-model="form.website" placeholder="www.azienda.it" type="url" autocomplete="url" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Note</label>
-          <textarea v-model="form.note" rows="2"
+        <CampoForm v-slot="{ campo }" label="Website">
+          <InputText v-bind="campo" v-model="form.website" placeholder="www.azienda.it" type="url" autocomplete="url" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+        </CampoForm>
+        <CampoForm v-slot="{ campo }" label="Note">
+          <textarea v-bind="campo" v-model="form.note" rows="2"
             class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 placeholder-steel-400 focus:outline-none focus:ring-2 focus:ring-brand-400" />
-        </div>
+        </CampoForm>
         <p v-if="erroreForm" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ erroreForm }}
         </p>

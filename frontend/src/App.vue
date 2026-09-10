@@ -66,8 +66,8 @@ async function eseguiLogout() {
     class="flex items-center justify-center gap-2 bg-amber-500 px-4 py-1.5 text-center text-xs font-semibold text-amber-950"
   >
     <span class="inline-block h-2 w-2 rounded-full bg-amber-900"></span>
-    Modalità demo — sola lettura: le modifiche non vengono salvate. La
-    generazione report asincrona resta attiva.
+    Modalità demo, sola lettura: le modifiche non vengono salvate. La
+    generazione dei report resta attiva.
   </div>
 
   <AppShell

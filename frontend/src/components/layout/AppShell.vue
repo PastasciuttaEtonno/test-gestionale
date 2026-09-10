@@ -1,6 +1,6 @@
 <script setup>
 import { watch } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import Avatar from "primevue/avatar";
 
 import NotificationBell from "../notifications/NotificationBell.vue";
@@ -25,10 +25,12 @@ const { drawerAperto, toggleDrawer, chiudiDrawer } = useSidebar();
 watch(() => props.routeName, chiudiDrawer);
 
 const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
+
+const route = useRoute();
 </script>
 
 <template>
-  <div class="min-h-screen w-full bg-[radial-gradient(circle_at_top,_rgba(198,40,40,0.14),_transparent_34%),linear-gradient(180deg,_#fafbfc_0%,_#f1f3f5_100%)]">
+  <div class="min-h-screen w-full bg-steel-50">
 
     <template v-if="mostraShell">
 
@@ -39,6 +41,7 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
           <!-- Burger (mobile) -->
           <button
             v-tooltip.right="'Apri menu laterale'"
+            aria-label="Apri menu laterale"
             type="button"
             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-steel-200 bg-steel-50 text-steel-700 transition hover:bg-steel-100 xl:hidden"
             @click="toggleDrawer"
@@ -57,7 +60,9 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
             </div>
             <div class="min-w-0 hidden sm:block">
               <p class="text-xs font-semibold uppercase tracking-[0.24em] text-brand-700">Gestionale</p>
-              <h1 class="truncate text-base font-semibold text-steel-900">Gestionale aziendale</h1>
+              <h1 class="truncate text-base font-semibold text-steel-900">
+                {{ route.meta.titolo ?? "Gestionale aziendale" }}
+              </h1>
             </div>
           </div>
 
@@ -81,6 +86,7 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
             </div>
             <BaseButton
               v-tooltip.bottom="'Esegui logout'"
+              aria-label="Esegui logout"
               type="button"
               variant="secondary"
               @click="$emit('logout')"
@@ -116,6 +122,7 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
             <span class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-100">Navigazione</span>
             <button
               type="button"
+              aria-label="Chiudi menu laterale"
               class="flex h-9 w-9 items-center justify-center rounded-xl text-white/60 transition hover:bg-white/10 hover:text-white"
               @click="chiudiDrawer"
             >
@@ -128,7 +135,7 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
 
           <!-- Navigazione reale -->
           <nav class="space-y-1">
-            <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/38">
+            <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/55">
               Moduli
             </p>
 
@@ -249,7 +256,7 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
 
           <!-- Moduli in arrivo (mockup, non cliccabili) -->
           <div class="mt-6">
-            <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/38">
+            <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/55">
               In arrivo
             </p>
             <div class="space-y-1">
@@ -258,11 +265,11 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
                 :key="voce"
                 class="flex h-12 w-full cursor-not-allowed items-center rounded-xl px-3 text-sm font-medium text-white/28"
               >
-                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/4 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/24">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/4 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50">
                   {{ voce.slice(0, 2) }}
                 </span>
                 <span class="ml-3 truncate">{{ voce }}</span>
-                <span class="ml-auto text-[10px] uppercase tracking-widest text-white/20">Presto</span>
+                <span class="ml-auto text-[10px] uppercase tracking-widest text-white/50">Presto</span>
               </div>
             </div>
           </div>
@@ -272,7 +279,7 @@ const vociMockup = ["Fatture", "Spedizioni", "Scadenze"];
 
           <!-- Alert card -->
           <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/42">Attenzione</p>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/55">Attenzione</p>
             <p class="mt-2 text-sm font-medium text-white">4 anagrafiche incomplete</p>
             <p class="mt-2 text-sm leading-6 text-white/68">
               Verificare indirizzi e dati fiscali prima della prossima emissione.

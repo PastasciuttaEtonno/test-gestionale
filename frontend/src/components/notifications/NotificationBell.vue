@@ -23,6 +23,7 @@ function close() {
   <div class="relative">
     <button
       v-tooltip.bottom="'Notifiche'"
+      aria-label="Notifiche"
       type="button"
       class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-steel-200 bg-steel-50 text-steel-700 transition hover:bg-steel-100"
       @click="toggle"

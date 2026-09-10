@@ -10,6 +10,7 @@ import Select from "primevue/select";
 import Tooltip from "primevue/tooltip";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
+import CampoForm from "@/components/ui/CampoForm.vue";
 import SectionLabel from "@/components/ui/SectionLabel.vue";
 import {
   createArticolo,
@@ -355,7 +356,7 @@ async function disattivaCategoria(c) {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </InputIcon>
-          <InputText v-model="filtroQ" placeholder="Cerca per codice o descrizione…" :pt="ptInputText" />
+          <InputText v-model="filtroQ" placeholder="Cerca per codice o descrizione…" aria-label="Cerca articolo per codice o descrizione" :pt="ptInputText" />
         </IconField>
 
         <Select
@@ -364,6 +365,7 @@ async function disattivaCategoria(c) {
           option-label="label"
           option-value="value"
           placeholder="Tutte le categorie"
+          aria-label="Filtra per categoria"
           show-clear
           :pt="ptSelect"
         />
@@ -371,7 +373,7 @@ async function disattivaCategoria(c) {
         <button type="button" class="flex shrink-0 items-center gap-2.5" @click="filtroAttivi = !filtroAttivi">
           <span
             class="relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200"
-            :class="filtroAttivi ? 'bg-brand-500' : 'bg-steel-200'"
+            :class="filtroAttivi ? 'bg-steel-700' : 'bg-steel-200'"
           >
             <span
               class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition-transform duration-200"
@@ -418,14 +420,15 @@ async function disattivaCategoria(c) {
       <div class="overflow-hidden rounded-2xl border border-steel-200">
         <div class="overflow-x-auto">
         <table class="w-full text-sm">
+          <caption class="sr-only">Elenco articoli: codice e descrizione, categoria, prezzo, IVA, giacenza e azioni.</caption>
           <thead class="border-b border-steel-100 bg-steel-50">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500">Articolo</th>
-              <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500 sm:table-cell">Categoria</th>
-              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-widest text-steel-500">Prezzo</th>
-              <th class="hidden px-4 py-3 text-right text-xs font-semibold uppercase tracking-widest text-steel-500 md:table-cell">IVA</th>
-              <th class="hidden px-4 py-3 text-right text-xs font-semibold uppercase tracking-widest text-steel-500 lg:table-cell">Giacenza</th>
-              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-widest text-steel-500">Azioni</th>
+              <th scope="col" class="px-4 py-3 text-left intestazione-tabella">Articolo</th>
+              <th scope="col" class="hidden px-4 py-3 text-left intestazione-tabella sm:table-cell">Categoria</th>
+              <th scope="col" class="px-4 py-3 text-right intestazione-tabella">Prezzo</th>
+              <th scope="col" class="hidden px-4 py-3 text-right intestazione-tabella md:table-cell">IVA</th>
+              <th scope="col" class="hidden px-4 py-3 text-right intestazione-tabella lg:table-cell">Giacenza</th>
+              <th scope="col" class="px-4 py-3 text-right intestazione-tabella">Azioni</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-steel-100">
@@ -436,8 +439,14 @@ async function disattivaCategoria(c) {
               @click="router.push({ name: 'articolo-detail', params: { id: a.id } })"
             >
               <td class="px-4 py-3">
-                <p class="font-mono text-xs text-steel-400">{{ a.codice }}</p>
-                <p class="mt-0.5 font-medium text-steel-900">{{ a.descrizione }}</p>
+                <p class="font-mono text-xs text-steel-600">{{ a.codice }}</p>
+                <p class="mt-0.5 font-medium text-steel-900">
+                  <RouterLink
+                    :to="{ name: 'articolo-detail', params: { id: a.id } }"
+                    class="link-riga"
+                    @click.stop
+                  >{{ a.descrizione }}</RouterLink>
+                </p>
               </td>
               <td class="hidden px-4 py-3 sm:table-cell">
                 <span
@@ -448,14 +457,15 @@ async function disattivaCategoria(c) {
                 </span>
                 <span v-else class="text-steel-300">—</span>
               </td>
-              <td class="px-4 py-3 text-right font-medium text-steel-900">{{ formattaPrezzo(a.prezzo_unitario) }}</td>
-              <td class="hidden px-4 py-3 text-right text-steel-600 md:table-cell">{{ Number(a.aliquota_iva) }}%</td>
-              <td class="hidden px-4 py-3 text-right text-steel-600 lg:table-cell">{{ formattaGiacenza(a.giacenza, a.unita_misura) }}</td>
-              <td class="px-4 py-3 text-right">
+              <td class="px-4 py-3 text-right cifre font-medium text-steel-900">{{ formattaPrezzo(a.prezzo_unitario) }}</td>
+              <td class="hidden px-4 py-3 text-right cifre text-steel-600 md:table-cell">{{ Number(a.aliquota_iva) }}%</td>
+              <td class="hidden px-4 py-3 text-right cifre text-steel-600 lg:table-cell">{{ formattaGiacenza(a.giacenza, a.unita_misura) }}</td>
+              <td class="px-4 py-3 text-right cifre">
                 <div class="flex items-center justify-end gap-2">
                   <button
                     v-if="puoScrivere"
                     v-tooltip.left="'Modifica'"
+                    aria-label="Modifica"
                     type="button"
                     class="flex h-8 w-8 items-center justify-center rounded-lg border border-steel-200 bg-white text-steel-500 transition hover:bg-steel-50 hover:text-brand-600"
                     @click.stop="apriModifica(a)"
@@ -468,6 +478,7 @@ async function disattivaCategoria(c) {
                   <button
                     v-if="puoEliminare"
                     v-tooltip.left="'Disattiva'"
+                    aria-label="Disattiva"
                     type="button"
                     class="flex h-8 w-8 items-center justify-center rounded-lg border border-steel-200 bg-white text-steel-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     @click.stop="disattiva(a)"
@@ -516,15 +527,16 @@ async function disattivaCategoria(c) {
       :pt="dialogPt"
     >
       <form class="space-y-5" @submit.prevent="salva">
+        <p class="text-xs text-steel-600">I campi contrassegnati con * sono obbligatori.</p>
+
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice *</label>
-            <InputText v-model="form.codice" placeholder="PAV-GRES-6060-GR" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Categoria</label>
-            <Select
+          <CampoForm v-slot="{ campo }" label="Codice" obbligatorio>
+            <InputText v-model="form.codice" v-bind="campo" placeholder="PAV-GRES-6060-GR" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Categoria">
+            <Select v-bind="combo"
               v-model="form.categoria_id"
+              
               :options="opzioniCategoria"
               option-label="label"
               option-value="value"
@@ -532,63 +544,59 @@ async function disattivaCategoria(c) {
               show-clear
               :pt="ptFormSelect"
             />
-          </div>
+          </CampoForm>
         </div>
 
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Descrizione *</label>
-          <InputText v-model="form.descrizione" placeholder="Gres porcellanato 60x60 grigio" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-        </div>
+        <CampoForm v-slot="{ campo }" label="Descrizione" obbligatorio>
+          <InputText v-model="form.descrizione" v-bind="campo" placeholder="Gres porcellanato 60x60 grigio" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+        </CampoForm>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Prezzo unitario (€)</label>
+          <CampoForm v-slot="{ campo }" label="Prezzo unitario (€)">
             <input
               v-model.number="form.prezzo_unitario"
+              v-bind="campo"
               type="number"
               min="0"
               step="0.0001"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Aliquota IVA</label>
-            <Select v-model="form.aliquota_iva" :options="opzioniIva" option-label="label" option-value="value" :pt="ptFormSelect" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Unità di misura</label>
-            <Select v-model="form.unita_misura" :options="opzioniUnita" option-label="label" option-value="value" :pt="ptFormSelect" />
-          </div>
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Aliquota IVA">
+            <Select v-bind="combo" v-model="form.aliquota_iva"  :options="opzioniIva" option-label="label" option-value="value" :pt="ptFormSelect" />
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Unità di misura">
+            <Select v-bind="combo" v-model="form.unita_misura"  :options="opzioniUnita" option-label="label" option-value="value" :pt="ptFormSelect" />
+          </CampoForm>
         </div>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Giacenza</label>
+          <CampoForm v-slot="{ campo }" label="Giacenza">
             <input
               v-model.number="form.giacenza"
+              v-bind="campo"
               type="number"
               min="0"
               step="0.001"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice EAN</label>
-            <InputText v-model="form.codice_ean" placeholder="8001234500011" maxlength="14" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Codice EAN" aiuto="13 o 14 cifre.">
+            <InputText v-model="form.codice_ean" v-bind="campo" placeholder="8001234500011" maxlength="14" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
         </div>
 
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Note</label>
+        <CampoForm v-slot="{ campo }" label="Note">
           <textarea
             v-model="form.note"
+            v-bind="campo"
             rows="2"
             placeholder="Annotazioni libere…"
             class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 placeholder-steel-400 focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
-        </div>
+        </CampoForm>
 
-        <p v-if="erroreForm" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+        <p v-if="erroreForm" role="alert" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ erroreForm }}
         </p>
       </form>
@@ -621,10 +629,9 @@ async function disattivaCategoria(c) {
     >
       <div class="space-y-4">
         <div class="flex items-end gap-2">
-          <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Nuova categoria</label>
-            <InputText v-model="nuovaCategoria" placeholder="Es. Pavimenti" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" @keyup.enter="creaCategoria" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Nuova categoria">
+            <InputText v-bind="campo" v-model="nuovaCategoria" placeholder="Es. Pavimenti" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" @keyup.enter="creaCategoria" />
+          </CampoForm>
           <button
             type="button"
             :disabled="salvataggioCat"
@@ -645,6 +652,7 @@ async function disattivaCategoria(c) {
             <button
               v-if="puoEliminare"
               v-tooltip.left="'Disattiva categoria'"
+              aria-label="Disattiva categoria"
               type="button"
               class="flex h-7 w-7 items-center justify-center rounded-lg border border-steel-200 bg-white text-steel-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
               @click="disattivaCategoria(c)"

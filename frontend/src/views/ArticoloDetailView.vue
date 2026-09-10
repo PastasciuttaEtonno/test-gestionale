@@ -7,6 +7,7 @@ import Select from "primevue/select";
 import Tooltip from "primevue/tooltip";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
+import CampoForm from "@/components/ui/CampoForm.vue";
 import {
   deleteArticolo,
   fetchArticolo,
@@ -16,6 +17,7 @@ import {
 import { useAuthStore } from "@/stores/auth";
 import { confirm, notify } from "@/composables/useConfirm";
 import { makeDialogPt, makePtSelect } from "@/lib/prime-pt";
+import { stileStato } from "@/lib/stato";
 
 const vTooltip = Tooltip;
 const dialogPt = makeDialogPt("max-w-2xl");
@@ -216,7 +218,7 @@ async function salva() {
         <div class="flex items-center gap-2">
           <span
             v-if="!articolo.is_active"
-            class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-steel-400"
+            class="rounded-full border border-steel-200 bg-steel-50 px-3 py-1 etichetta-sezione"
           >
             Disattivato
           </span>
@@ -234,6 +236,7 @@ async function salva() {
           <button
             v-if="puoEliminare && articolo.is_active"
             v-tooltip.bottom="'Disattiva articolo'"
+            aria-label="Disattiva articolo"
             class="flex items-center gap-2 rounded-xl border border-steel-200 bg-white px-4 py-2 text-sm font-medium text-steel-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
             @click="disattiva"
           >
@@ -263,7 +266,7 @@ async function salva() {
                 {{ nomeCategoria }}
               </span>
             </div>
-            <p class="font-mono text-sm text-steel-400">{{ articolo.codice }}</p>
+            <p class="font-mono text-sm text-steel-600">{{ articolo.codice }}</p>
             <div class="flex flex-wrap gap-6 pt-1">
               <div>
                 <p class="text-xs text-steel-500">Prezzo unitario</p>
@@ -289,7 +292,7 @@ async function salva() {
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div class="space-y-6 lg:col-span-2">
           <BaseCard class="p-6">
-            <h3 class="mb-4 text-xs font-semibold uppercase tracking-widest text-steel-400">Dati articolo</h3>
+            <h3 class="mb-4 etichetta-sezione">Dati articolo</h3>
             <dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
               <div>
                 <dt class="text-xs text-steel-600">Codice</dt>
@@ -311,24 +314,20 @@ async function salva() {
           </BaseCard>
 
           <BaseCard v-if="articolo.note" class="p-6">
-            <h3 class="mb-3 text-xs font-semibold uppercase tracking-widest text-steel-400">Note</h3>
+            <h3 class="mb-3 etichetta-sezione">Note</h3>
             <p class="text-sm leading-relaxed text-steel-700">{{ articolo.note }}</p>
           </BaseCard>
         </div>
 
         <div class="space-y-6">
           <BaseCard class="p-6">
-            <h3 class="mb-4 text-xs font-semibold uppercase tracking-widest text-steel-400">Riepilogo</h3>
+            <h3 class="mb-4 etichetta-sezione">Riepilogo</h3>
             <dl class="space-y-3">
               <div class="flex justify-between text-sm">
                 <dt class="text-steel-500">Stato</dt>
                 <dd>
-                  <span
-                    :class="articolo.is_active
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-steel-50 text-steel-500 border-steel-200'"
-                    class="rounded-full border px-2.5 py-0.5 text-xs font-semibold"
-                  >
+                  <span :class="stileStato(articolo.is_active ? 'attivo' : 'disattivato').classe">
+                    <span aria-hidden="true">{{ stileStato(articolo.is_active ? "attivo" : "disattivato").glifo }}</span>
                     {{ articolo.is_active ? "Attivo" : "Disattivato" }}
                   </span>
                 </dd>
@@ -349,8 +348,8 @@ async function salva() {
           </BaseCard>
 
           <BaseCard class="p-6">
-            <h3 class="mb-3 text-xs font-semibold uppercase tracking-widest text-steel-400">In arrivo (v2)</h3>
-            <ul class="space-y-2 text-xs text-steel-400">
+            <h3 class="mb-3 etichetta-sezione">In arrivo (v2)</h3>
+            <ul class="space-y-2 text-xs text-steel-600">
               <li class="flex items-center gap-2">
                 <svg class="h-3.5 w-3.5 shrink-0 text-steel-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
                 Listini multipli e sconti per cliente
@@ -384,47 +383,38 @@ async function salva() {
     >
       <form class="space-y-5" @submit.prevent="salva">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice *</label>
-            <InputText v-model="form.codice" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Categoria</label>
-            <Select v-model="form.categoria_id" :options="opzioniCategoria" option-label="label" option-value="value" placeholder="Nessuna" show-clear :pt="ptFormSelect" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Codice" obbligatorio>
+            <InputText v-bind="campo" v-model="form.codice" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Categoria">
+            <Select v-bind="combo" v-model="form.categoria_id" :options="opzioniCategoria" option-label="label" option-value="value" placeholder="Nessuna" show-clear :pt="ptFormSelect" />
+          </CampoForm>
         </div>
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Descrizione *</label>
-          <InputText v-model="form.descrizione" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-        </div>
+        <CampoForm v-slot="{ campo }" label="Descrizione" obbligatorio>
+          <InputText v-bind="campo" v-model="form.descrizione" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+        </CampoForm>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Prezzo unitario (€)</label>
-            <input v-model.number="form.prezzo_unitario" type="number" min="0" step="0.0001" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Aliquota IVA</label>
-            <Select v-model="form.aliquota_iva" :options="opzioniIva" option-label="label" option-value="value" :pt="ptFormSelect" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Unità di misura</label>
-            <Select v-model="form.unita_misura" :options="opzioniUnita" option-label="label" option-value="value" :pt="ptFormSelect" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Prezzo unitario (€)">
+            <input v-bind="campo" v-model.number="form.prezzo_unitario" type="number" min="0" step="0.0001" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400" />
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Aliquota IVA">
+            <Select v-bind="combo" v-model="form.aliquota_iva" :options="opzioniIva" option-label="label" option-value="value" :pt="ptFormSelect" />
+          </CampoForm>
+          <CampoForm v-slot="{ combo }" label="Unità di misura">
+            <Select v-bind="combo" v-model="form.unita_misura" :options="opzioniUnita" option-label="label" option-value="value" :pt="ptFormSelect" />
+          </CampoForm>
         </div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Giacenza</label>
-            <input v-model.number="form.giacenza" type="number" min="0" step="0.001" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400" />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Codice EAN</label>
-            <InputText v-model="form.codice_ean" maxlength="14" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
-          </div>
+          <CampoForm v-slot="{ campo }" label="Giacenza">
+            <input v-bind="campo" v-model.number="form.giacenza" type="number" min="0" step="0.001" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 focus:outline-none focus:ring-2 focus:ring-brand-400" />
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Codice EAN">
+            <InputText v-bind="campo" v-model="form.codice_ean" maxlength="14" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm" />
+          </CampoForm>
         </div>
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">Note</label>
-          <textarea v-model="form.note" rows="2" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 placeholder-steel-400 focus:outline-none focus:ring-2 focus:ring-brand-400" />
-        </div>
+        <CampoForm v-slot="{ campo }" label="Note">
+          <textarea v-bind="campo" v-model="form.note" rows="2" class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 placeholder-steel-400 focus:outline-none focus:ring-2 focus:ring-brand-400" />
+        </CampoForm>
         <p v-if="erroreForm" class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
           {{ erroreForm }}
         </p>

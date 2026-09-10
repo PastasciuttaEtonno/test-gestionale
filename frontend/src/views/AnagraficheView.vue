@@ -11,6 +11,7 @@ import Tag from "primevue/tag";
 import Tooltip from "primevue/tooltip";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
+import CampoForm from "@/components/ui/CampoForm.vue";
 import SectionLabel from "@/components/ui/SectionLabel.vue";
 import {
   createAnagrafica,
@@ -203,19 +204,11 @@ async function disattiva(a) {
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
-function ptTipoTag(tipo) {
-  const palette = {
-    cliente: "border-emerald-300 bg-emerald-50 text-emerald-800",
-    fornitore: "border-blue-300 bg-blue-50 text-blue-800",
-    cliente_fornitore: "border-violet-300 bg-violet-50 text-violet-800",
-    agente: "border-amber-300 bg-amber-50 text-amber-800",
-    altro: "border-steel-300 bg-steel-50 text-steel-600",
-  };
-  return {
-    root: {
-      class: `inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${palette[tipo] ?? palette.altro}`,
-    },
-  };
+function ptTipoTag() {
+  // Il tipo soggetto e' una categoria, non uno stato: la parola la porta gia'
+  // tutta. Restano neutri e squadrati, cosi' il colore e la pillola tonda
+  // continuano a significare soltanto "stato del documento".
+  return { root: { class: "tag-categoria" } };
 }
 
 function labelTipo(tipo) {
@@ -277,6 +270,7 @@ const opzioniRegime = [
           <InputText
             v-model="filtroQ"
             placeholder="Cerca per nome, P.IVA, CF…"
+            aria-label="Cerca anagrafica per nome, partita IVA o codice fiscale"
             :pt="ptInputText"
           />
         </IconField>
@@ -288,6 +282,7 @@ const opzioniRegime = [
           option-label="label"
           option-value="value"
           placeholder="Tutti i tipi"
+          aria-label="Filtra per tipo di soggetto"
           show-clear
           :pt="ptSelect"
         />
@@ -300,7 +295,7 @@ const opzioniRegime = [
         >
           <span
             class="relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200"
-            :class="filtroAttivi ? 'bg-brand-500' : 'bg-steel-200'"
+            :class="filtroAttivi ? 'bg-steel-700' : 'bg-steel-200'"
           >
             <span
               class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition-transform duration-200"
@@ -356,21 +351,22 @@ const opzioniRegime = [
       <div class="overflow-hidden rounded-2xl border border-steel-200">
         <div class="overflow-x-auto">
         <table class="w-full text-sm">
+          <caption class="sr-only">Elenco anagrafiche: soggetto, tipo, partita IVA o codice fiscale, contatti e azioni.</caption>
           <thead class="border-b border-steel-100 bg-steel-50">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500">
+              <th scope="col" class="px-4 py-3 text-left intestazione-tabella">
                 Soggetto
               </th>
-              <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500 sm:table-cell">
+              <th scope="col" class="hidden px-4 py-3 text-left intestazione-tabella sm:table-cell">
                 Tipo
               </th>
-              <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500 md:table-cell">
+              <th scope="col" class="hidden px-4 py-3 text-left intestazione-tabella md:table-cell">
                 P.IVA / CF
               </th>
-              <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-widest text-steel-500 lg:table-cell">
+              <th scope="col" class="hidden px-4 py-3 text-left intestazione-tabella lg:table-cell">
                 Contatti
               </th>
-              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-widest text-steel-500">
+              <th scope="col" class="px-4 py-3 text-right intestazione-tabella">
                 Azioni
               </th>
             </tr>
@@ -384,10 +380,16 @@ const opzioniRegime = [
             >
               <!-- Nome + sede -->
               <td class="px-4 py-3">
-                <p class="font-medium text-steel-900">{{ a.display_name }}</p>
+                <p class="font-medium text-steel-900">
+                  <RouterLink
+                    :to="{ name: 'anagrafica-detail', params: { id: a.id } }"
+                    class="link-riga"
+                    @click.stop
+                  >{{ a.display_name }}</RouterLink>
+                </p>
                 <p
                   v-if="a.indirizzi?.[0]"
-                  class="mt-0.5 text-xs text-steel-400"
+                  class="mt-0.5 text-xs text-steel-600"
                 >
                   {{ a.indirizzi[0].citta }}
                   <span v-if="a.indirizzi[0].provincia">({{ a.indirizzi[0].provincia }})</span>
@@ -395,12 +397,12 @@ const opzioniRegime = [
               </td>
               <!-- Tipo -->
               <td class="hidden px-4 py-3 sm:table-cell">
-                <Tag :pt="ptTipoTag(a.tipo)" :value="labelTipo(a.tipo)" />
+                <Tag :pt="ptTipoTag()" :value="labelTipo(a.tipo)" />
               </td>
               <!-- P.IVA / CF -->
               <td class="hidden px-4 py-3 text-steel-600 md:table-cell">
                 <span v-if="a.partita_iva">{{ a.partita_iva }}</span>
-                <span v-else-if="a.codice_fiscale" class="text-steel-400">{{ a.codice_fiscale }}</span>
+                <span v-else-if="a.codice_fiscale" class="text-steel-600">{{ a.codice_fiscale }}</span>
                 <span v-else class="text-steel-300">—</span>
               </td>
               <!-- Contatti -->
@@ -412,11 +414,12 @@ const opzioniRegime = [
                 </div>
               </td>
               <!-- Azioni -->
-              <td class="px-4 py-3 text-right">
+              <td class="px-4 py-3 text-right cifre">
                 <div class="flex items-center justify-end gap-2">
                   <button
                     v-if="puoScrivere"
                     v-tooltip.left="'Modifica'"
+                    aria-label="Modifica"
                     type="button"
                     class="flex h-8 w-8 items-center justify-center rounded-lg border border-steel-200 bg-white text-steel-500 transition hover:bg-steel-50 hover:text-brand-600"
                     @click.stop="apriModifica(a)"
@@ -429,6 +432,7 @@ const opzioniRegime = [
                   <button
                     v-if="puoEliminare"
                     v-tooltip.left="'Disattiva'"
+                    aria-label="Disattiva"
                     type="button"
                     class="flex h-8 w-8 items-center justify-center rounded-lg border border-steel-200 bg-white text-steel-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     @click.stop="disattiva(a)"
@@ -480,20 +484,20 @@ const opzioniRegime = [
       :pt="dialogPt"
     >
       <form class="space-y-5" @submit.prevent="salva">
+        <p class="text-xs text-steel-600">I campi contrassegnati con * sono obbligatori.</p>
+
         <!-- Tipo + persona fisica -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Tipo *
-            </label>
-            <Select
+          <CampoForm v-slot="{ combo }" label="Tipo" obbligatorio>
+            <Select v-bind="combo"
               v-model="form.tipo"
+              
               :options="opzioniTipoForm"
               option-label="label"
               option-value="value"
               :pt="ptFormSelect"
             />
-          </div>
+          </CampoForm>
           <div class="flex items-end pb-1">
             <label class="flex cursor-pointer items-center gap-2 text-sm text-steel-700">
               <input
@@ -508,163 +512,154 @@ const opzioniRegime = [
 
         <!-- Nome / Ragione sociale -->
         <div v-if="form.is_persona_fisica" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Cognome *
-            </label>
+          <CampoForm v-slot="{ campo }" label="Cognome" obbligatorio>
             <InputText
               v-model="form.cognome"
+              v-bind="campo"
               placeholder="Ferrari"
               autocomplete="family-name"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Nome
-            </label>
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Nome">
             <InputText
               v-model="form.nome"
+              v-bind="campo"
               placeholder="Marco"
               autocomplete="given-name"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
+          </CampoForm>
         </div>
-        <div v-else>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-            Ragione sociale *
-          </label>
+        <CampoForm v-else v-slot="{ campo }" label="Ragione sociale" obbligatorio>
           <InputText
             v-model="form.ragione_sociale"
+            v-bind="campo"
             placeholder="Edilceram S.r.l."
             autocomplete="organization"
             class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
           />
-        </div>
+        </CampoForm>
 
         <!-- P.IVA + CF -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Partita IVA
-            </label>
+          <CampoForm v-slot="{ campo }" label="Partita IVA" aiuto="11 cifre, senza il prefisso IT.">
             <InputText
               v-model="form.partita_iva"
+              v-bind="campo"
               placeholder="03456789012"
               inputmode="numeric"
+              maxlength="11"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Codice fiscale
-            </label>
+          </CampoForm>
+          <CampoForm
+            v-slot="{ campo }"
+            label="Codice fiscale"
+            aiuto="16 caratteri per le persone fisiche, 11 cifre per le società."
+          >
             <InputText
               v-model="form.codice_fiscale"
+              v-bind="campo"
               placeholder="03456789012"
+              maxlength="16"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
+          </CampoForm>
         </div>
 
         <!-- SDI + PEC -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Codice SDI
-            </label>
+          <CampoForm
+            v-slot="{ campo }"
+            label="Codice SDI"
+            aiuto="7 caratteri. Vale 0000000 se il destinatario riceve via PEC."
+          >
             <InputText
               v-model="form.codice_sdi"
+              v-bind="campo"
               placeholder="M5UXCR1"
               maxlength="7"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              PEC
-            </label>
+          </CampoForm>
+          <CampoForm
+            v-slot="{ campo }"
+            label="PEC"
+            aiuto="Serve quando il codice SDI è 0000000."
+          >
             <InputText
               v-model="form.pec"
+              v-bind="campo"
               placeholder="azienda@pec.it"
               type="email"
               autocomplete="off"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
+          </CampoForm>
         </div>
 
         <!-- Regime fiscale + Natura giuridica -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Regime fiscale
-            </label>
-            <Select
+          <CampoForm v-slot="{ combo }" label="Regime fiscale">
+            <Select v-bind="combo"
               v-model="form.regime_fiscale"
+              
               :options="opzioniRegime"
               option-label="label"
               option-value="value"
               :pt="ptFormSelect"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Natura giuridica
-            </label>
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Natura giuridica" aiuto="Forma societaria, per esempio SRL o SPA.">
             <InputText
               v-model="form.natura_giuridica"
-              placeholder="SRL / SPA / DITTA_INDIVIDUALE"
+              v-bind="campo"
+              placeholder="SRL"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
+          </CampoForm>
         </div>
 
         <!-- Email + Telefono -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Email
-            </label>
+          <CampoForm v-slot="{ campo }" label="Email">
             <InputText
               v-model="form.email"
+              v-bind="campo"
               placeholder="info@azienda.it"
               type="email"
               autocomplete="email"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-              Telefono
-            </label>
+          </CampoForm>
+          <CampoForm v-slot="{ campo }" label="Telefono">
             <InputText
               v-model="form.telefono"
+              v-bind="campo"
               placeholder="059 123456"
               type="tel"
               autocomplete="tel"
               class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm"
             />
-          </div>
+          </CampoForm>
         </div>
 
         <!-- Note -->
-        <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-steel-500">
-            Note
-          </label>
+        <CampoForm v-slot="{ campo }" label="Note">
           <textarea
             v-model="form.note"
+            v-bind="campo"
             rows="2"
             placeholder="Annotazioni libere…"
             class="w-full rounded-xl border border-steel-200 px-3 py-2 text-sm text-steel-900 placeholder-steel-400 focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
-        </div>
+        </CampoForm>
 
         <!-- Errore form -->
         <p
           v-if="erroreForm"
+          role="alert"
           class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700"
         >
           {{ erroreForm }}
