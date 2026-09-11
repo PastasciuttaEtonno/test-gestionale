@@ -1385,8 +1385,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\deps\\auth.py": {
-    "mtime": 1789042798.7415793,
-    "ast_hash": "c5dcea9968fa41220a5ddcf833ada3d7",
+    "mtime": 1789148162.998603,
+    "ast_hash": "dc2d6f0d9835efec51216307b271ad59",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\deps\\events.py": {
@@ -1405,8 +1405,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\router.py": {
-    "mtime": 1789042798.7461312,
-    "ast_hash": "4eb0c2223fcdbb966a548ef5f8f74ad3",
+    "mtime": 1789148163.0618808,
+    "ast_hash": "4db5225a89463f2c0c7971d07a3d8cc3",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\__init__.py": {
@@ -1425,8 +1425,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\anagrafiche\\routes.py": {
-    "mtime": 1789042798.7415793,
-    "ast_hash": "2c2d7ac2170ed87e5cf3bb273c2b1bf9",
+    "mtime": 1789148249.7172923,
+    "ast_hash": "63422cbd09e79e2ac3669366a1556082",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\anagrafiche\\__init__.py": {
@@ -1695,13 +1695,13 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\anagrafica.py": {
-    "mtime": 1789042798.75547,
-    "ast_hash": "87add88f8f32bf163739289ac84119bf",
+    "mtime": 1789148187.4291735,
+    "ast_hash": "ddc9abb4d2aea796b420664b43f38385",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\anagrafica_indirizzo.py": {
-    "mtime": 1789042798.75547,
-    "ast_hash": "2e26b9f9e03c970278a60ac7ba62be7b",
+    "mtime": 1789148193.5749373,
+    "ast_hash": "8ce36e4a0dd235decafade19c9d1ba2a",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\articolo.py": {
@@ -1730,13 +1730,13 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\finance_cost_entry.py": {
-    "mtime": 1789042798.75547,
-    "ast_hash": "5adddf350e07f97f5cc5af94da4d573e",
+    "mtime": 1789148162.998603,
+    "ast_hash": "735f261a6ab376d80fc5f5dd3cc2473f",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\notification.py": {
-    "mtime": 1789042798.75547,
-    "ast_hash": "7f19ae18618ef825bec0b0e9f32df804",
+    "mtime": 1789148162.998603,
+    "ast_hash": "74681f9032feaab649e6082ccd6e4d9d",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\tenant_company_settings.py": {
@@ -1975,8 +1975,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\schemas\\events\\sse.py": {
-    "mtime": 1789042798.7721665,
-    "ast_hash": "40760fb0073c685ae96b05ebf0406cdb",
+    "mtime": 1789148162.998603,
+    "ast_hash": "69e7acd90960960a59e236935bc1b74e",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\schemas\\events\\__init__.py": {
@@ -2085,8 +2085,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\anagrafiche\\anagrafica_service.py": {
-    "mtime": 1789042798.7780204,
-    "ast_hash": "54222a691c9e4d999c68c688cb1f8e29",
+    "mtime": 1789148163.0618808,
+    "ast_hash": "266ce06a1bcdf52e7f287abb3050db18",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\anagrafiche\\__init__.py": {
@@ -2200,8 +2200,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\notifications\\notification_service.py": {
-    "mtime": 1789042798.7780204,
-    "ast_hash": "74744be49ae8706b0c857d7d2d75e68e",
+    "mtime": 1789148162.998603,
+    "ast_hash": "572f057634ae12db1544207913aad306",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\notifications\\__init__.py": {
