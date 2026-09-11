@@ -1,13 +1,13 @@
 """Route amministrative."""
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.api.deps.auth import require_admin
 from app.core.db import get_db_session
 from app.schemas.audit.responses import AuditLogListResponse
 from app.schemas.auth.responses import CurrentUserResponse
-from app.services.audit.audit_service import AuditService
+from app.services.audit.audit_service import DEFAULT_LIMIT, MAX_LIMIT, AuditService
 
 router = APIRouter(tags=["Admin"])
 
@@ -29,6 +29,12 @@ def get_audit_service(session: Session = Depends(get_db_session)) -> AuditServic
     summary="Elenca gli eventi di audit",
 )
 async def get_audit_log(
+    limit: int = Query(
+        default=DEFAULT_LIMIT,
+        ge=1,
+        le=MAX_LIMIT,
+        description="Numero massimo di eventi restituiti, dal piu recente.",
+    ),
     _: CurrentUserResponse = Depends(require_admin),
     audit_service: AuditService = Depends(get_audit_service),
 ) -> AuditLogListResponse:
@@ -37,4 +43,4 @@ async def get_audit_log(
     L'accesso e riservato agli amministratori perche i dati di audit sono
     sensibili dal punto di vista della sicurezza e rilevanti operativamente.
     """
-    return await audit_service.list_events()
+    return await audit_service.list_events(limit)

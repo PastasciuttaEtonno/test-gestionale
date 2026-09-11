@@ -1,13 +1,13 @@
 """Route tenant admin."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.api.deps.auth import require_tenant_admin
 from app.core.db import get_db_session
 from app.schemas.audit.responses import AuditLogListResponse
 from app.schemas.auth.responses import CurrentUserResponse
-from app.services.audit.audit_service import AuditService
+from app.services.audit.audit_service import DEFAULT_LIMIT, MAX_LIMIT, AuditService
 
 router = APIRouter(tags=["Tenant Admin"])
 
@@ -29,6 +29,12 @@ def get_audit_service(session: Session = Depends(get_db_session)) -> AuditServic
     summary="Elenca gli eventi di audit del tenant corrente",
 )
 async def get_tenant_audit_log(
+    limit: int = Query(
+        default=DEFAULT_LIMIT,
+        ge=1,
+        le=MAX_LIMIT,
+        description="Numero massimo di eventi restituiti, dal piu recente.",
+    ),
     current_user: CurrentUserResponse = Depends(require_tenant_admin),
     audit_service: AuditService = Depends(get_audit_service),
 ) -> AuditLogListResponse:
@@ -42,4 +48,4 @@ async def get_tenant_audit_log(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Il tenant admin corrente non e associato ad alcun tenant.",
         )
-    return await audit_service.list_events_for_tenant(current_user.tenant_id)
+    return await audit_service.list_events_for_tenant(current_user.tenant_id, limit)

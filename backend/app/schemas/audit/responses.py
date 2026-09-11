@@ -17,6 +17,16 @@ class AuditLogResponse(BaseModel):
         description="Utente che ha generato l'evento, quando disponibile.",
         examples=["6c4a6f77-7cc0-4709-a681-96b6cf724f83"],
     )
+    username: str | None = Field(
+        default=None,
+        description="Username dell'utente che ha generato l'evento, quando noto.",
+        examples=["tenant.admin"],
+    )
+    tenant_name: str | None = Field(
+        default=None,
+        description="Ragione sociale del tenant dell'utente, quando l'utente ne ha uno.",
+        examples=["Ceramica Demo S.r.l."],
+    )
     event_type: str = Field(
         description="Codice dell'evento di audit.",
         examples=["user_created"],

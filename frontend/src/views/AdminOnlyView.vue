@@ -1,10 +1,27 @@
 <script setup>
 import ProgressBar from "primevue/progressbar";
+import Select from "primevue/select";
 import Tag from "primevue/tag";
+import AuditTable from "../components/audit/AuditTable.vue";
 import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
 import KpiTile from "../components/ui/KpiTile.vue";
 import SectionLabel from "../components/ui/SectionLabel.vue";
+import { useAuditLog } from "../composables/useAuditLog";
+import { CATEGORIE_EVENTO } from "../lib/audit";
+import { makePtSelect } from "../lib/prime-pt";
+import { fetchAuditGlobale } from "../services/audit";
+
+const { eventiFiltrati, caricamento, errore, filtroCategoria, esporta } = useAuditLog(
+  fetchAuditGlobale,
+  { prefissoFile: "audit-globale", conTenant: true },
+);
+
+const ptSelect = makePtSelect("w-full sm:w-56");
+
+function apriAuditGlobale() {
+  document.getElementById("audit-globale")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
 function ptTag(stato) {
   const critico = ["Bloccabile", "Scaduto", "Da osservare"].includes(stato);
@@ -132,30 +149,6 @@ const health = [
     dettaglio: "12 job pendenti, 2 retry su export XML.",
   },
 ];
-
-const auditGlobale = [
-  {
-    timestamp: "15/05/2026 14:21",
-    operatore: "luca.assistenza",
-    tenant: "Logistica Tirrena S.r.l.",
-    evento: "Impersonation avviata",
-    dettaglio: "Accesso di supporto richiesto per verifica bolla BL-2026-0441.",
-  },
-  {
-    timestamp: "15/05/2026 13:48",
-    operatore: "maria.operations",
-    tenant: "Ceramiche Aurora S.p.A.",
-    evento: "Tenant sospeso",
-    dettaglio: "Blocco temporaneo accesso per canone insoluto.",
-  },
-  {
-    timestamp: "15/05/2026 12:07",
-    operatore: "admin.platform",
-    tenant: "Edilceram Group",
-    evento: "Piano aggiornato",
-    dettaglio: "Aumento massimo utenti da 60 a 80.",
-  },
-];
 </script>
 
 <template>
@@ -168,15 +161,19 @@ const auditGlobale = [
             Console Super Admin Gestionale
           </h2>
           <p class="mt-3 max-w-4xl text-sm leading-6 text-steel-700">
-            Mockup enterprise per il personale Gestionale: gestione tenant,
-            controllo licenze, osservabilità piattaforma e audit globale in ottica NIS2.
+            Console enterprise per il personale Gestionale: gestione tenant, controllo
+            licenze, osservabilità piattaforma e audit globale in ottica NIS2. L'audit
+            globale legge gli eventi reali; tenant, licenze e metriche sono ancora dati
+            di esempio.
           </p>
         </div>
 
         <div class="flex flex-wrap gap-3">
           <BaseButton type="button" variant="secondary">Nuovo tenant</BaseButton>
           <BaseButton type="button" variant="secondary">Verifica licenze</BaseButton>
-          <BaseButton type="button" variant="secondary">Apri audit globale</BaseButton>
+          <BaseButton type="button" variant="secondary" @click="apriAuditGlobale">
+            Apri audit globale
+          </BaseButton>
         </div>
       </div>
 
@@ -295,45 +292,43 @@ const auditGlobale = [
       </div>
     </div>
 
-    <BaseCard>
-      <div class="flex items-center justify-between gap-4">
+    <BaseCard id="audit-globale" class="scroll-mt-6">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <SectionLabel>Audit globale NIS2</SectionLabel>
           <h3 class="mt-2 text-xl font-semibold text-steel-900">
             Tracciamento operazioni Gestionale
           </h3>
         </div>
-        <BaseButton type="button" variant="secondary">Esporta log</BaseButton>
-      </div>
-
-      <div class="mt-5 overflow-hidden rounded-2xl border border-steel-200">
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
-            <thead class="bg-steel-100">
-              <tr class="text-left intestazione-tabella">
-                <th scope="col" class="hidden px-4 py-3 sm:table-cell">Timestamp</th>
-                <th scope="col" class="px-4 py-3">Operatore</th>
-                <th scope="col" class="hidden px-4 py-3 md:table-cell">Tenant</th>
-                <th scope="col" class="px-4 py-3">Evento</th>
-                <th scope="col" class="hidden px-4 py-3 lg:table-cell">Dettaglio</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-steel-100">
-              <tr
-                v-for="entry in auditGlobale"
-                :key="`${entry.timestamp}-${entry.operatore}`"
-                class="transition hover:bg-brand-50/45"
-              >
-                <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ entry.timestamp }}</td>
-                <td class="px-4 py-3 font-medium text-steel-900">{{ entry.operatore }}</td>
-                <td class="hidden max-w-[140px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ entry.tenant }}</td>
-                <td class="px-4 py-3 text-steel-700">{{ entry.evento }}</td>
-                <td class="hidden max-w-[180px] truncate px-4 py-3 text-steel-700 lg:table-cell">{{ entry.dettaglio }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Select
+            v-model="filtroCategoria"
+            :options="CATEGORIE_EVENTO"
+            option-label="label"
+            option-value="value"
+            placeholder="Tutti gli eventi"
+            aria-label="Filtra gli eventi per categoria"
+            show-clear
+            :pt="ptSelect"
+          />
+          <BaseButton
+            type="button"
+            variant="secondary"
+            :disabled="caricamento || !eventiFiltrati.length"
+            @click="esporta"
+          >
+            Esporta log
+          </BaseButton>
         </div>
       </div>
+
+      <AuditTable
+        :eventi="eventiFiltrati"
+        :caricamento="caricamento"
+        :errore="errore"
+        :filtrato="Boolean(filtroCategoria)"
+        con-tenant
+      />
     </BaseCard>
   </section>
 </template>

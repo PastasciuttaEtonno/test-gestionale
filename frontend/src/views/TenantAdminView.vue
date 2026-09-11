@@ -1,11 +1,23 @@
 <script setup>
+import { computed } from "vue";
+import Select from "primevue/select";
 import Tag from "primevue/tag";
+import AuditTable from "../components/audit/AuditTable.vue";
 import BaseButton from "../components/ui/BaseButton.vue";
 import BaseCard from "../components/ui/BaseCard.vue";
 import KpiTile from "../components/ui/KpiTile.vue";
 import SectionLabel from "../components/ui/SectionLabel.vue";
+import { LIMITE_AUDIT, useAuditLog } from "../composables/useAuditLog";
+import { CATEGORIE_EVENTO } from "../lib/audit";
+import { makePtSelect } from "../lib/prime-pt";
+import { fetchAuditTenant } from "../services/audit";
 
-const indicatoriTenantAdmin = [
+const { eventiFiltrati, eventiOggi, caricamento, errore, filtroCategoria, esporta } =
+  useAuditLog(fetchAuditTenant, { prefissoFile: "audit-tenant" });
+
+const ptSelect = makePtSelect("w-full sm:w-56");
+
+const indicatoriTenantAdmin = computed(() => [
   {
     label: "Utenti attivi",
     value: "26",
@@ -23,10 +35,10 @@ const indicatoriTenantAdmin = [
   },
   {
     label: "Eventi audit oggi",
-    value: "39",
-    note: "Login, export e modifiche a dati sensibili.",
+    value: caricamento.value ? "…" : String(eventiOggi.value),
+    note: `Contati sugli ultimi ${LIMITE_AUDIT} eventi del tenant.`,
   },
-];
+]);
 
 const utentiAzienda = [
   {
@@ -101,33 +113,6 @@ function ptTag(stato) {
     },
   };
 }
-
-const auditLocale = [
-  {
-    timestamp: "15/05/2026 14:52",
-    utente: "Laura Neri",
-    evento: "Export dati",
-    dettaglio: "Esportazione elenco fatture clienti Q2 in XLSX.",
-  },
-  {
-    timestamp: "15/05/2026 13:17",
-    utente: "Mario Conti",
-    evento: "Login",
-    dettaglio: "Accesso da rete interna magazzino.",
-  },
-  {
-    timestamp: "15/05/2026 12:08",
-    utente: "Giulia Ferretti",
-    evento: "Utente modificato",
-    dettaglio: "Aggiornati permessi ruolo Back Office.",
-  },
-  {
-    timestamp: "15/05/2026 09:41",
-    utente: "Laura Neri",
-    evento: "Numerazione aggiornata",
-    dettaglio: "Confermato prossimo numero FE 2026.",
-  },
-];
 </script>
 
 <template>
@@ -140,15 +125,24 @@ const auditLocale = [
             Console Tenant Admin
           </h2>
           <p class="mt-3 max-w-4xl text-sm leading-6 text-steel-700">
-            Mockup statico del responsabile IT aziendale: gestione utenti interni,
-            impostazioni globali della propria azienda, numerazioni documentali e audit locale.
+            Console del responsabile IT aziendale: gestione utenti interni, impostazioni
+            globali della propria azienda, numerazioni documentali e audit locale.
+            L'audit legge gli eventi reali del tenant; utenti, impostazioni e numerazioni
+            sono ancora dati di esempio.
           </p>
         </div>
 
         <div class="flex flex-wrap gap-3">
           <BaseButton type="button" variant="secondary">Invita utente</BaseButton>
           <BaseButton type="button" variant="secondary">Configura SMTP</BaseButton>
-          <BaseButton type="button" variant="secondary">Esporta audit</BaseButton>
+          <BaseButton
+            type="button"
+            variant="secondary"
+            :disabled="caricamento || !eventiFiltrati.length"
+            @click="esporta"
+          >
+            Esporta audit
+          </BaseButton>
         </div>
       </div>
 
@@ -250,42 +244,31 @@ const auditLocale = [
     </div>
 
     <BaseCard>
-      <div class="flex items-center justify-between gap-4">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <SectionLabel>Audit locale</SectionLabel>
           <h3 class="mt-2 text-xl font-semibold text-steel-900">
             Eventi dipendenti e azioni sensibili
           </h3>
         </div>
-        <BaseButton type="button" variant="secondary">Filtra eventi</BaseButton>
+        <Select
+          v-model="filtroCategoria"
+          :options="CATEGORIE_EVENTO"
+          option-label="label"
+          option-value="value"
+          placeholder="Tutti gli eventi"
+          aria-label="Filtra gli eventi per categoria"
+          show-clear
+          :pt="ptSelect"
+        />
       </div>
 
-      <div class="mt-5 overflow-hidden rounded-2xl border border-steel-200">
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-steel-200 bg-white text-sm">
-            <thead class="bg-steel-100">
-              <tr class="text-left intestazione-tabella">
-                <th scope="col" class="hidden px-4 py-3 sm:table-cell">Timestamp</th>
-                <th scope="col" class="px-4 py-3">Utente</th>
-                <th scope="col" class="px-4 py-3">Evento</th>
-                <th scope="col" class="hidden px-4 py-3 md:table-cell">Dettaglio</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-steel-100">
-              <tr
-                v-for="entry in auditLocale"
-                :key="`${entry.timestamp}-${entry.utente}`"
-                class="transition hover:bg-brand-50/45"
-              >
-                <td class="hidden px-4 py-3 text-steel-700 sm:table-cell">{{ entry.timestamp }}</td>
-                <td class="px-4 py-3 font-medium text-steel-900">{{ entry.utente }}</td>
-                <td class="px-4 py-3 text-steel-700">{{ entry.evento }}</td>
-                <td class="hidden max-w-[180px] truncate px-4 py-3 text-steel-700 md:table-cell">{{ entry.dettaglio }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <AuditTable
+        :eventi="eventiFiltrati"
+        :caricamento="caricamento"
+        :errore="errore"
+        :filtrato="Boolean(filtroCategoria)"
+      />
     </BaseCard>
   </section>
 </template>

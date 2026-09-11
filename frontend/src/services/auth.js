@@ -14,8 +14,3 @@ export async function eseguiLogout() {
   const response = await apiClient.post("/auth/logout");
   return response.data;
 }
-
-export async function recuperaAuditLog() {
-  const response = await apiClient.get("/admin/audit-log");
-  return response.data;
-}
