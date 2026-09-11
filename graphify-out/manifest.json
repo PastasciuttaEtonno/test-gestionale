@@ -1370,8 +1370,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\main.py": {
-    "mtime": 1789045939.6894507,
-    "ast_hash": "4e94a42bef964aff63ff70e3667e3656",
+    "mtime": 1789052661.5074706,
+    "ast_hash": "52a7b4840e95e7d2613485541ddae6e0",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\__init__.py": {
@@ -1415,8 +1415,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\admin\\routes.py": {
-    "mtime": 1789042798.7415793,
-    "ast_hash": "fc7591acbb9f47de92845399286df1b8",
+    "mtime": 1789141654.030211,
+    "ast_hash": "fe687d450edb27ce629c403ff34551b4",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\admin\\__init__.py": {
@@ -1545,8 +1545,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\tenant_admin\\routes.py": {
-    "mtime": 1789042798.7461312,
-    "ast_hash": "c234290f704a56e26532bda585523b67",
+    "mtime": 1789141661.1938477,
+    "ast_hash": "59ed56bf9ad9f58194089b00fd59f487",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\api\\v1\\tenant_admin\\settings_routes.py": {
@@ -1710,8 +1710,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\bolla.py": {
-    "mtime": 1789042798.75547,
-    "ast_hash": "58f12dd2a516a179a686fc009b1c8159",
+    "mtime": 1789142233.4522436,
+    "ast_hash": "0a0d67d5d51e286f411ccd7fab0d8c77",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\models\\core\\bolla_riga.py": {
@@ -1810,8 +1810,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\repositories\\core\\articolo_repository.py": {
-    "mtime": 1789042798.762002,
-    "ast_hash": "82c5a04850655e78cf72e51e287a810f",
+    "mtime": 1789142012.4951994,
+    "ast_hash": "b0cb77a2a492437dc529b22739910b5a",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\repositories\\core\\bolla_repository.py": {
@@ -1850,8 +1850,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\repositories\\security\\audit_repository.py": {
-    "mtime": 1789042798.762002,
-    "ast_hash": "c771a4d97db8932319f97b484b0a68fb",
+    "mtime": 1789141638.4942207,
+    "ast_hash": "37a90ff6dc9bc0aad0bc7c4b9f337c3d",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\repositories\\security\\login_protection_repository.py": {
@@ -1915,8 +1915,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\schemas\\audit\\responses.py": {
-    "mtime": 1789042798.762002,
-    "ast_hash": "4556e6b95ede6582d47a944738cce6dd",
+    "mtime": 1789141631.628852,
+    "ast_hash": "1208816e41160e7d1e2cf43572d31848",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\schemas\\audit\\__init__.py": {
@@ -2110,8 +2110,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\audit\\audit_service.py": {
-    "mtime": 1789042798.7780204,
-    "ast_hash": "bf7a3a953256619fc16d74bc64cac026",
+    "mtime": 1789141647.752353,
+    "ast_hash": "e9c0f388125acf197ea8f2c88e00c1ee",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\audit\\__init__.py": {
@@ -2140,8 +2140,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\bolle\\bolla_service.py": {
-    "mtime": 1789042798.7780204,
-    "ast_hash": "a90619c5b6c239c537509df1ce673692",
+    "mtime": 1789142240.8153136,
+    "ast_hash": "36c1586ac1e27a1f33b438f933ab3eb5",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\app\\services\\bolle\\__init__.py": {
@@ -2280,8 +2280,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\tests\\test_bolle.py": {
-    "mtime": 1789042798.7886462,
-    "ast_hash": "f2f4731aba4513e5197183f5e413d3d8",
+    "mtime": 1789142259.769588,
+    "ast_hash": "26f432b081d25119c70642b08d007352",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\tests\\test_demo_readonly.py": {
@@ -2315,8 +2315,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\App.vue": {
-    "mtime": 1789045939.6913316,
-    "ast_hash": "e2e0153c2024dcc096b8093e496cad7c",
+    "mtime": 1789052570.8651068,
+    "ast_hash": "c7aa5c99a404e21d4d9e5f606599c0ee",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\main.js": {
@@ -2430,8 +2430,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\services\\auth.js": {
-    "mtime": 1789042798.7939265,
-    "ast_hash": "ba093267c89126e781f9aaec49d4d04f",
+    "mtime": 1789141781.7171407,
+    "ast_hash": "9d13b2b7a82ba3e2f9a08af69efa6fbd",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\services\\bolle.js": {
@@ -2480,8 +2480,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\AdminOnlyView.vue": {
-    "mtime": 1789051729.088788,
-    "ast_hash": "0a329ba80723e58b7f0ee8bfd1df8a9a",
+    "mtime": 1789141898.3814971,
+    "ast_hash": "1b6b86a02f5699c2d2fcab69a5a397b3",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\AnagraficaDetailView.vue": {
@@ -2490,13 +2490,13 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\AnagraficheView.vue": {
-    "mtime": 1789052089.306551,
-    "ast_hash": "80190c21d684d827eb73b6f0c4f84f1d",
+    "mtime": 1789052570.8403497,
+    "ast_hash": "f7e3ab48fd418ad1f26dba56142f0914",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\ArticoliView.vue": {
-    "mtime": 1789052089.306551,
-    "ast_hash": "530de388bedeeedbc96e72acbb5e325f",
+    "mtime": 1789052578.9133036,
+    "ast_hash": "72dfa1b545202115ddb3dca37c67f939",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\ArticoloDetailView.vue": {
@@ -2505,18 +2505,18 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\BollaDetailView.vue": {
-    "mtime": 1789052089.316613,
-    "ast_hash": "f91d558a8af4be49dfd74a2f9280605a",
+    "mtime": 1789141919.3687532,
+    "ast_hash": "bfea7dd983bddc69c9792d05dcf50032",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\BolleView.vue": {
-    "mtime": 1789051759.476696,
-    "ast_hash": "8b59baad7d616bdf8ecd7c1dfb2f464f",
+    "mtime": 1789052570.8491004,
+    "ast_hash": "c93f813f4cc75ff3acd6aba77bbfbf05",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\DashboardView.vue": {
-    "mtime": 1789052089.3255715,
-    "ast_hash": "5c3f73b217d4832a33df423574c93a7b",
+    "mtime": 1789052570.8651068,
+    "ast_hash": "754aed96999575fbd2d7e4da96e74af1",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\LoginView.vue": {
@@ -2530,8 +2530,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\views\\TenantAdminView.vue": {
-    "mtime": 1789051729.0902913,
-    "ast_hash": "a44fd2a75444cd07657155ad406a4e7b",
+    "mtime": 1789141858.451366,
+    "ast_hash": "34e81dd9ea903b75c714503632c0ef97",
     "semantic_hash": ""
   },
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\CLAUDE.md": {
@@ -3107,6 +3107,36 @@
   "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\components\\ui\\CampoForm.vue": {
     "mtime": 1789051738.5106726,
     "ast_hash": "710e5c039beedfe13db07eb400a4fc5d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\backend\\tests\\test_audit.py": {
+    "mtime": 1789141672.6861794,
+    "ast_hash": "7e931412243c3d9daafd6429898d03aa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\components\\audit\\AuditTable.vue": {
+    "mtime": 1789141826.0056221,
+    "ast_hash": "cef064713cf81e66bd51dcf56fb08f25",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\composables\\useAuditLog.js": {
+    "mtime": 1789141813.7474518,
+    "ast_hash": "52057ceb5d2967f695bb9463880c8d2b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\lib\\audit.js": {
+    "mtime": 1789142038.0533772,
+    "ast_hash": "770e900af77c2680ff68e3f90cf3580f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\frontend\\src\\services\\audit.js": {
+    "mtime": 1789141784.310877,
+    "ast_hash": "581cb4a9ce5fc35dfb2476d60fd933b8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\joanl\\Documents\\GitHub\\test-gestionale\\.impeccable\\critique\\2026-09-10T15-06-10Z__gestionale-vasquezlisciotto-xyz.md": {
+    "mtime": 1789052770.235951,
+    "ast_hash": "b6e9abc7486eb027e8e94f4e20111b57",
     "semantic_hash": ""
   }
 }

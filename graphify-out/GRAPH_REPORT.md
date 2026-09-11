@@ -1,16 +1,16 @@
-# Graph Report - test-gestionale  (2026-09-10)
+# Graph Report - test-gestionale  (2026-09-11)
 
 ## Corpus Check
-- 372 files · ~237,433 words
+- 378 files · ~241,381 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5506 nodes · 8557 edges · 497 communities (353 shown, 144 thin omitted)
-- Extraction: 80% EXTRACTED · 20% INFERRED · 0% AMBIGUOUS · INFERRED: 1733 edges (avg confidence: 0.54)
+- 5626 nodes · 8839 edges · 509 communities (368 shown, 141 thin omitted)
+- Extraction: 79% EXTRACTED · 21% INFERRED · 0% AMBIGUOUS · INFERRED: 1812 edges (avg confidence: 0.54)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `286629a8`
+- Built from commit: `79dd767f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -286,6 +286,7 @@
 - [[_COMMUNITY_Community 299|Community 299]]
 - [[_COMMUNITY_Community 300|Community 300]]
 - [[_COMMUNITY_Community 301|Community 301]]
+- [[_COMMUNITY_Community 302|Community 302]]
 - [[_COMMUNITY_Community 303|Community 303]]
 - [[_COMMUNITY_Community 304|Community 304]]
 - [[_COMMUNITY_Community 305|Community 305]]
@@ -301,6 +302,7 @@
 - [[_COMMUNITY_Community 315|Community 315]]
 - [[_COMMUNITY_Community 316|Community 316]]
 - [[_COMMUNITY_Community 317|Community 317]]
+- [[_COMMUNITY_Community 318|Community 318]]
 - [[_COMMUNITY_Community 319|Community 319]]
 - [[_COMMUNITY_Community 320|Community 320]]
 - [[_COMMUNITY_Community 321|Community 321]]
@@ -322,6 +324,7 @@
 - [[_COMMUNITY_Community 337|Community 337]]
 - [[_COMMUNITY_Community 338|Community 338]]
 - [[_COMMUNITY_Community 339|Community 339]]
+- [[_COMMUNITY_Community 340|Community 340]]
 - [[_COMMUNITY_Community 341|Community 341]]
 - [[_COMMUNITY_Community 342|Community 342]]
 - [[_COMMUNITY_Community 343|Community 343]]
@@ -387,6 +390,7 @@
 - [[_COMMUNITY_Community 403|Community 403]]
 - [[_COMMUNITY_Community 404|Community 404]]
 - [[_COMMUNITY_Community 405|Community 405]]
+- [[_COMMUNITY_Community 406|Community 406]]
 - [[_COMMUNITY_Community 407|Community 407]]
 - [[_COMMUNITY_Community 408|Community 408]]
 - [[_COMMUNITY_Community 409|Community 409]]
@@ -397,6 +401,7 @@
 - [[_COMMUNITY_Community 414|Community 414]]
 - [[_COMMUNITY_Community 415|Community 415]]
 - [[_COMMUNITY_Community 416|Community 416]]
+- [[_COMMUNITY_Community 417|Community 417]]
 - [[_COMMUNITY_Community 418|Community 418]]
 - [[_COMMUNITY_Community 419|Community 419]]
 - [[_COMMUNITY_Community 420|Community 420]]
@@ -421,7 +426,6 @@
 - [[_COMMUNITY_Community 439|Community 439]]
 - [[_COMMUNITY_Community 440|Community 440]]
 - [[_COMMUNITY_Community 442|Community 442]]
-- [[_COMMUNITY_Community 443|Community 443]]
 - [[_COMMUNITY_Community 444|Community 444]]
 - [[_COMMUNITY_Community 445|Community 445]]
 - [[_COMMUNITY_Community 446|Community 446]]
@@ -463,31 +467,38 @@
 - [[_COMMUNITY_Community 482|Community 482]]
 - [[_COMMUNITY_Community 483|Community 483]]
 - [[_COMMUNITY_Community 484|Community 484]]
+- [[_COMMUNITY_Community 501|Community 501]]
 - [[_COMMUNITY_Community 502|Community 502]]
+- [[_COMMUNITY_Community 503|Community 503]]
+- [[_COMMUNITY_Community 505|Community 505]]
+- [[_COMMUNITY_Community 506|Community 506]]
+- [[_COMMUNITY_Community 507|Community 507]]
+- [[_COMMUNITY_Community 508|Community 508]]
+- [[_COMMUNITY_Community 509|Community 509]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `EventPublisher` - 102 edges
+1. `EventPublisher` - 105 edges
 2. `FastAPI` - 74 edges
-3. `AnagraficaRepository` - 68 edges
-4. `ArticoloRepository` - 68 edges
-5. `RequirePermission` - 66 edges
-6. `CategoriaArticoloRepository` - 50 edges
-7. `AuditRepository` - 49 edges
-8. `EventTypes` - 49 edges
-9. `User` - 48 edges
-10. `Articolo` - 47 edges
+3. `ArticoloRepository` - 73 edges
+4. `AnagraficaRepository` - 71 edges
+5. `Articolo` - 67 edges
+6. `RequirePermission` - 66 edges
+7. `AuditRepository` - 55 edges
+8. `AuditLog` - 54 edges
+9. `EventTypes` - 52 edges
+10. `User` - 51 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Request` --uses--> `RequirePermission`  [INFERRED]
   backend/tests/test_rbac.py → C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/api/deps/rbac.py
 - `CurrentUserResponse` --uses--> `RequirePermission`  [INFERRED]
   backend/tests/test_rbac.py → C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/api/deps/rbac.py
+- `str` --uses--> `LoginProtection`  [INFERRED]
+  backend/app/repositories/security/login_protection_repository.py → C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/models/security/login_protection.py
+- `Session` --uses--> `Tenant`  [INFERRED]
+  backend/app/repositories/security/tenant_repository.py → C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/models/security/tenant.py
 - `str` --uses--> `Tenant`  [INFERRED]
   backend/app/repositories/security/tenant_repository.py → C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/models/security/tenant.py
-- `Session` --uses--> `AuditRepository`  [INFERRED]
-  backend/app/services/audit/audit_service.py → C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/repositories/security/audit_repository.py
-- `str` --uses--> `AuditRepository`  [INFERRED]
-  backend/app/services/audit/audit_service.py → C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/repositories/security/audit_repository.py
 
 ## Hyperedges (group relationships)
 - **** — backend.core.security.jwt, backend.core.security.hashing, backend.core.security.origin_validation [INFERRED 0.85]
@@ -496,23 +507,23 @@
 - **** — backend/app/tasks/report_tasks.py::genera_report_massivo_task, SyncEventPublisher, EventTypes [EXTRACTED 1.00]
 - **** — backend/tests/conftest.py::client_fixture, backend/tests/test_auth_routes.py, backend/tests/test_health.py [EXTRACTED 1.00]
 
-## Communities (497 total, 144 thin omitted)
+## Communities (509 total, 141 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.04
-Nodes (58): ArticoloListResponse, ArticoloResponse, CategoriaListResponse, CategoriaResponse, Schemi response per il modulo Articoli., Rappresentazione di una categoria articolo., Lista di categorie del tenant., Rappresentazione completa di un articolo. (+50 more)
+Cohesion: 0.07
+Nodes (32): CategoriaUpdateRequest, Payload per l'aggiornamento parziale di una categoria., ArticoloListResponse, ArticoloResponse, CategoriaListResponse, CategoriaResponse, Schemi response per il modulo Articoli., Rappresentazione di una categoria articolo. (+24 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.07
-Nodes (44): Any, AuthService, AuthSessionResult, Servizio applicativo del modulo Auth., Aggiorna le credenziali di accesso usando un refresh token persistito., Revoca tutte le sessioni refresh attive dell'utente corrente., Risolve l'utente corrente a partire da un access token JWT., Genera access token, refresh token e profilo utente corrente.          Se ``fa (+36 more)
+Cohesion: 0.08
+Nodes (47): AuthService, AuthSessionResult, Servizio applicativo del modulo Auth., Aggiorna le credenziali di accesso usando un refresh token persistito., Revoca tutte le sessioni refresh attive dell'utente corrente., Risolve l'utente corrente a partire da un access token JWT., Genera access token, refresh token e profilo utente corrente.          Se ``fa, Risultato interno del flusso auth con risposta pubblica e refresh token privato. (+39 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.09
-Nodes (21): ArticoloCreateRequest, ArticoloListParams, ArticoloUpdateRequest, CategoriaCreateRequest, CategoriaUpdateRequest, _check_aliquota(), Schemi request per il modulo Articoli., Verifica che l'aliquota IVA sia tra quelle supportate. (+13 more)
+Cohesion: 0.19
+Nodes (31): Bolla, Decimal, TenantDocumentSequence, BollaRiga, _make_articolo(), _make_bolla(), _make_riga(), _make_sequence() (+23 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.08
-Nodes (46): Bolla, int, Session, str, TenantDocumentSequence, AnagraficaRepository, ArticoloRepository, BollaCreateRequest (+38 more)
+Cohesion: 0.07
+Nodes (77): BollaCreateRequest, BollaListResponse, BollaResponse, BollaService, BollaUpdateRequest, CurrentUserResponse, EventPublisher, int (+69 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.07
@@ -523,91 +534,91 @@ Cohesion: 0.05
 Nodes (51): app_meta(), _check_database(), _check_redis(), demo_readonly_middleware(), healthcheck(), liveness_check(), Punto di ingresso dell'applicazione FastAPI., Verifica minima della connettivita al database. (+43 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.13
-Nodes (27): _imposta_refresh_cookie(), login(), logout(), me(), Route del modulo Auth., Esegue il logout dell'utente autenticato corrente.      L'endpoint e protetto, Restituisce il profilo dell'utente autenticato corrente.      L'endpoint risol, Imposta il cookie HttpOnly che conserva il refresh token. (+19 more)
+Cohesion: 0.10
+Nodes (32): _imposta_refresh_cookie(), login(), logout(), me(), Route del modulo Auth., Esegue il logout dell'utente autenticato corrente.      L'endpoint e protetto, Restituisce il profilo dell'utente autenticato corrente.      L'endpoint risol, Imposta il cookie HttpOnly che conserva il refresh token. (+24 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.05
 Nodes (37): apriCrea(), caricaArticoli(), caricaCategorie(), categorie, creaCategoria(), dialogCategoriePt, dialogPt, disattiva() (+29 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.13
-Nodes (62): AnagraficaListParams, AnagraficaService, AnagraficaNotFoundError, Sollevata quando un'anagrafica non viene trovata nel tenant corrente., AnagraficaCreateRequest, AnagraficaListParams, AnagraficaUpdateRequest, IndirizzoCreateRequest (+54 more)
+Cohesion: 0.08
+Nodes (81): AnagraficaListParams, AnagraficaService, AnagraficaNotFoundError, AnagraficaService, Servizio applicativo per il modulo Anagrafiche., Soft delete: imposta is_active = False., Aggiunge un indirizzo a un'anagrafica del tenant., Aggiorna parzialmente un indirizzo. (+73 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.06
-Nodes (78): ArticoloService, Casi d'uso del modulo Articoli, tenant-aware con optimistic locking ed eventi., Restituisce la lista paginata degli articoli del tenant., CategoriaService, Casi d'uso delle categorie articolo, tenant-aware., Restituisce le categorie attive del tenant., _articolo_service(), _categoria_service() (+70 more)
+Cohesion: 0.05
+Nodes (77): ArticoloService, Casi d'uso del modulo Articoli, tenant-aware con optimistic locking ed eventi., CategoriaService, Casi d'uso delle categorie articolo, tenant-aware., Restituisce le categorie attive del tenant., Crea una categoria verificando l'unicita' del nome nel tenant., Aggiorna parzialmente una categoria del tenant., Disattiva una categoria solo se nessun articolo attivo la usa. (+69 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.05
-Nodes (75): Session, Session, Session, CurrentUserResponse, datetime, LoginRequest, LogoutResponse, Session (+67 more)
+Cohesion: 0.08
+Nodes (43): AuditLog, int, Session, str, CurrentUserResponse, Redis, Session, str (+35 more)
 
 ### Community 11 - "Community 11"
 Cohesion: 0.06
 Nodes (39): BomResponse, CurrentUserResponse, Session, str, Session, str, BomResponse, Session (+31 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.21
-Nodes (10): str, User, str, User, Restituisce gli utenti., Restituisce gli utenti appartenenti a un tenant specifico., Restituisce un singolo utente., Restituisce un singolo utente vincolato a uno specifico tenant. (+2 more)
+Cohesion: 0.07
+Nodes (31): bool, str, Session, str, User, ChangeUserRoleRequest, ChangeUserStatusRequest, Redis (+23 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.06
 Nodes (39): CreateFinanceCostRequest, CurrentUserResponse, FinanceCostResponse, Session, Session, CreateFinanceCostRequest, CurrentUserResponse, FinanceCostResponse (+31 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.06
-Nodes (40): get_audit_log(), get_audit_service(), Route amministrative., Restituisce la dependency del servizio audit., Restituisce gli eventi di audit per consultazione amministrativa.      L'acces, AuditService, Servizio audit persistito su PostgreSQL., Servizio applicativo per il logging di audit. (+32 more)
+Cohesion: 0.15
+Nodes (15): get_audit_log(), get_audit_service(), Route amministrative., Restituisce la dependency del servizio audit., Restituisce gli eventi di audit per consultazione amministrativa.      L'acces, Restituisce gli eventi di audit per consultazione amministrativa.      L'accesso, AuditLogListResponse, AuditService (+7 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.11
-Nodes (29): _articolo_service(), _categoria_service(), _make_articolo(), _make_categoria(), Test unit dei service Articoli e Categorie (tenant scoping, optimistic lock)., Il repository scoped ritorna None per un id di un altro tenant → 404., Il tenant_id dell'articolo creato proviene dal parametro, non dal payload., Se categoria_id non esiste nel tenant corrente, la creazione fallisce con 404. (+21 more)
+Cohesion: 0.10
+Nodes (31): int, str, _articolo_service(), _categoria_service(), _make_articolo(), _make_categoria(), Test unit dei service Articoli e Categorie (tenant scoping, optimistic lock)., Il repository scoped ritorna None per un id di un altro tenant → 404. (+23 more)
 
 ### Community 16 - "Community 16"
 Cohesion: 0.09
-Nodes (20): AnagraficaIndirizzo, Anagrafica, bool, int, Session, str, Anagrafica, AnagraficaIndirizzo (+12 more)
+Nodes (14): AnagraficaIndirizzo, Anagrafica, bool, int, Session, str, Restituisce anagrafiche filtrate e il totale., Restituisce una singola anagrafica del tenant. (+6 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.09
 Nodes (68): C, $(), ae(), at(), be(), bt(), ce(), ct() (+60 more)
 
 ### Community 18 - "Community 18"
-Cohesion: 0.07
-Nodes (43): EventPublisher, Redis, Request, CurrentUserResponse, EventPublisher, int, MarkReadResponse, NotificationListResponse (+35 more)
+Cohesion: 0.05
+Nodes (44): CurrentUserResponse, EventPublisher, int, MarkReadResponse, NotificationListResponse, NotificationResponse, Session, str (+36 more)
 
 ### Community 19 - "Community 19"
-Cohesion: 0.07
-Nodes (36): LoginProtectionResult, LoginProtectionService, Servizio applicativo per rate limiting e cooldown del login., Azzera lo stato di protezione login dopo autenticazione riuscita., Restituisce le chiavi logiche da proteggere per un login., Restituisce la soglia massima per lo scope richiesto., Esito aggregato della protezione login., Gestisce tentativi falliti, finestre temporali e lockout del login. (+28 more)
+Cohesion: 0.10
+Nodes (27): LoginProtectionResult, LoginProtectionService, Servizio applicativo per rate limiting e cooldown del login., Azzera lo stato di protezione login dopo autenticazione riuscita., Restituisce le chiavi logiche da proteggere per un login., Restituisce la soglia massima per lo scope richiesto., Esito aggregato della protezione login., Gestisce tentativi falliti, finestre temporali e lockout del login. (+19 more)
 
 ### Community 20 - "Community 20"
-Cohesion: 0.05
-Nodes (44): CurrentUserResponse, ReportTaskService, CurrentUserResponse, ReportTaskService, str, TaskStatusResponse, Session, CurrentUserResponse (+36 more)
+Cohesion: 0.17
+Nodes (13): CurrentUserResponse, str, TaskStatusResponse, CurrentUserResponse, str, TaskStatusResponse, Servizi applicativi per l'orchestrazione dei report asincroni., Orchestra l'invio e il monitoraggio di task report su Celery. (+5 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.20
-Nodes (8): bool, CategoriaArticolo, str, Restituisce le categorie del tenant ordinate per nome., Restituisce una singola categoria del tenant., Restituisce una categoria per nome nel tenant (per controllo unicita')., Persiste una nuova categoria., Aggiorna una categoria esistente.
+Cohesion: 0.08
+Nodes (23): ArticoloCreateRequest, ArticoloListParams, ArticoloUpdateRequest, CategoriaCreateRequest, _check_aliquota(), Schemi request per il modulo Articoli., Verifica che l'aliquota IVA sia tra quelle supportate., Payload per la creazione di una categoria articolo. (+15 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.07
 Nodes (34): Permission model, Role model, RolePermission model, Tenant model, User model, repositories.security package, schemas package, schemas.anagrafiche package (+26 more)
 
 ### Community 23 - "Community 23"
-Cohesion: 0.13
-Nodes (21): EventPublisher, Redis, Session, Bolla, BollaResponse, str, BollaService, Aggiorna la testata di una bozza (optimistic locking via version). (+13 more)
+Cohesion: 0.06
+Nodes (43): Bolla, BollaResponse, Decimal, str, _fmt_qta(), _movimenta(), _quantita_per_articolo(), Servizio applicativo per il modulo Bolle / DDT. (+35 more)
 
 ### Community 24 - "Community 24"
 Cohesion: 0.14
-Nodes (27): CurrentUserResponse, str, UserResponse, ChangeUserRoleRequest, ChangeUserStatusRequest, CreateUserRequest, CurrentUserResponse, str (+19 more)
+Nodes (29): CreateUserRequest, CurrentUserResponse, str, User, UserResponse, ChangeUserRoleRequest, ChangeUserStatusRequest, CreateUserRequest (+21 more)
 
 ### Community 25 - "Community 25"
 Cohesion: 0.07
 Nodes (27): apriCrea(), caricaAnagrafiche(), dialogPt, disattiva(), errore, erroreForm, filtriApplicati, filtroAttivi (+19 more)
 
 ### Community 26 - "Community 26"
-Cohesion: 0.13
-Nodes (31): BollaCreateRequest, BollaListResponse, BollaResponse, BollaService, BollaUpdateRequest, CurrentUserResponse, int, RigaCreateRequest (+23 more)
+Cohesion: 0.10
+Nodes (20): AuditLog, AuditRow, AuditLogListResponse, AuditRow, int, Session, str, Session (+12 more)
 
 ### Community 27 - "Community 27"
-Cohesion: 0.10
+Cohesion: 0.11
 Nodes (39): ChangeUserRoleRequest, ChangeUserStatusRequest, CreateUserRequest, CurrentUserResponse, Redis, Session, str, UpdateUserRequest (+31 more)
 
 ### Community 28 - "Community 28"
@@ -639,12 +650,12 @@ Cohesion: 0.09
 Nodes (23): aggiungendo, aggiungiRiga(), anagrafiche, annulla(), articoli, bolla, CAUSALE_LABEL, destinatario (+15 more)
 
 ### Community 35 - "Community 35"
-Cohesion: 0.16
-Nodes (10): Articolo, bool, int, str, Restituisce articoli filtrati e il totale., Restituisce un singolo articolo del tenant., Restituisce un articolo per codice nel tenant (per controllo unicita')., Conta gli articoli attivi del tenant (per il KPI dashboard). (+2 more)
+Cohesion: 0.11
+Nodes (17): Articolo, bool, int, str, Restituisce articoli filtrati e il totale., Restituisce articoli filtrati e il totale., Restituisce un singolo articolo del tenant., Restituisce un singolo articolo del tenant. (+9 more)
 
 ### Community 36 - "Community 36"
-Cohesion: 0.14
-Nodes (13): AnagraficaService, Servizio applicativo per il modulo Anagrafiche., Soft delete: imposta is_active = False., Aggiunge un indirizzo a un'anagrafica del tenant., Aggiorna parzialmente un indirizzo., Rimuove un indirizzo., Casi d'uso del modulo Anagrafiche., Restituisce la lista paginata delle anagrafiche del tenant. (+5 more)
+Cohesion: 0.20
+Nodes (14): str, str, ChangeUserRoleRequest, ChangeUserStatusRequest, CreateUserRequest, Schemi di richiesta per la gestione utenti., Payload di aggiornamento utente., Payload di modifica stato. (+6 more)
 
 ### Community 37 - "Community 37"
 Cohesion: 0.18
@@ -675,7 +686,7 @@ Cohesion: 0.13
 Nodes (18): AuthSessionResult, CurrentUserResponse, LogoutResponse, CurrentUserResponse, LogoutResponse, _build_current_user(), FakeAuthService, Test rapidi delle route auth senza dipendere da PostgreSQL reale. (+10 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.16
+Cohesion: 0.13
 Nodes (10): avviso, readonly, useDemo(), apiClient, authStore, refreshConLockCrossTab(), aggiornaToken(), eseguiLogin() (+2 more)
 
 ### Community 45 - "Community 45"
@@ -687,24 +698,24 @@ Cohesion: 0.11
 Nodes (16): articolo, carica(), categorie, errore, erroreForm, fmtPrezzo, form, loading (+8 more)
 
 ### Community 47 - "Community 47"
-Cohesion: 0.16
-Nodes (10): str, Session, UpdateCompanySettingsRequest, str, Session, FieldEncryptionService, Servizio di cifratura per campi sensibili persistiti., Cifra una stringa in chiaro e restituisce il token serializzabile. (+2 more)
+Cohesion: 0.11
+Nodes (15): str, Session, Session, UpdateCompanySettingsRequest, UpdateSmtpSettingsRequest, str, Session, Session (+7 more)
 
 ### Community 48 - "Community 48"
-Cohesion: 0.12
-Nodes (18): str, TenantCompanySettings, TenantDocumentSequence, TenantSmtpSettings, str, TenantCompanySettings, TenantDocumentSequence, TenantSmtpSettings (+10 more)
+Cohesion: 0.10
+Nodes (21): str, TenantCompanySettings, TenantDocumentSequence, TenantSmtpSettings, str, TenantCompanySettings, TenantDocumentSequence, TenantSmtpSettings (+13 more)
 
 ### Community 49 - "Community 49"
 Cohesion: 0.15
 Nodes (17): Access Token In-Memory Storage, Axios Refresh Interceptor Pattern, Real Protection in Backend, Celery+Redis Async Task Polling, Full Viewport Width for ERP Views, JWT Auth Flow Validation, Pinia Scoped to Auth Only, Refresh Token via HttpOnly Cookie (+9 more)
 
 ### Community 50 - "Community 50"
-Cohesion: 0.12
-Nodes (8): Servizio applicativo per il modulo Articoli., Servizio applicativo per le categorie articolo., Dependency per il bus eventi (EventPublisher)., Dependency RBAC dichiarative e tenant-aware.  Pattern di autorizzazione nel pr, FastAPI, Servizio applicativo per la creazione e gestione delle notifiche., Servizio demo per mutazioni produzione con invalidazione cache Redis., Servizio applicativo per le impostazioni tenant admin.
+Cohesion: 0.13
+Nodes (7): Servizio applicativo per il modulo Articoli., Servizio applicativo per le categorie articolo., Dependency RBAC dichiarative e tenant-aware.  Pattern di autorizzazione nel pr, FastAPI, Route demo produzione con invalidazione cache dashboard., Servizio applicativo per le impostazioni tenant admin., Servizio utenti persistito su PostgreSQL.
 
 ### Community 51 - "Community 51"
-Cohesion: 0.33
-Nodes (5): int, str, genera_report_massivo_task(), Task Celery per lavorazioni report lunghe., Simula un report massivo usando una sessione DB propria del worker.
+Cohesion: 0.16
+Nodes (9): int, str, Publisher sincrono per contesti Celery (non async)., Pubblica eventi SSE da un contesto sincrono (Celery task).      Crea una conne, Chiude la connessione Redis., SyncEventPublisher, genera_report_massivo_task(), Task Celery per lavorazioni report lunghe. (+1 more)
 
 ### Community 52 - "Community 52"
 Cohesion: 0.06
@@ -743,32 +754,32 @@ Cohesion: 0.21
 Nodes (11): bool, str, BaseSettings, bool, str, effective_auth_allowed_origins(), is_production_like(), Impostazioni applicative. (+3 more)
 
 ### Community 62 - "Community 62"
-Cohesion: 0.06
-Nodes (33): CurrentUserResponse, str, Redis, CurrentUserResponse, str, str, str, create_pubsub_redis_client() (+25 more)
+Cohesion: 0.29
+Nodes (9): CurrentUserResponse, str, Convenzioni di naming per i canali Redis Pub/Sub., Restituisce il canale eventi per un tenant specifico., Restituisce il canale eventi personale di un utente., Risolve il canale SSE appropriato in base al ruolo dell'utente., resolve_channel(), tenant_channel() (+1 more)
 
 ### Community 63 - "Community 63"
 Cohesion: 0.21
 Nodes (11): lifespan(), Inizializza e chiude il client Redis condiviso dell'applicazione., Redis, Request, Redis, Request, create_redis_client(), get_redis_client() (+3 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.11
-Nodes (17): int, Session, str, Session, Notification, Modello ORM delle notifiche applicative., Notifica applicativa persistente per un utente o un intero tenant., NotificationRepository (+9 more)
+Cohesion: 0.20
+Nodes (9): Any, datetime, str, datetime, str, Utility per la gestione dei token JWT., Crea un access token., Crea un refresh token. (+1 more)
 
 ### Community 66 - "Community 66"
 Cohesion: 0.27
 Nodes (6): Servizio segnaposto per la gestione sessioni., Servizio applicativo per persistenza e revoca delle sessioni., Persiste una sessione., SessionService, str, str
 
 ### Community 67 - "Community 67"
-Cohesion: 0.22
-Nodes (9): Soft delete: imposta is_active = False., Verifica che la categoria appartenga al tenant corrente.          Punto tenant, Invalida la cache KPI e pubblica l'evento articolo + kpi.updated sul bus., Restituisce un singolo articolo del tenant., Crea un articolo validando codice univoco e categoria nel tenant., Aggiorna un articolo con controllo optimistic locking sulla version., Articolo, ArticoloResponse (+1 more)
+Cohesion: 0.08
+Nodes (31): Soft delete: imposta is_active = False., Verifica che la categoria appartenga al tenant corrente.          Punto tenant, Invalida la cache KPI e pubblica l'evento articolo + kpi.updated sul bus., Restituisce la lista paginata degli articoli del tenant., Restituisce un singolo articolo del tenant., Crea un articolo validando codice univoco e categoria nel tenant., Aggiorna un articolo con controllo optimistic locking sulla version., ArticoloListParams (+23 more)
 
 ### Community 68 - "Community 68"
-Cohesion: 0.23
-Nodes (8): Crea una categoria verificando l'unicita' del nome nel tenant., Aggiorna parzialmente una categoria del tenant., Disattiva una categoria solo se nessun articolo attivo la usa., CategoriaArticolo, CategoriaCreateRequest, CategoriaResponse, CategoriaUpdateRequest, str
+Cohesion: 0.13
+Nodes (11): Bolla, int, str, TenantDocumentSequence, Restituisce bolle filtrate e il totale., Restituisce una singola bolla del tenant con le righe., Persiste una nuova bolla (e le sue righe)., Aggiorna una bolla esistente. (+3 more)
 
 ### Community 69 - "Community 69"
-Cohesion: 0.22
-Nodes (7): ETICHETTA_TASK, resultUrl, righeDocumenti, righeFiltraite, taskMessage, taskProgress, taskStatus
+Cohesion: 0.17
+Nodes (13): CurrentUserResponse, ReportTaskService, str, TaskStatusResponse, CurrentUserResponse, ReportTaskService, str, TaskStatusResponse (+5 more)
 
 ### Community 70 - "Community 70"
 Cohesion: 0.24
@@ -819,8 +830,8 @@ Cohesion: 0.53
 Nodes (6): ORM Base & UUIDStr TypeDecorator, Anagrafica ORM Model, AnagraficaIndirizzo ORM Model, Bom ORM Model, FinanceCostEntry ORM Model, Tenant-aware data model pattern
 
 ### Community 83 - "Community 83"
-Cohesion: 0.25
-Nodes (7): int, str, int, str, rate_limit_dependency(), Dependency FastAPI per rate limiting basato su Redis., Restituisce una dependency che applica rate limiting fixed-window.
+Cohesion: 0.15
+Nodes (14): AuditLogListResponse, AuditService, CurrentUserResponse, int, Session, AuditLogListResponse, AuditService, CurrentUserResponse (+6 more)
 
 ### Community 84 - "Community 84"
 Cohesion: 0.25
@@ -831,16 +842,16 @@ Cohesion: 0.29
 Nodes (6): genera_report_massivo_task, str, str, Celery task progress + SSE pattern, Restituisce un singolo tenant tramite identificativo., Tenant
 
 ### Community 87 - "Community 87"
-Cohesion: 0.29
-Nodes (6): bool, str, bool, str, Calcola l'hash di una password in chiaro., Verifica una password in chiaro contro un hash salvato.
+Cohesion: 0.21
+Nodes (11): CurrentUserResponse, ReportTaskService, CurrentUserResponse, ReportTaskService, GenerateReportAcceptedResponse, GenerateReportRequest, generate_report(), get_report_task_service() (+3 more)
 
 ### Community 88 - "Community 88"
 Cohesion: 0.40
 Nodes (5): Redis Async Client Bootstrap, PasswordHasher, JwtTokenManager, Security Domain Exceptions, JWT access/refresh token authentication
 
 ### Community 89 - "Community 89"
-Cohesion: 0.50
-Nodes (4): 7. DIAL DEFINITIONS (Technical Reference), DESIGN_VARIANCE (Level 1-10), MOTION_INTENSITY (Level 1-10), VISUAL_DENSITY (Level 1-10)
+Cohesion: 0.17
+Nodes (11): CATEGORIE_EVENTO, dettaglioEvento(), eAllarme(), esportaAuditCsv(), EVENTI, fmtData, formattaData(), infoEvento() (+3 more)
 
 ### Community 90 - "Community 90"
 Cohesion: 0.40
@@ -901,6 +912,10 @@ Nodes (3): DocumentSequenceListResponse, DocumentSequenceResponse, UpdateDocumen
 ### Community 106 - "Community 106"
 Cohesion: 0.67
 Nodes (3): Login Rate Limiting / Lockout, LoginProtectionService, LoginProtectionResult
+
+### Community 134 - "Community 134"
+Cohesion: 0.25
+Nodes (7): int, str, int, str, rate_limit_dependency(), Dependency FastAPI per rate limiting basato su Redis., Restituisce una dependency che applica rate limiting fixed-window.
 
 ### Community 161 - "Community 161"
 Cohesion: 0.50
@@ -1007,7 +1022,7 @@ Cohesion: 0.08
 Nodes (23): Animate complex properties, Assess What "Extraordinary" Means Here, code:block1 (──────────── ⚡ OVERDRIVE ─────────────), code:css (@supports (animation-timeline: scroll()) {), code:javascript (if ('gpu' in navigator) { /* WebGPU */ }), For data-heavy interfaces, For functional UI, For performance-critical UI (+15 more)
 
 ### Community 256 - "Community 256"
-Cohesion: 0.12
+Cohesion: 0.11
 Nodes (22): CurrentUserResponse, EventPublisher, ProductionUpdateRequest, ProductionUpdateResponse, Redis, Request, Session, CurrentUserResponse (+14 more)
 
 ### Community 257 - "Community 257"
@@ -1067,12 +1082,12 @@ Cohesion: 0.19
 Nodes (16): __dirname, ensureServerRunning(), resolveFiles(), liveCli(), runScript(), safeParse(), scanForDrift(), cli() (+8 more)
 
 ### Community 271 - "Community 271"
-Cohesion: 0.27
-Nodes (9): SmtpSettingsResponse, TenantSmtpSettings, UpdateSmtpSettingsRequest, SmtpSettingsResponse, TenantSmtpSettings, UpdateSmtpSettingsRequest, Aggiorna la configurazione SMTP del tenant corrente., Converte il modello ORM SMTP nel payload di risposta. (+1 more)
+Cohesion: 0.31
+Nodes (8): SmtpSettingsResponse, TenantSmtpSettings, SmtpSettingsResponse, TenantSmtpSettings, UpdateSmtpSettingsRequest, Aggiorna la configurazione SMTP del tenant corrente., Converte il modello ORM SMTP nel payload di risposta., Restituisce la configurazione SMTP del tenant corrente.
 
 ### Community 272 - "Community 272"
-Cohesion: 0.27
-Nodes (18): _make_articolo(), _make_bolla(), _make_service(), Test unit del BollaService: lifecycle, snapshot, numerazione, immutabilita'., test_add_riga_con_articolo_di_altro_tenant_da_404(), test_add_riga_snapshotta_articolo_e_ricalcola_totali(), test_add_riga_su_bolla_emessa_da_409(), test_annulla_bolla_emessa() (+10 more)
+Cohesion: 0.22
+Nodes (8): Restituisce le voci dell'audit log., Restituisce le voci di audit riferibili a un tenant specifico., Restituisce le voci dell'audit log, dalla piu recente., Converte una collezione ORM di eventi nel payload di risposta., Restituisce le voci di audit riferibili a un tenant specifico., Converte gli eventi nel payload di risposta.          La demo pubblica condivide, AuditLogListResponse, str
 
 ### Community 273 - "Community 273"
 Cohesion: 0.21
@@ -1143,8 +1158,8 @@ Cohesion: 0.12
 Nodes (15): Assegnazione per ruolo, Convenzioni operative, `core.anagrafica_indirizzi`, `core.anagrafiche`, Data Model, Endpoint API, Filtri GET /anagrafiche, In scope (+7 more)
 
 ### Community 290 - "Community 290"
-Cohesion: 0.12
-Nodes (16): 1. Read the screenshot (if present), 2. Wrap the element, 3. Load the action's reference, 5. Apply the freeform prompt (if present), 6. Write all variants in a single edit, 7. Parameters (composition-sized, 0–4 per variant), 8. Signal done, Aborting an in-flight session (+8 more)
+Cohesion: 0.15
+Nodes (13): 1. Read the screenshot (if present), 2. Wrap the element, 3. Load the action's reference, 5. Apply the freeform prompt (if present), 7. Parameters (composition-sized, 0–4 per variant), 8. Signal done, Aborting an in-flight session, code:bash (node {{scripts_path}}/live-poll.mjs --reply EVENT_ID error ") (+5 more)
 
 ### Community 291 - "Community 291"
 Cohesion: 0.13
@@ -1167,16 +1182,16 @@ Cohesion: 0.13
 Nodes (14): 10. Help and Documentation, 1. Visibility of System Status, 2. Match Between System and Real World, 3. User Control and Freedom, 4. Consistency and Standards, 5. Error Prevention, 6. Recognition Rather Than Recall, 7. Flexibility and Efficiency of Use (+6 more)
 
 ### Community 296 - "Community 296"
-Cohesion: 0.14
-Nodes (21): getLegacyLiveSessionsDir(), readLiveServerInfo(), completeCli(), completeThroughServer(), parseArgs(), readServerInfo(), parseArgs(), resumeCli() (+13 more)
+Cohesion: 0.25
+Nodes (12): getLegacyLiveSessionsDir(), readLiveServerInfo(), completeCli(), completeThroughServer(), parseArgs(), readServerInfo(), parseArgs(), resumeCli() (+4 more)
 
 ### Community 297 - "Community 297"
 Cohesion: 0.13
 Nodes (14): 1. Visual Theme & Atmosphere, 2. Color Palette & Roles, 3. Typography Rules, 4. Component Stylings, 5. Hero Section, 6. Layout Principles, 7. Responsive Rules, 8. Motion & Interaction (Code-Phase Intent) (+6 more)
 
 ### Community 298 - "Community 298"
-Cohesion: 0.22
-Nodes (6): AuditLog, str, str, Salva un evento di audit., Restituisce gli eventi di audit., Restituisce gli eventi di audit riferibili a utenti del tenant.
+Cohesion: 0.14
+Nodes (13): Anti-Patterns Verdict, Design Health Score, Minor Observations, Overall Impression, [P1] Le tabelle non si governano, [P2] I formati dei dati non sono uniformi, [P2] Il blocco in modalità demo si annuncia tre volte, [P2] Niente validazione a livello di campo (+5 more)
 
 ### Community 299 - "Community 299"
 Cohesion: 0.13
@@ -1184,11 +1199,15 @@ Nodes (14): Anti-Patterns Verdict, Design Health Score, Minor Observations, Over
 
 ### Community 300 - "Community 300"
 Cohesion: 0.13
-Nodes (15): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline, 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 1.A Dial Inference (design read → dial values) (+7 more)
+Nodes (15): 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 2.A When to reach for a real design system (use official packages), 2.B When the brief is an aesthetic, not a system, 2. BRIEF → DESIGN SYSTEM MAP, 7. DIAL DEFINITIONS (Technical Reference), 8.A Token Strategy (pick one, stick to it), 8.B Do Not Prescribe Specific Colors Here (+7 more)
 
 ### Community 301 - "Community 301"
 Cohesion: 0.13
 Nodes (15): Appendix B - Canonical Sources (read these before reinventing), Apple Liquid Glass (Apple platforms only), Atlassian, Bootstrap, Carbon, Fluent UI, GOV.UK, Material Web (+7 more)
+
+### Community 302 - "Community 302"
+Cohesion: 0.26
+Nodes (9): applyEvent(), baseSnapshot(), COMPLETED_PHASES, getJournalPath(), getSnapshotPath(), rebuildSnapshotFromJournal(), safeSessionId(), toPendingEvent() (+1 more)
 
 ### Community 303 - "Community 303"
 Cohesion: 0.20
@@ -1249,6 +1268,10 @@ Nodes (11): Assess Current State, Code Simplification, Content Simplification, D
 ### Community 317 - "Community 317"
 Cohesion: 0.18
 Nodes (11): detectCsp(), INLINE_HEADER_SIGNALS, LAYOUT_EXTS, MONOREPO_HELPER_SIGNALS, NUXT_ROUTE_RULES_SIGNALS, NUXT_SECURITY_SIGNALS, result, SCAN_EXTS (+3 more)
+
+### Community 318 - "Community 318"
+Cohesion: 0.31
+Nodes (7): Schemi di richiesta per la configurazione tenant admin., Payload di aggiornamento numerazione documentale del tenant., Payload di aggiornamento impostazioni aziendali., Payload di aggiornamento configurazione SMTP tenant., UpdateCompanySettingsRequest, UpdateDocumentSequenceRequest, UpdateSmtpSettingsRequest
 
 ### Community 319 - "Community 319"
 Cohesion: 0.17
@@ -1334,6 +1357,10 @@ Nodes (8): APPENDICES - Real Source-Backed Reference Material, Appendix A - Inst
 Cohesion: 0.22
 Nodes (8): Auth Module, Confini, Limiti attuali, Obiettivo, Password breach screening (dettaglio implementativo), Refresh token family (dettaglio implementativo), Stato corrente, Step successivo naturale
 
+### Community 340 - "Community 340"
+Cohesion: 0.36
+Nodes (10): AuditLog, MonkeyPatch, str, _evento(), _make_service(), Test unit dell'AuditService: autore dell'evento e oscuramento nella demo pubblic, test_audit_del_tenant_passa_tenant_e_limite_al_repository(), test_in_demo_ip_e_user_agent_sono_oscurati() (+2 more)
+
 ### Community 341 - "Community 341"
 Cohesion: 0.22
 Nodes (9): 11. COMPONENT EXECUTION GUIDELINES, 3D Cascading Card Deck, Diagonal Staggered Square Masonry, Hover-Accordion Slice Layout, Off-Grid Editorial Layout, Pristine Gapless Bento Grid, Product UI Panel Stack, Turning Polaroid Arc (+1 more)
@@ -1367,8 +1394,8 @@ Cohesion: 0.50
 Nodes (6): completionAckForAcceptResult(), completionTypeForAcceptResult(), buildPollReplyPayload(), pollCli(), postReply(), readServerInfo()
 
 ### Community 349 - "Community 349"
-Cohesion: 0.33
-Nodes (5): Request, Request, build_security_request_context(), Contesto di sicurezza derivato dalla richiesta HTTP., Estrae IP e user-agent dalla richiesta corrente.
+Cohesion: 0.22
+Nodes (7): ETICHETTA_TASK, resultUrl, righeDocumenti, righeFiltraite, taskMessage, taskProgress, taskStatus
 
 ### Community 350 - "Community 350"
 Cohesion: 0.25
@@ -1463,12 +1490,12 @@ Cohesion: 0.40
 Nodes (4): Convenzione Linguistica del Codice, Decisione, Motivazione, Non include
 
 ### Community 373 - "Community 373"
-Cohesion: 0.50
-Nodes (3): CreateFinanceCostRequest, Schemi di richiesta per i costi aziendali., Payload di creazione di un costo aziendale tenant-aware.
+Cohesion: 0.29
+Nodes (6): LoginProtection, str, LoginProtection, str, Restituisce lo stato associato alla coppia identificativo e IP., Salva o aggiorna lo stato di protezione login.
 
 ### Community 374 - "Community 374"
-Cohesion: 0.50
-Nodes (3): FinanceCostResponse, Schemi di risposta per i costi finance., Rappresentazione API di un costo aziendale creato.
+Cohesion: 0.25
+Nodes (7): MarkReadResponse, NotificationListResponse, NotificationResponse, Schemi di risposta per le notifiche applicative., Lista paginata di notifiche con conteggio non lette., Risposta alla marcatura di notifiche come lette., Singola notifica serializzata per il frontend.
 
 ### Community 375 - "Community 375"
 Cohesion: 0.50
@@ -1479,8 +1506,8 @@ Cohesion: 0.50
 Nodes (3): ProductionUpdateResponse, Schemi di risposta per mutazioni produzione demo., Esito dell'aggiornamento produzione demo.
 
 ### Community 377 - "Community 377"
-Cohesion: 0.40
-Nodes (5): 8.A Token Strategy (pick one, stick to it), 8.B Do Not Prescribe Specific Colors Here, 8.C Default Mode, 8.D Test in Both Modes Before Finishing, 8. DARK MODE PROTOCOL
+Cohesion: 0.25
+Nodes (8): CurrentUserResponse, str, Endpoint SSE per lo streaming degli eventi applicativi tenant-aware., Generator asincrono che si sottoscrive a un canale Redis e streamma SSE., Apre uno stream SSE per l'utente autenticato, tenant-scoped., sse_event_stream(), _sse_generator(), StreamingResponse
 
 ### Community 378 - "Community 378"
 Cohesion: 0.50
@@ -1583,12 +1610,16 @@ Cohesion: 0.40
 Nodes (5): stitch-design-taste, computedHash, skillPath, source, sourceType
 
 ### Community 403 - "Community 403"
-Cohesion: 0.67
+Cohesion: 0.50
 Nodes (3): quieter, argumentHint, description
 
 ### Community 404 - "Community 404"
 Cohesion: 0.50
 Nodes (3): candidates, detectorPath, __dirname
+
+### Community 406 - "Community 406"
+Cohesion: 0.24
+Nodes (10): Session, Session, Base, get_db_session(), get_db_session_context(), Bootstrap del database e primitive SQLAlchemy condivise., Classe base dichiarativa per tutti i modelli ORM., Restituisce una sessione database per richiesta. (+2 more)
 
 ### Community 407 - "Community 407"
 Cohesion: 0.50
@@ -1630,6 +1661,10 @@ Nodes (3): Obiettivo, Regole schemi, Skill: Backend Pydantic
 Cohesion: 0.50
 Nodes (3): Regole architetturali, Regole ORM, Skill: Backend SQLAlchemy
 
+### Community 417 - "Community 417"
+Cohesion: 0.25
+Nodes (7): AuditService, _oscura_payload(), Servizio audit persistito su PostgreSQL., Servizio applicativo per il logging di audit., Servizio applicativo per il logging di audit., Toglie dal payload i campi scritti liberamente da chi tenta l'accesso., AuditService
+
 ### Community 418 - "Community 418"
 Cohesion: 0.67
 Nodes (3): adapt, argumentHint, description
@@ -1651,7 +1686,7 @@ Cohesion: 0.67
 Nodes (3): clarify, argumentHint, description
 
 ### Community 423 - "Community 423"
-Cohesion: 0.50
+Cohesion: 0.67
 Nodes (3): colorize, argumentHint, description
 
 ### Community 424 - "Community 424"
@@ -1718,25 +1753,57 @@ Nodes (3): teach, argumentHint, description
 Cohesion: 0.67
 Nodes (3): typeset, argumentHint, description
 
+### Community 442 - "Community 442"
+Cohesion: 0.32
+Nodes (6): AuditLogListResponse, AuditLogResponse, Schemi di risposta audit., Payload di elenco audit log., Payload di elenco audit log., Singola voce di audit log.
+
+### Community 501 - "Community 501"
+Cohesion: 0.36
+Nodes (4): str, Pubblica un evento sul canale del tenant specificato., Pubblica un evento sul canale admin globale., Pubblica un evento sul canale personale dell'utente.
+
+### Community 503 - "Community 503"
+Cohesion: 0.36
+Nodes (4): str, Pubblica un evento sul canale del tenant., Pubblica un evento sul canale admin globale., Pubblica un evento sul canale personale dell'utente.
+
+### Community 505 - "Community 505"
+Cohesion: 0.29
+Nodes (6): EventPublisher, Redis, Request, get_event_publisher(), Dependency per il bus eventi (EventPublisher)., Restituisce l'EventPublisher collegato al client Redis condiviso.
+
+### Community 506 - "Community 506"
+Cohesion: 0.40
+Nodes (4): Redis, create_pubsub_redis_client(), Client Redis dedicato alle connessioni pub/sub degli eventi applicativi., Crea un client Redis fresco per un subscriber pub/sub (db 3).      Ogni stream
+
+### Community 507 - "Community 507"
+Cohesion: 0.40
+Nodes (5): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline
+
+### Community 508 - "Community 508"
+Cohesion: 0.50
+Nodes (4): 1.A Dial Inference (design read → dial values), 1.B Use-Case Presets, 1.C How the Dials Drive Output, 1. THE THREE DIALS (Core Configuration)
+
+### Community 509 - "Community 509"
+Cohesion: 0.67
+Nodes (3): 6. Write all variants in a single edit, code:html (<!-- Variants: insert below this line -->), code:tsx (<style data-impeccable-css="SESSION_ID">{`)
+
 ## Knowledge Gaps
-- **2215 isolated node(s):** `version`, `source`, `sourceType`, `skillPath`, `computedHash` (+2210 more)
+- **2231 isolated node(s):** `version`, `source`, `sourceType`, `skillPath`, `computedHash` (+2226 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **144 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **141 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `FastAPI` connect `Community 50` to `Community 256`, `Community 1`, `Community 2`, `Community 5`, `Community 6`, `Community 8`, `Community 9`, `Community 11`, `Community 13`, `Community 14`, `Community 15`, `Community 272`, `Community 18`, `Community 20`, `Community 26`, `Community 27`, `Community 29`, `Community 31`, `Community 36`, `Community 37`, `Community 40`, `Community 43`, `Community 52`, `Community 62`, `Community 63`, `Community 70`, `Community 71`, `Community 83`, `Community 349`?**
-  _High betweenness centrality (0.045) - this node is a cross-community bridge._
-- **Why does `User` connect `Community 10` to `Community 1`, `Community 3`, `Community 37`, `Community 298`, `Community 12`, `Community 76`, `Community 52`, `Community 24`, `Community 27`?**
+- **Why does `FastAPI` connect `Community 50` to `Community 256`, `Community 1`, `Community 2`, `Community 3`, `Community 5`, `Community 6`, `Community 134`, `Community 8`, `Community 9`, `Community 11`, `Community 13`, `Community 14`, `Community 15`, `Community 18`, `Community 20`, `Community 23`, `Community 27`, `Community 29`, `Community 31`, `Community 37`, `Community 40`, `Community 43`, `Community 52`, `Community 63`, `Community 69`, `Community 70`, `Community 71`, `Community 83`, `Community 87`, `Community 505`, `Community 377`?**
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+- **Why does `Base` connect `Community 406` to `Community 33`, `Community 3`, `Community 67`, `Community 8`, `Community 9`, `Community 41`, `Community 11`, `Community 10`, `Community 13`, `Community 76`, `Community 48`, `Community 18`, `Community 19`, `Community 30`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **Why does `RequirePermission` connect `Community 9` to `Community 8`, `Community 11`, `Community 13`, `Community 303`, `Community 50`, `Community 23`, `Community 26`, `Community 31`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Are the 95 inferred relationships involving `EventPublisher` (e.g. with `Request` and `Redis`) actually correct?**
-  _`EventPublisher` has 95 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 56 inferred relationships involving `AnagraficaRepository` (e.g. with `Session` and `AnagraficaService`) actually correct?**
-  _`AnagraficaRepository` has 56 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 58 inferred relationships involving `ArticoloRepository` (e.g. with `Session` and `CategoriaService`) actually correct?**
-  _`ArticoloRepository` has 58 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 60 inferred relationships involving `RequirePermission` (e.g. with `Session` and `AnagraficaService`) actually correct?**
-  _`RequirePermission` has 60 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `TenantSettingsService` connect `Community 53` to `Community 33`, `Community 41`, `Community 271`, `Community 47`, `Community 48`, `Community 50`, `Community 29`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Are the 98 inferred relationships involving `EventPublisher` (e.g. with `Request` and `Redis`) actually correct?**
+  _`EventPublisher` has 98 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 61 inferred relationships involving `ArticoloRepository` (e.g. with `Session` and `CategoriaService`) actually correct?**
+  _`ArticoloRepository` has 61 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 59 inferred relationships involving `AnagraficaRepository` (e.g. with `Session` and `AnagraficaService`) actually correct?**
+  _`AnagraficaRepository` has 59 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 64 inferred relationships involving `Articolo` (e.g. with `UUIDStr` and `ArticoloRepository`) actually correct?**
+  _`Articolo` has 64 INFERRED edges - model-reasoned connections that need verification._
