@@ -54,7 +54,7 @@ def _make_bolla(*, stato: str = "bozza", version: int = 1, righe: list | None = 
     return b
 
 
-def _make_articolo() -> Articolo:
+def _make_articolo(*, giacenza: Decimal = Decimal("100")) -> Articolo:
     a = Articolo(
         tenant_id=TENANT_A,
         codice="PAV-GRES-6060-GR",
@@ -62,10 +62,41 @@ def _make_articolo() -> Articolo:
         unita_misura="m²",
         prezzo_unitario=Decimal("18.5000"),
         aliquota_iva=Decimal("22.00"),
-        giacenza=Decimal("100"),
+        giacenza=giacenza,
     )
     a.id = "art-1"
+    a.version = 1
     return a
+
+
+def _make_riga(*, articolo_id: str | None, quantita: str, ordine: int = 1) -> BollaRiga:
+    riga = BollaRiga(
+        bolla_id="bolla-1",
+        articolo_id=articolo_id,
+        codice_articolo="PAV-GRES-6060-GR",
+        descrizione="Gres porcellanato 60x60 grigio",
+        unita_misura="m²",
+        quantita=Decimal(quantita),
+        prezzo_unitario=Decimal("18.5000"),
+        aliquota_iva=Decimal("22.00"),
+        importo_riga=Decimal("0.00"),
+        ordine=ordine,
+    )
+    riga.id = f"riga-{ordine}"
+    return riga
+
+
+def _make_sequence() -> TenantDocumentSequence:
+    seq = TenantDocumentSequence(
+        tenant_id=TENANT_A,
+        sequence_code="delivery_note_italy",
+        name="Bolle Italia",
+        prefix="BL",
+        next_number=4442,
+        reset_policy="continuous",
+    )
+    seq.is_active = True
+    return seq
 
 
 def _simula_flush_bolla(b: Bolla) -> Bolla:
@@ -132,6 +163,10 @@ def _make_service(
 
     art_repo = MagicMock()
     art_repo.get = MagicMock(return_value=articolo)
+    magazzino = [articolo] if articolo is not None else []
+    art_repo.lock_for_update = MagicMock(
+        side_effect=lambda _tid, ids: [a for a in magazzino if a.id in ids]
+    )
 
     redis = MagicMock()
     publisher = MagicMock()
@@ -276,6 +311,66 @@ def test_emetti_bolla_gia_emessa_da_409() -> None:
     with pytest.raises(HTTPException) as exc:
         asyncio.run(service.emetti(TENANT_A, "bolla-1"))
     assert exc.value.status_code == status.HTTP_409_CONFLICT
+
+
+# ── Magazzino: scarico all'emissione, ricarico all'annullamento ─────────────
+
+
+def test_emetti_scarica_la_giacenza_sommando_le_righe_dello_stesso_articolo() -> None:
+    articolo = _make_articolo(giacenza=Decimal("100"))
+    righe = [
+        _make_riga(articolo_id="art-1", quantita="30", ordine=1),
+        _make_riga(articolo_id="art-1", quantita="20", ordine=2),
+    ]
+    bolla = _make_bolla(stato="bozza", righe=righe)
+    service = _make_service(bolla=bolla, articolo=articolo, sequence=_make_sequence())
+
+    asyncio.run(service.emetti(TENANT_A, "bolla-1"))
+
+    assert articolo.giacenza == Decimal("50")
+    assert bolla.giacenza_scaricata is True
+    # Una scheda articolo aperta prima dell'emissione ora riceve un 409.
+    assert articolo.version == 2
+
+
+def test_emetti_con_giacenza_insufficiente_resta_in_bozza_e_non_consuma_il_numero() -> None:
+    articolo = _make_articolo(giacenza=Decimal("10"))
+    bolla = _make_bolla(stato="bozza", righe=[_make_riga(articolo_id="art-1", quantita="25")])
+    seq = _make_sequence()
+    service = _make_service(bolla=bolla, articolo=articolo, sequence=seq)
+
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(service.emetti(TENANT_A, "bolla-1"))
+
+    assert exc.value.status_code == status.HTTP_409_CONFLICT
+    assert "PAV-GRES-6060-GR (disponibili 10 m², richiesti 25)" in exc.value.detail
+    assert articolo.giacenza == Decimal("10")
+    assert bolla.stato == "bozza"
+    assert seq.next_number == 4442
+
+
+def test_annulla_rimette_in_giacenza_le_quantita() -> None:
+    articolo = _make_articolo(giacenza=Decimal("50"))
+    bolla = _make_bolla(stato="emessa", righe=[_make_riga(articolo_id="art-1", quantita="30")])
+    bolla.giacenza_scaricata = True
+    service = _make_service(bolla=bolla, articolo=articolo)
+
+    asyncio.run(service.annulla(TENANT_A, "bolla-1"))
+
+    assert articolo.giacenza == Decimal("80")
+    assert bolla.giacenza_scaricata is False
+
+
+def test_annulla_bolla_emessa_prima_dello_scarico_non_tocca_la_giacenza() -> None:
+    articolo = _make_articolo(giacenza=Decimal("50"))
+    bolla = _make_bolla(stato="emessa", righe=[_make_riga(articolo_id="art-1", quantita="30")])
+    bolla.giacenza_scaricata = False
+    service = _make_service(bolla=bolla, articolo=articolo)
+
+    result = asyncio.run(service.annulla(TENANT_A, "bolla-1"))
+
+    assert result.stato == "annullata"
+    assert articolo.giacenza == Decimal("50")
 
 
 # ── Annullamento ────────────────────────────────────────────────────────────

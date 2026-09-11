@@ -1,5 +1,6 @@
 """Servizio applicativo per il modulo Bolle / DDT."""
 
+from collections import defaultdict
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_UP, Decimal
 from uuid import uuid4
@@ -11,6 +12,7 @@ from app.core.cache import (
     build_tenant_dashboard_kpis_cache_key,
     invalidate_cache_key_best_effort,
 )
+from app.models.core.articolo import Articolo
 from app.models.core.bolla import Bolla
 from app.models.core.bolla_riga import BollaRiga
 from app.repositories.core.anagrafica_repository import AnagraficaRepository
@@ -186,7 +188,7 @@ class BollaService:
     # ── Transizioni di stato ──────────────────────────────────────────────
 
     async def emetti(self, tenant_id: str, bolla_id: str) -> BollaResponse:
-        """Emette la bozza: consuma il numero dalla sequence e congela il documento."""
+        """Emette la bozza: scarica la giacenza, consuma il numero e congela il documento."""
         bolla = self._get_or_404(tenant_id, bolla_id)
         if bolla.stato != STATO_BOZZA:
             raise HTTPException(
@@ -199,12 +201,17 @@ class BollaService:
                 detail="Impossibile emettere una bolla senza righe.",
             )
 
+        # Il lock sulla sequence e' per tenant e serializza le emissioni: il lock
+        # sugli articoli che segue non puo' quindi incrociarsi con un'altra emissione.
         sequence = self.repository.lock_document_sequence(tenant_id, SEQUENCE_DDT)
         if sequence is None or not sequence.is_active:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Numerazione bolle non configurata per il tenant.",
             )
+        # Prima del numero: se manca merce la bolla resta in bozza e il numero libero.
+        self._scarica_giacenze(tenant_id, bolla)
+
         numero = f"{sequence.prefix or ''}{sequence.next_number}"
         sequence.next_number += 1
         self.repository.session.add(sequence)
@@ -212,6 +219,7 @@ class BollaService:
         bolla.numero = numero
         bolla.anno = datetime.now(UTC).year
         bolla.stato = STATO_EMESSA
+        bolla.giacenza_scaricata = True
         bolla.version += 1
         saved = self.repository.update(bolla)
         self.repository.session.commit()
@@ -221,13 +229,18 @@ class BollaService:
         return BollaResponse.model_validate(saved)
 
     async def annulla(self, tenant_id: str, bolla_id: str) -> BollaResponse:
-        """Annulla una bolla emessa (stato terminale, resta a registro)."""
+        """Annulla una bolla emessa: la merce torna in giacenza, il documento resta a registro."""
         bolla = self._get_or_404(tenant_id, bolla_id)
         if bolla.stato != STATO_EMESSA:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Solo una bolla emessa puo' essere annullata.",
             )
+        # Una bolla emessa prima dello scarico automatico non ha tolto merce:
+        # rimetterla gonfierebbe la giacenza.
+        if bolla.giacenza_scaricata:
+            self._ricarica_giacenze(tenant_id, bolla)
+            bolla.giacenza_scaricata = False
         bolla.stato = STATO_ANNULLATA
         bolla.version += 1
         saved = self.repository.update(bolla)
@@ -236,6 +249,31 @@ class BollaService:
             tenant_id, EventTypes.BOLLA_ANNULLATA, {"bolla_id": saved.id, "numero": saved.numero}
         )
         return BollaResponse.model_validate(saved)
+
+    # ── Magazzino ─────────────────────────────────────────────────────────
+
+    def _scarica_giacenze(self, tenant_id: str, bolla: Bolla) -> None:
+        """Toglie dalla giacenza le quantita' della bolla, o rifiuta se non bastano."""
+        quantita = _quantita_per_articolo(bolla)
+        articoli = self.articolo_repository.lock_for_update(tenant_id, sorted(quantita))
+        insufficienti = [a for a in articoli if a.giacenza < quantita[a.id]]
+        if insufficienti:
+            elenco = "; ".join(
+                f"{a.codice} (disponibili {_fmt_qta(a.giacenza)} {a.unita_misura}, "
+                f"richiesti {_fmt_qta(quantita[a.id])})"
+                for a in insufficienti
+            )
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Giacenza insufficiente per emettere la bolla: {elenco}.",
+            )
+        _movimenta(articoli, quantita, segno=-1)
+
+    def _ricarica_giacenze(self, tenant_id: str, bolla: Bolla) -> None:
+        """Rimette in giacenza le quantita' di una bolla emessa."""
+        quantita = _quantita_per_articolo(bolla)
+        articoli = self.articolo_repository.lock_for_update(tenant_id, sorted(quantita))
+        _movimenta(articoli, quantita, segno=1)
 
     # ── Helpers ───────────────────────────────────────────────────────────
 
@@ -287,3 +325,28 @@ class BollaService:
             await self.event_publisher.publish_to_tenant(
                 tenant_id, EventTypes.KPI_UPDATED, {"tenant_id": tenant_id, "reason": event_type}
             )
+
+
+def _quantita_per_articolo(bolla: Bolla) -> dict[str, Decimal]:
+    """Somma le quantita' per articolo: lo stesso articolo puo' stare su piu' righe.
+
+    Le righe senza articolo collegato non muovono magazzino.
+    """
+    quantita: dict[str, Decimal] = defaultdict(Decimal)
+    for riga in bolla.righe:
+        if riga.articolo_id is not None:
+            quantita[riga.articolo_id] += riga.quantita
+    return quantita
+
+
+def _movimenta(articoli: list[Articolo], quantita: dict[str, Decimal], *, segno: int) -> None:
+    for articolo in articoli:
+        articolo.giacenza += segno * quantita[articolo.id]
+        # Una scheda articolo aperta prima del movimento non deve poter risalvare
+        # la giacenza vecchia: con il version incrementato riceve un 409.
+        articolo.version += 1
+
+
+def _fmt_qta(valore: Decimal) -> str:
+    """420.000 -> "420", 310.500 -> "310,5"."""
+    return f"{valore.normalize():f}".replace(".", ",")

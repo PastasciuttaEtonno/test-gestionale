@@ -1,5 +1,7 @@
 """Repository per gli articoli di catalogo tenant-aware."""
 
+from collections.abc import Sequence
+
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
@@ -46,6 +48,26 @@ class ArticoloRepository:
         """Restituisce un singolo articolo del tenant."""
         stmt = self._base_query(tenant_id).where(Articolo.id == articolo_id)
         return self.session.scalar(stmt)
+
+    # Da qui in giu', nel corpo della classe `list` e' il metodo qui sopra e non
+    # il builtin: le annotazioni dei metodi seguenti usano Sequence.
+    def lock_for_update(self, tenant_id: str, articolo_ids: Sequence[str]) -> Sequence[Articolo]:
+        """Restituisce gli articoli indicati con lock di riga (FOR UPDATE).
+
+        Include gli articoli disattivati: la merce gia' a documento si movimenta
+        comunque. populate_existing rilegge la giacenza anche se l'articolo era
+        gia' nella sessione, cosi' il valore usato e' quello sotto lock.
+        """
+        if not articolo_ids:
+            return []
+        stmt = (
+            self._base_query(tenant_id)
+            .where(Articolo.id.in_(articolo_ids))
+            .order_by(Articolo.id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        return self.session.scalars(stmt).all()
 
     def get_by_codice(self, tenant_id: str, codice: str) -> Articolo | None:
         """Restituisce un articolo per codice nel tenant (per controllo unicita')."""

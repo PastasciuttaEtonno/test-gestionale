@@ -39,6 +39,9 @@ class Bolla(Base):
     numero: Mapped[str | None] = mapped_column(String(40), nullable=True)
     anno: Mapped[int | None] = mapped_column(Integer, nullable=True)
     stato: Mapped[str] = mapped_column(String(20), default="bozza", index=True)
+    # True dall'emissione finche' la merce resta scaricata dal magazzino. Le bolle
+    # emesse prima dello scarico automatico restano a False (migration 0014).
+    giacenza_scaricata: Mapped[bool] = mapped_column(Boolean, default=False)
     data_documento: Mapped[date] = mapped_column(Date)
     anagrafica_id: Mapped[str] = mapped_column(
         UUIDStr(), ForeignKey("core.anagrafiche.id"), index=True

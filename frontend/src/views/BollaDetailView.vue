@@ -128,7 +128,7 @@ const elaborando = ref(false);
 async function emetti() {
   const ok = await confirm({
     title: "Emettere la bolla",
-    message: "Verra' assegnato il numero progressivo e il documento non sara' piu' modificabile. Procedere?",
+    message: "Verra' assegnato il numero progressivo, le quantita' verranno scaricate dalla giacenza e il documento non sara' piu' modificabile. Procedere?",
     confirmLabel: "Emetti",
   });
   if (!ok) return;
@@ -145,7 +145,7 @@ async function emetti() {
 async function annulla() {
   const ok = await confirm({
     title: "Annullare la bolla",
-    message: `Confermare l'annullamento della bolla ${bolla.value?.numero}? L'operazione e' irreversibile.`,
+    message: `Confermare l'annullamento della bolla ${bolla.value?.numero}? Le quantita' tornano in giacenza. L'operazione e' irreversibile.`,
     confirmLabel: "Annulla bolla",
     danger: true,
   });
