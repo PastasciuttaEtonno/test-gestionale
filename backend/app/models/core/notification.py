@@ -15,9 +15,7 @@ class Notification(Base):
     __tablename__ = "notifications"
     __table_args__ = {"schema": "core"}
 
-    id: Mapped[str] = mapped_column(
-        UUIDStr(), primary_key=True, default=lambda: str(uuid4())
-    )
+    id: Mapped[str] = mapped_column(UUIDStr(), primary_key=True, default=lambda: str(uuid4()))
     user_id: Mapped[str | None] = mapped_column(
         UUIDStr(),
         ForeignKey("security.users.id", ondelete="CASCADE"),

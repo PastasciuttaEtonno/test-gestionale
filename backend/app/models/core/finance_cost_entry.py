@@ -18,7 +18,9 @@ class FinanceCostEntry(Base):
 
     id: Mapped[str] = mapped_column(UUIDStr(), primary_key=True, default=lambda: str(uuid4()))
     tenant_id: Mapped[str] = mapped_column(UUIDStr(), ForeignKey("security.tenants.id"), index=True)
-    created_by_user_id: Mapped[str] = mapped_column(UUIDStr(), ForeignKey("security.users.id"), index=True)
+    created_by_user_id: Mapped[str] = mapped_column(
+        UUIDStr(), ForeignKey("security.users.id"), index=True
+    )
     cost_center: Mapped[str] = mapped_column(String(100))
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     currency: Mapped[str] = mapped_column(String(3), default="EUR")

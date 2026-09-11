@@ -17,7 +17,6 @@ from app.schemas.anagrafiche.responses import (
     AnagraficaResponse,
     IndirizzoResponse,
 )
-from app.schemas.auth.responses import CurrentUserResponse
 
 
 class AnagraficaNotFoundError(Exception):
@@ -140,20 +139,22 @@ class AnagraficaService:
         self._get_or_404(tenant_id, anagrafica_id)
         record = self.repository.get_indirizzo(anagrafica_id, indirizzo_id)
         if record is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Indirizzo non trovato.")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Indirizzo non trovato."
+            )
         for field, value in payload.model_dump(exclude_unset=True).items():
             setattr(record, field, value)
         saved = self.repository.update_indirizzo(record)
         return IndirizzoResponse.model_validate(saved)
 
-    def delete_indirizzo(
-        self, tenant_id: str, anagrafica_id: str, indirizzo_id: str
-    ) -> None:
+    def delete_indirizzo(self, tenant_id: str, anagrafica_id: str, indirizzo_id: str) -> None:
         """Rimuove un indirizzo."""
         self._get_or_404(tenant_id, anagrafica_id)
         record = self.repository.get_indirizzo(anagrafica_id, indirizzo_id)
         if record is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Indirizzo non trovato.")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Indirizzo non trovato."
+            )
         self.repository.delete_indirizzo(record)
 
     # ── Helpers ────────────────────────────────────────────────────────────

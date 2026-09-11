@@ -7,11 +7,11 @@ from app.api.v1.anagrafiche.routes import router as anagrafiche_router
 from app.api.v1.articoli.routes import router as articoli_router
 from app.api.v1.auth.routes import router as auth_router
 from app.api.v1.bolle.routes import router as bolle_router
-from app.api.v1.events.routes import router as events_router
-from app.api.v1.notifications.routes import router as notifications_router
 from app.api.v1.bom.routes import router as bom_router
 from app.api.v1.dashboard.routes import router as dashboard_router
+from app.api.v1.events.routes import router as events_router
 from app.api.v1.finance.routes import router as finance_router
+from app.api.v1.notifications.routes import router as notifications_router
 from app.api.v1.production.routes import router as production_router
 from app.api.v1.reports.routes import router as reports_router
 from app.api.v1.tasks.routes import router as tasks_router

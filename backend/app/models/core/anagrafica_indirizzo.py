@@ -1,12 +1,16 @@
 """Modello ORM degli indirizzi dell'anagrafica."""
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, UUIDStr
+
+if TYPE_CHECKING:
+    from app.models.core.anagrafica import Anagrafica
 
 
 class AnagraficaIndirizzo(Base):
@@ -36,6 +40,4 @@ class AnagraficaIndirizzo(Base):
         DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
-    anagrafica: Mapped["Anagrafica"] = relationship(  # type: ignore[name-defined]
-        "Anagrafica", back_populates="indirizzi"
-    )
+    anagrafica: Mapped["Anagrafica"] = relationship("Anagrafica", back_populates="indirizzi")

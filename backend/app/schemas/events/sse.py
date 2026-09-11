@@ -16,6 +16,7 @@ class SseEventEnvelope(BaseModel):
 
 # --- Tipi di evento ---
 
+
 class EventTypes:
     """Costanti per i tipi di evento riconosciuti dal bus."""
 

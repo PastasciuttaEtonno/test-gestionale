@@ -120,8 +120,7 @@ class NotificationService:
         """Verifica che l'utente abbia accesso alla notifica."""
         owned_by_user = notification.user_id == current_user.id
         owned_by_tenant = (
-            notification.user_id is None
-            and notification.tenant_id == current_user.tenant_id
+            notification.user_id is None and notification.tenant_id == current_user.tenant_id
         )
         global_broadcast = notification.user_id is None and notification.tenant_id is None
         if not (owned_by_user or owned_by_tenant or global_broadcast):

@@ -135,5 +135,3 @@ async def get_sse_user(
             detail="Utente non attivo.",
         )
     return user
-
-

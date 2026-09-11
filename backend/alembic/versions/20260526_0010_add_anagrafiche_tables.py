@@ -231,10 +231,19 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name=op.f("pk_anagrafiche")),
         schema="core",
     )
-    op.create_index(op.f("ix_core_anagrafiche_tenant_id"), "anagrafiche", ["tenant_id"], schema="core")
+    op.create_index(
+        op.f("ix_core_anagrafiche_tenant_id"), "anagrafiche", ["tenant_id"], schema="core"
+    )
     op.create_index(op.f("ix_core_anagrafiche_tipo"), "anagrafiche", ["tipo"], schema="core")
-    op.create_index(op.f("ix_core_anagrafiche_is_active"), "anagrafiche", ["is_active"], schema="core")
-    op.create_index(op.f("ix_core_anagrafiche_ragione_sociale"), "anagrafiche", ["ragione_sociale"], schema="core")
+    op.create_index(
+        op.f("ix_core_anagrafiche_is_active"), "anagrafiche", ["is_active"], schema="core"
+    )
+    op.create_index(
+        op.f("ix_core_anagrafiche_ragione_sociale"),
+        "anagrafiche",
+        ["ragione_sociale"],
+        schema="core",
+    )
 
     op.create_table(
         "anagrafica_indirizzi",
@@ -307,16 +316,26 @@ def upgrade() -> None:
         schema="core",
     )
     for row in _ANAGRAFICHE_DEMO:
-        op.bulk_insert(anagrafiche_table, [{**row, "created_at": now, "updated_at": now}], multiinsert=False)
+        op.bulk_insert(
+            anagrafiche_table, [{**row, "created_at": now, "updated_at": now}], multiinsert=False
+        )
     for row in _INDIRIZZI_DEMO:
-        op.bulk_insert(indirizzi_table, [{**row, "created_at": now, "updated_at": now}], multiinsert=False)
+        op.bulk_insert(
+            indirizzi_table, [{**row, "created_at": now, "updated_at": now}], multiinsert=False
+        )
 
 
 def downgrade() -> None:
     """Rimuove le tabelle anagrafiche."""
-    op.drop_index(op.f("ix_core_anagrafica_indirizzi_anagrafica_id"), table_name="anagrafica_indirizzi", schema="core")
+    op.drop_index(
+        op.f("ix_core_anagrafica_indirizzi_anagrafica_id"),
+        table_name="anagrafica_indirizzi",
+        schema="core",
+    )
     op.drop_table("anagrafica_indirizzi", schema="core")
-    op.drop_index(op.f("ix_core_anagrafiche_ragione_sociale"), table_name="anagrafiche", schema="core")
+    op.drop_index(
+        op.f("ix_core_anagrafiche_ragione_sociale"), table_name="anagrafiche", schema="core"
+    )
     op.drop_index(op.f("ix_core_anagrafiche_is_active"), table_name="anagrafiche", schema="core")
     op.drop_index(op.f("ix_core_anagrafiche_tipo"), table_name="anagrafiche", schema="core")
     op.drop_index(op.f("ix_core_anagrafiche_tenant_id"), table_name="anagrafiche", schema="core")

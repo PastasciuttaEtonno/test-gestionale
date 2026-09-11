@@ -124,7 +124,10 @@ def update_anagrafica(
     current_user: CurrentUserResponse = Depends(_write),
     service: AnagraficaService = Depends(_service),
 ) -> AnagraficaResponse:
-    """Aggiorna parzialmente un'anagrafica del tenant. Solo i campi presenti nel payload vengono modificati."""
+    """Aggiorna parzialmente un'anagrafica del tenant.
+
+    Solo i campi presenti nel payload vengono modificati.
+    """
     return service.update_anagrafica(current_user.tenant_id, anagrafica_id, payload)
 
 
@@ -144,7 +147,10 @@ def delete_anagrafica(
     current_user: CurrentUserResponse = Depends(_delete),
     service: AnagraficaService = Depends(_service),
 ) -> None:
-    """Esegue il soft-delete impostando is_active = false. L'anagrafica non viene cancellata fisicamente."""
+    """Esegue il soft-delete impostando is_active = false.
+
+    L'anagrafica non viene cancellata fisicamente.
+    """
     service.delete_anagrafica(current_user.tenant_id, anagrafica_id)
 
 
