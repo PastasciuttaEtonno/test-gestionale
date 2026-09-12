@@ -38,7 +38,7 @@ def test_health_ready_restituisce_503_quando_il_database_non_e_pronto(
     client,
     monkeypatch,
 ) -> None:
-    """La readiness deve degradare correttamente se il database non risponde."""
+    """La readiness deve degradare se il database non risponde, senza esporre l'errore."""
 
     def broken_database_check() -> dict[str, str]:
         raise RuntimeError("database down")
@@ -50,6 +50,7 @@ def test_health_ready_restituisce_503_quando_il_database_non_e_pronto(
     assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
     body = response.json()
     assert body["status"] == "degraded"
-    assert body["checks"]["database"]["status"] == "error"
-    assert body["checks"]["database"]["detail"] == "database down"
+    assert body["checks"]["database"] == {"status": "error"}
+    # L'endpoint e' pubblico: il testo dell'eccezione non deve uscire (17abebd).
+    assert "database down" not in response.text
     assert body["checks"]["redis"]["status"] == "ok"

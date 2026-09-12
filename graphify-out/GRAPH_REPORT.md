@@ -1,7 +1,7 @@
-# Graph Report - test-gestionale  (2026-09-11)
+# Graph Report - test-gestionale  (2026-09-12)
 
 ## Corpus Check
-- 378 files · ~241,396 words
+- 378 files · ~241,411 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f4dc9088`
+- Built from commit: `22a84cd3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -519,8 +519,8 @@ Cohesion: 0.05
 Nodes (54): ArticoloListResponse, ArticoloResponse, CategoriaListResponse, CategoriaResponse, Schemi response per il modulo Articoli., Rappresentazione di una categoria articolo., Lista di categorie del tenant., Rappresentazione completa di un articolo. (+46 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.14
-Nodes (17): AuthService, Servizio applicativo del modulo Auth., Aggiorna le credenziali di accesso usando un refresh token persistito., Revoca tutte le sessioni refresh attive dell'utente corrente., Risolve l'utente corrente a partire da un access token JWT., Genera access token, refresh token e profilo utente corrente.          Se ``fa, Converte il modello utente in schema di risposta autenticato., Registra un evento di audit sullo schema security. (+9 more)
+Cohesion: 0.12
+Nodes (19): AuthService, Servizio applicativo del modulo Auth., Aggiorna le credenziali di accesso usando un refresh token persistito., Revoca tutte le sessioni refresh attive dell'utente corrente., Risolve l'utente corrente a partire da un access token JWT., Genera access token, refresh token e profilo utente corrente.          Se ``fa, Converte il modello utente in schema di risposta autenticato., Registra un evento di audit sullo schema security. (+11 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.11
@@ -663,8 +663,8 @@ Cohesion: 0.11
 Nodes (17): int, Session, str, Session, Notification, Modello ORM delle notifiche applicative., Notifica applicativa persistente per un utente o un intero tenant., NotificationRepository (+9 more)
 
 ### Community 37 - "Community 37"
-Cohesion: 0.16
-Nodes (28): AuthService, bool, int, SecurityRequestContext, str, User, RefreshToken, _audit_events() (+20 more)
+Cohesion: 0.18
+Nodes (26): AuthService, bool, str, User, RefreshToken, _audit_events(), _make_refresh_token(), _make_service() (+18 more)
 
 ### Community 38 - "Community 38"
 Cohesion: 0.04
@@ -792,7 +792,7 @@ Nodes (9): Request, str, Request, str, _estrai_origine_da_referer(), Verifica di
 
 ### Community 71 - "Community 71"
 Cohesion: 0.31
-Nodes (7): Test dei health endpoint e della propagazione request id., La liveness deve rispondere 200 e restituire il request id., La readiness deve confermare che database e Redis siano raggiungibili., La readiness deve degradare correttamente se il database non risponde., test_health_live_restituisce_ok_e_request_id(), test_health_ready_restituisce_503_quando_il_database_non_e_pronto(), test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili()
+Nodes (7): Test dei health endpoint e della propagazione request id., La liveness deve rispondere 200 e restituire il request id., La readiness deve confermare che database e Redis siano raggiungibili., La readiness deve degradare se il database non risponde, senza esporre l'errore., test_health_live_restituisce_ok_e_request_id(), test_health_ready_restituisce_503_quando_il_database_non_e_pronto(), test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili()
 
 ### Community 72 - "Community 72"
 Cohesion: 0.36
@@ -1671,7 +1671,7 @@ Cohesion: 0.29
 Nodes (6): AuditService, _oscura_payload(), Servizio audit persistito su PostgreSQL., Servizio applicativo per il logging di audit., Servizio applicativo per il logging di audit., Toglie dal payload i campi scritti liberamente da chi tenta l'accesso.
 
 ### Community 418 - "Community 418"
-Cohesion: 0.50
+Cohesion: 0.67
 Nodes (3): adapt, argumentHint, description
 
 ### Community 419 - "Community 419"
@@ -1679,7 +1679,7 @@ Cohesion: 0.67
 Nodes (3): animate, argumentHint, description
 
 ### Community 420 - "Community 420"
-Cohesion: 0.67
+Cohesion: 0.50
 Nodes (3): audit, argumentHint, description
 
 ### Community 421 - "Community 421"
@@ -1807,7 +1807,7 @@ Nodes (4): str, str, Cifra una stringa in chiaro e restituisce il token serializ
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `FastAPI` connect `Community 50` to `Community 256`, `Community 1`, `Community 2`, `Community 3`, `Community 5`, `Community 6`, `Community 134`, `Community 9`, `Community 11`, `Community 14`, `Community 15`, `Community 18`, `Community 20`, `Community 23`, `Community 24`, `Community 29`, `Community 31`, `Community 37`, `Community 40`, `Community 43`, `Community 52`, `Community 443`, `Community 63`, `Community 70`, `Community 71`, `Community 83`, `Community 505`, `Community 373`, `Community 374`, `Community 377`?**
-  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Why does `AnagraficaRepository` connect `Community 8` to `Community 513`, `Community 3`, `Community 68`, `Community 41`, `Community 16`, `Community 23`, `Community 443`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Why does `RequirePermission` connect `Community 9` to `Community 3`, `Community 8`, `Community 11`, `Community 303`, `Community 50`, `Community 373`, `Community 31`?**

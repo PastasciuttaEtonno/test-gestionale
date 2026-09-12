@@ -846,7 +846,7 @@
       "source_file": ".agents/skills/impeccable/scripts/command-metadata.json",
       "source_location": "L1",
       "id": "agents_skills_impeccable_scripts_command_metadata_json",
-      "community": 418,
+      "community": 420,
       "norm_label": "command-metadata.json"
     },
     {
@@ -20924,7 +20924,7 @@
       "source_file": "backend/tests/test_auth_refresh_family.py",
       "source_location": "L34",
       "id": "backend_tests_test_auth_refresh_family_py_int",
-      "community": 37,
+      "community": 1,
       "norm_label": "int"
     },
     {
@@ -20969,7 +20969,7 @@
       "source_file": "backend/tests/test_auth_refresh_family.py",
       "source_location": "L95",
       "id": "backend_tests_test_auth_refresh_family_py_securityrequestcontext",
-      "community": 37,
+      "community": 1,
       "norm_label": "securityrequestcontext"
     },
     {
@@ -21785,16 +21785,16 @@
     {
       "label": "test_health.py",
       "file_type": "code",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L1",
-      "id": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
+      "id": "backend_tests_test_health_py",
       "community": 71,
       "norm_label": "test_health.py"
     },
     {
       "label": "test_health_live_restituisce_ok_e_request_id()",
       "file_type": "code",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L9",
       "id": "tests_test_health_test_health_live_restituisce_ok_e_request_id",
       "community": 71,
@@ -21803,7 +21803,7 @@
     {
       "label": "test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili()",
       "file_type": "code",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L18",
       "id": "tests_test_health_test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili",
       "community": 71,
@@ -21812,7 +21812,7 @@
     {
       "label": "test_health_ready_restituisce_503_quando_il_database_non_e_pronto()",
       "file_type": "code",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L37",
       "id": "tests_test_health_test_health_ready_restituisce_503_quando_il_database_non_e_pronto",
       "community": 71,
@@ -21821,7 +21821,7 @@
     {
       "label": "Test dei health endpoint e della propagazione request id.",
       "file_type": "rationale",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L1",
       "id": "tests_test_health_rationale_1",
       "community": 71,
@@ -21830,7 +21830,7 @@
     {
       "label": "La liveness deve rispondere 200 e restituire il request id.",
       "file_type": "rationale",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L10",
       "id": "tests_test_health_rationale_10",
       "community": 71,
@@ -21839,20 +21839,20 @@
     {
       "label": "La readiness deve confermare che database e Redis siano raggiungibili.",
       "file_type": "rationale",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L22",
       "id": "tests_test_health_rationale_22",
       "community": 71,
       "norm_label": "la readiness deve confermare che database e redis siano raggiungibili."
     },
     {
-      "label": "La readiness deve degradare correttamente se il database non risponde.",
+      "label": "La readiness deve degradare se il database non risponde, senza esporre l'errore.",
       "file_type": "rationale",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L41",
       "id": "tests_test_health_rationale_41",
       "community": 71,
-      "norm_label": "la readiness deve degradare correttamente se il database non risponde."
+      "norm_label": "la readiness deve degradare se il database non risponde, senza esporre l'errore."
     },
     {
       "label": "test_rbac.py",
@@ -45084,6 +45084,15 @@
       "norm_label": "style planning"
     },
     {
+      "label": "test_health.py",
+      "file_type": "code",
+      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_location": "L1",
+      "community": 71,
+      "norm_label": "test_health.py",
+      "id": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py"
+    },
+    {
       "label": "auth.py",
       "file_type": "code",
       "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/app/api/deps/auth.py",
@@ -48884,15 +48893,6 @@
       "community": 43,
       "norm_label": "logoutresponse",
       "id": "backend_tests_test_auth_routes_py_logoutresponse"
-    },
-    {
-      "label": "test_health.py",
-      "file_type": "code",
-      "source_file": "backend/tests/test_health.py",
-      "source_location": "L1",
-      "community": 71,
-      "norm_label": "test_health.py",
-      "id": "backend_tests_test_health_py"
     },
     {
       "label": "test_rbac.py",
@@ -65928,11 +65928,11 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_file": "backend/tests/test_health.py",
       "source_location": "L3",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
+      "source": "backend_tests_test_health_py",
       "target": "fastapi"
     },
     {
@@ -65944,6 +65944,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_rbac_py",
+      "target": "fastapi"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
       "target": "fastapi"
     },
     {
@@ -66241,17 +66252,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "backend_tests_test_auth_routes_py",
-      "target": "fastapi"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_health.py",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_tests_test_health_py",
       "target": "fastapi"
     },
     {
@@ -70169,9 +70169,9 @@
       "source_file": "backend/app/api/v1/anagrafiche/routes.py",
       "source_location": "L150",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_routes_rationale_150",
-      "target": "anagrafiche_routes_delete_anagrafica",
-      "confidence_score": 1.0
+      "target": "anagrafiche_routes_delete_anagrafica"
     },
     {
       "relation": "rationale_for",
@@ -70211,9 +70211,9 @@
       "source_file": "backend/app/api/v1/anagrafiche/routes.py",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_routes_rationale_172",
-      "target": "anagrafiche_routes_add_indirizzo",
-      "confidence_score": 1.0
+      "target": "anagrafiche_routes_add_indirizzo"
     },
     {
       "relation": "rationale_for",
@@ -70453,9 +70453,9 @@
       "source_file": "backend/app/api/v1/anagrafiche/routes.py",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_routes_rationale_189",
-      "target": "anagrafiche_routes_update_indirizzo",
-      "confidence_score": 1.0
+      "target": "anagrafiche_routes_update_indirizzo"
     },
     {
       "relation": "rationale_for",
@@ -70573,9 +70573,9 @@
       "source_file": "backend/app/api/v1/anagrafiche/routes.py",
       "source_location": "L204",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_routes_rationale_204",
-      "target": "anagrafiche_routes_delete_indirizzo",
-      "confidence_score": 1.0
+      "target": "anagrafiche_routes_delete_indirizzo"
     },
     {
       "relation": "rationale_for",
@@ -82907,9 +82907,9 @@
       "source_file": "backend/app/models/core/anagrafica.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_anagrafica_rationale_17",
-      "target": "core_anagrafica_anagrafica",
-      "confidence_score": 1.0
+      "target": "core_anagrafica_anagrafica"
     },
     {
       "relation": "uses",
@@ -82917,9 +82917,9 @@
       "source_file": "backend/app/models/core/anagrafica_indirizzo.py",
       "source_location": "L13",
       "weight": 0.8,
+      "confidence_score": 0.5,
       "source": "core_anagrafica_indirizzo_anagraficaindirizzo",
-      "target": "core_anagrafica_anagrafica",
-      "confidence_score": 0.5
+      "target": "core_anagrafica_anagrafica"
     },
     {
       "relation": "uses",
@@ -83157,9 +83157,9 @@
       "source_file": "backend/app/models/core/anagrafica_indirizzo.py",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "core_anagrafica_indirizzo_rationale_17",
-      "target": "core_anagrafica_indirizzo_anagraficaindirizzo",
-      "confidence_score": 1.0
+      "target": "core_anagrafica_indirizzo_anagraficaindirizzo"
     },
     {
       "relation": "uses",
@@ -98082,9 +98082,9 @@
       "source_file": "backend/app/schemas/events/sse.py",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "events_sse_rationale_21",
-      "target": "events_sse_eventtypes",
-      "confidence_score": 1.0
+      "target": "events_sse_eventtypes"
     },
     {
       "relation": "uses",
@@ -99710,9 +99710,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_23",
-      "target": "anagrafiche_anagrafica_service_anagraficanotfounderror",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficanotfounderror"
     },
     {
       "relation": "rationale_for",
@@ -99830,9 +99830,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_27",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice"
     },
     {
       "relation": "rationale_for",
@@ -99894,9 +99894,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_35",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_list_anagrafiche",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_list_anagrafiche"
     },
     {
       "relation": "rationale_for",
@@ -100013,9 +100013,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_52",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_get_anagrafica",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_get_anagrafica"
     },
     {
       "relation": "rationale_for",
@@ -100077,9 +100077,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_61",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_create_anagrafica",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_create_anagrafica"
     },
     {
       "relation": "rationale_for",
@@ -100119,9 +100119,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_98",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_update_anagrafica",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_update_anagrafica"
     },
     {
       "relation": "rationale_for",
@@ -100150,9 +100150,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_106",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_delete_anagrafica",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_delete_anagrafica"
     },
     {
       "relation": "rationale_for",
@@ -100203,9 +100203,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_116",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_add_indirizzo",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_add_indirizzo"
     },
     {
       "relation": "rationale_for",
@@ -100256,9 +100256,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_138",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_update_indirizzo",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_update_indirizzo"
     },
     {
       "relation": "rationale_for",
@@ -100287,9 +100287,9 @@
       "source_file": "backend/app/services/anagrafiche/anagrafica_service.py",
       "source_location": "L151",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "anagrafiche_anagrafica_service_rationale_151",
-      "target": "anagrafiche_anagrafica_service_anagraficaservice_delete_indirizzo",
-      "confidence_score": 1.0
+      "target": "anagrafiche_anagrafica_service_anagraficaservice_delete_indirizzo"
     },
     {
       "relation": "rationale_for",
@@ -114904,72 +114904,12 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
-      "target": "tests_test_health_test_health_live_restituisce_ok_e_request_id"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
-      "source_location": "L18",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
-      "target": "tests_test_health_test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
-      "source_location": "L37",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
-      "target": "tests_test_health_test_health_ready_restituisce_503_quando_il_database_non_e_pronto"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_health_rationale_1",
-      "target": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_health.py",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_health_rationale_10",
-      "target": "tests_test_health_test_health_live_restituisce_ok_e_request_id"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "backend/tests/test_health.py",
       "source_location": "L9",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "backend_tests_test_health_py",
       "target": "tests_test_health_test_health_live_restituisce_ok_e_request_id"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_health.py",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_health_rationale_22",
-      "target": "tests_test_health_test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili"
     },
     {
       "relation": "contains",
@@ -114980,16 +114920,6 @@
       "confidence_score": 1.0,
       "source": "backend_tests_test_health_py",
       "target": "tests_test_health_test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/tests/test_health.py",
-      "source_location": "L41",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_test_health_rationale_41",
-      "target": "tests_test_health_test_health_ready_restituisce_503_quando_il_database_non_e_pronto"
     },
     {
       "relation": "contains",
@@ -115010,6 +114940,76 @@
       "confidence_score": 1.0,
       "source": "tests_test_health_rationale_1",
       "target": "backend_tests_test_health_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_health.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_health_rationale_10",
+      "target": "tests_test_health_test_health_live_restituisce_ok_e_request_id"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
+      "target": "tests_test_health_test_health_live_restituisce_ok_e_request_id"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_health.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_health_rationale_22",
+      "target": "tests_test_health_test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
+      "target": "tests_test_health_test_health_ready_restituisce_ok_quando_db_e_redis_sono_disponibili"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/tests/test_health.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_health_rationale_41",
+      "target": "tests_test_health_test_health_ready_restituisce_503_quando_il_database_non_e_pronto"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py",
+      "target": "tests_test_health_test_health_ready_restituisce_503_quando_il_database_non_e_pronto"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "C:/Users/joanl/Desktop/projectwork_IFOA/test-gestionale/backend/tests/test_health.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_health_rationale_1",
+      "target": "c_users_joanl_desktop_projectwork_ifoa_test_gestionale_backend_tests_test_health_py"
     },
     {
       "relation": "contains",
@@ -142729,5 +142729,5 @@
       "weight": 1.0
     }
   ],
-  "built_at_commit": "f4dc9088b3db32bb49f53afda2fe81e56382d9e7"
+  "built_at_commit": "22a84cd31113011d029112892a2cb2616ee1c18e"
 }
